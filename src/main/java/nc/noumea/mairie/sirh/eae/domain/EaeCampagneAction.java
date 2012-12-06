@@ -9,13 +9,20 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "EAE_CAMPAGNE_ACTION")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
+@NamedQuery(
+		name = "EaeCampagneAction.getTodayNotifications", 
+		query = "SELECT eA from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL)"
+		)
 public class EaeCampagneAction {
 
 	@Id
@@ -32,7 +39,12 @@ public class EaeCampagneAction {
 	private String nomAction;
 
 	@Column(name = "DATE_TRANSMISSION")
+	@Temporal(TemporalType.DATE)
 	private Date dateTransmission;
+	
+	@Column(name = "DATE_MAIL_ENVOYE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateMailEnvoye;
 	
 	@Column(name = "DATE_A_FAIRE_LE")
 	private Date dateAfaire;
@@ -85,6 +97,14 @@ public class EaeCampagneAction {
 
 	public void setDateTransmission(Date dateTransmission) {
 		this.dateTransmission = dateTransmission;
+	}
+
+	public Date getDateMailEnvoye() {
+		return dateMailEnvoye;
+	}
+
+	public void setDateMailEnvoye(Date dateMailEnvoye) {
+		this.dateMailEnvoye = dateMailEnvoye;
 	}
 
 	public Date getDateAfaire() {

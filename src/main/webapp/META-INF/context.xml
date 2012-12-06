@@ -45,4 +45,16 @@
 		jmxEnabled="true" username="adminwas" password="planet"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" />
 
+	<Resource name="mail/MailServer" auth="Container"
+               type="javax.mail.Session"
+               mail.debug="true"
+               mail.user="SIRH EAEs"
+               mail.from="noreply@ville-noumea.nc"
+               mail.transport.protocol="smtp"
+               mail.smtp.host= "smtp"
+               mail.smtp.auth= "false"
+               mail.smtp.port= "25"
+               mail.smtp.starttls.enable="false"
+               description="Global E-Mail Resource"
+               />
 </Context>
