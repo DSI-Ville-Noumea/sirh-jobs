@@ -12,6 +12,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,10 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	
 	@Autowired
 	private IEaeCampagneActionDao eaeCampagneActionDao;
+	
+	@Autowired
+	@Qualifier("numberOfTries")
+	private Integer numberOfTries;
 	
 	public EaeCampagneActionNotificationsJob() {
 	}
@@ -47,14 +52,14 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		EaeCampagneAction eA = null;
 		int i = 0;
 		int nbErrors = 0;
-		int nbNotifications = eaeCampagneActionDao.countEaeCampagneActionToSend(today);
+		long nbNotifications = eaeCampagneActionDao.countEaeCampagneActionToSend(today);
 		
 		logger.info("There are {} EaeCampagneAction notifications to send...", nbNotifications);
 		
 		if (nbNotifications == 0)
 			return;
 		
-		while(nbErrors < 3 && (eA = eaeCampagneActionDao.getNextEaeCampagneActionToSend(today)) != null) {
+		while(nbErrors < numberOfTries && (eA = eaeCampagneActionDao.getNextEaeCampagneActionToSend(today)) != null) {
 			
 			logger.debug("action #{}: {}", ++i, eA.getNomAction());
 			
@@ -69,8 +74,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 			
 		}
 		
-		if (nbErrors >= 3) {
-			logger.error("Stopped sending notifications because exceeded the maximum authorized number of tries.");
+		if (nbErrors >= numberOfTries) {
+			logger.error("Stopped sending notifications because exceeded the maximum authorized number of tries: {}.", numberOfTries);
 			throw new EaeCampagneActionNotificationsException("Stopped sending notifications because exceeded the maximum authorized number of tries.");
 		}
 		else
@@ -82,8 +87,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		
 		logger.debug("Sending email for action : {} due on {}", eaeCampagneAction.getNomAction(), eaeCampagneAction.getDateAfaire());
 
-//		if (eaeCampagneAction.getIdCampagneAction() == 23)
-//			throw new EaeCampagneActionNotificationsException("the cause of the exception !!!");
+		if (eaeCampagneAction.getIdCampagneAction() == 23 || eaeCampagneAction.getIdCampagneAction() == 24 || eaeCampagneAction.getIdCampagneAction() == 25)
+			throw new EaeCampagneActionNotificationsException("the cause of the exception !!!");
 		
 		//TODO: Switch to using JPA entitymanager instead of manually writing the update query using plain SQL...
 		eaeCampagneActionDao.setDateMailEnvoye(eaeCampagneAction, theDate);

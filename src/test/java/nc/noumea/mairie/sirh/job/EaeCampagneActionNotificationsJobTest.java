@@ -36,7 +36,7 @@ public class EaeCampagneActionNotificationsJobTest {
 	public void testSendNotificationsOneByOne_NoNotificationsToSend() throws EaeCampagneActionNotificationsException {
 		// Given
 		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
-		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(0);
+		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(0l);
 
 		EaeCampagneActionNotificationsJob service = new EaeCampagneActionNotificationsJob();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
@@ -53,7 +53,7 @@ public class EaeCampagneActionNotificationsJobTest {
 	public void testSendNotificationsOneByOne_1NotificationsToSend() throws EaeCampagneActionNotificationsException {
 		// Given
 		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
-		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(1);
+		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(1l);
 
 		EaeCampagneActionNotificationsJob service = new EaeCampagneActionNotificationsJob();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
@@ -85,7 +85,7 @@ public class EaeCampagneActionNotificationsJobTest {
 		a4.setIdCampagneAction(4);
 		
 		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
-		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(4);
+		when(eaeCampagneActionDaoMock.countEaeCampagneActionToSend(theDate)).thenReturn(4l);
 		when(eaeCampagneActionDaoMock.getNextEaeCampagneActionToSend(theDate))
 			.thenReturn(a1)
 			.thenReturn(a2)

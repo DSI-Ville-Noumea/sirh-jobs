@@ -19,10 +19,10 @@ public class EaeCampagneActionDao implements IEaeCampagneActionDao {
 	private EntityManager eaeEntityManager;
 	
 	@Override
-	public int countEaeCampagneActionToSend(Date asOfDate) {
-		TypedQuery<Integer> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.countTodayNotifications", Integer.class);
+	public long countEaeCampagneActionToSend(Date asOfDate) {
+		TypedQuery<Long> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.countTodayNotifications", Long.class);
 		eaeQuery.setParameter("todayDate", asOfDate);
-		Integer result = eaeQuery.getSingleResult();
+		Long result = eaeQuery.getSingleResult();
 		
 		return result;
 	}

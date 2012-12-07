@@ -11,7 +11,7 @@
 
 	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/EAE_WS_DS1" resource-ref="true" />
 
-		<bean
+	<bean
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		id="eaeEntityManagerFactory">
 		<property name="persistenceUnitName" value="eaePersistenceUnit" />
@@ -35,6 +35,10 @@
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="sirhTransactionManager">
 		<property name="entityManagerFactory" ref="sirhEntityManagerFactory" />
+	</bean>
+	
+	<bean id="numberOfTries" class="java.lang.Integer">
+		<constructor-arg value="3"/>
 	</bean>
 	
 <!-- 	<bean name="eaeCampagneActionNotificationsJob" class="org.quartz.impl.JobDetailImpl"> -->

@@ -79,22 +79,22 @@ public class EaeCampagneActionDaoTest {
 	@SuppressWarnings("unchecked")
 	public void testCountEaeCampagneActionToSend_2NotificationsToSend_Return2() {
 		// Given
-		Integer result = 2;
+		Long result = 2l;
 		
-		TypedQuery<Integer> queryMock = (TypedQuery<Integer>) Mockito.mock(TypedQuery.class);
+		TypedQuery<Long> queryMock = (TypedQuery<Long>) Mockito.mock(TypedQuery.class);
 		when(queryMock.getSingleResult()).thenReturn(result);
 		
 		EntityManager eManagerMock = Mockito.mock(EntityManager.class);
-		when(eManagerMock.createNamedQuery("EaeCampagneAction.countTodayNotifications", Integer.class)).thenReturn(queryMock);
+		when(eManagerMock.createNamedQuery("EaeCampagneAction.countTodayNotifications", Long.class)).thenReturn(queryMock);
 		
 		EaeCampagneActionDao dao = new EaeCampagneActionDao();
 		ReflectionTestUtils.setField(dao, "eaeEntityManager", eManagerMock);
 		
 		// When
-		int actualResult = dao.countEaeCampagneActionToSend(today);
+		long actualResult = dao.countEaeCampagneActionToSend(today);
 				
 		// Then
-		assertEquals(result, new Integer(actualResult));
+		assertEquals(result, new Long(actualResult));
 		
 		verify(queryMock).setParameter("todayDate", today);
 	}
