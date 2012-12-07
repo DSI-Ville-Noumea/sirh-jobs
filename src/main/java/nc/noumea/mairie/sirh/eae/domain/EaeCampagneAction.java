@@ -8,7 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceUnit;
@@ -19,16 +22,26 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "EAE_CAMPAGNE_ACTION")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
-@NamedQuery(
-		name = "EaeCampagneAction.getTodayNotifications", 
-		query = "SELECT eA from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL)"
-		)
+@NamedQueries({
+	@NamedQuery(
+			name = "EaeCampagneAction.countTodayNotifications", 
+			query = "SELECT count(eA.idCampagneAction) from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL)"
+			),
+	@NamedQuery(
+			name = "EaeCampagneAction.getNextTodayNotification", 
+			query = "SELECT eA from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL) order by eA.dateTransmission ASC"
+			),
+})
 public class EaeCampagneAction {
 
 	@Id
 	@Column(name = "ID_CAMPAGNE_ACTION")
-	private Integer idCampagneActeur;
+	private Integer idCampagneAction;
 
+	@ManyToOne
+	@JoinColumn(name = "ID_CAMPAGNE_EAE", referencedColumnName = "ID_CAMPAGNE_EAE")
+	private EaeCampagne eaeCampagne;
+	
 	@OneToMany(mappedBy = "eaeCampagneAction", fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<EaeCampagneActeur> eaeCampagneActeurs = new HashSet<EaeCampagneActeur>();
 	
@@ -59,12 +72,20 @@ public class EaeCampagneAction {
 	@Column(name = "ID_AGENT_REALISATION")
 	private Integer idAgent;
 
-	public Integer getIdCampagneActeur() {
-		return idCampagneActeur;
+	public Integer getIdCampagneAction() {
+		return idCampagneAction;
 	}
 
-	public void setIdCampagneActeur(Integer idCampagneActeur) {
-		this.idCampagneActeur = idCampagneActeur;
+	public void setIdCampagneAction(Integer idCampagneAction) {
+		this.idCampagneAction = idCampagneAction;
+	}
+
+	public EaeCampagne getEaeCampagne() {
+		return eaeCampagne;
+	}
+
+	public void setEaeCampagne(EaeCampagne eaeCampagne) {
+		this.eaeCampagne = eaeCampagne;
 	}
 
 	public Set<EaeCampagneActeur> getEaeCampagneActeurs() {

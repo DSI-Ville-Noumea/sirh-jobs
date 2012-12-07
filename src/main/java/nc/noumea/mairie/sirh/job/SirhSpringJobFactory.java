@@ -20,9 +20,6 @@ public class SirhSpringJobFactory implements JobFactory {
 	@Autowired
 	private ApplicationContext applicationContext;
 	
-	public SirhSpringJobFactory() {
-	}
-	
 	@Override
 	public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
 		JobDetail jobDetail = bundle.getJobDetail();

@@ -11,9 +11,7 @@
 
 	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/EAE_WS_DS1" resource-ref="true" />
 
-	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2" resource-ref="true" />
-
-	<bean
+		<bean
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		id="eaeEntityManagerFactory">
 		<property name="persistenceUnitName" value="eaePersistenceUnit" />
@@ -22,9 +20,12 @@
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="eaeTransactionManager">
 		<property name="entityManagerFactory" ref="eaeEntityManagerFactory" />
+		<property name="jpaDialect" ref="jpaDialect"></property>
 	</bean>
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 	<tx:annotation-driven mode="aspectj" transaction-manager="eaeTransactionManager" />
-
+	
+	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2" resource-ref="true" />
 	<bean
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		id="sirhEntityManagerFactory">
