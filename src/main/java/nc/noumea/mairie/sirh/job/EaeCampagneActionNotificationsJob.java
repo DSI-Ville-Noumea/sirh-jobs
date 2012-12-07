@@ -61,7 +61,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		
 		while(nbErrors < numberOfTries && (eA = eaeCampagneActionDao.getNextEaeCampagneActionToSend(today)) != null) {
 			
-			logger.debug("action #{}: {}", ++i, eA.getNomAction());
+			logger.info("Sending notification id #{}...", eA.getIdCampagneAction());
 			
 			try {
 				sendNotification(eA, today);
@@ -87,8 +87,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		
 		logger.debug("Sending email for action : {} due on {}", eaeCampagneAction.getNomAction(), eaeCampagneAction.getDateAfaire());
 
-		if (eaeCampagneAction.getIdCampagneAction() == 23 || eaeCampagneAction.getIdCampagneAction() == 24 || eaeCampagneAction.getIdCampagneAction() == 25)
-			throw new EaeCampagneActionNotificationsException("the cause of the exception !!!");
+//		if (eaeCampagneAction.getIdCampagneAction() == 23 || eaeCampagneAction.getIdCampagneAction() == 24 || eaeCampagneAction.getIdCampagneAction() == 25)
+//			throw new EaeCampagneActionNotificationsException("the cause of the exception !!!");
 		
 		//TODO: Switch to using JPA entitymanager instead of manually writing the update query using plain SQL...
 		eaeCampagneActionDao.setDateMailEnvoye(eaeCampagneAction, theDate);
