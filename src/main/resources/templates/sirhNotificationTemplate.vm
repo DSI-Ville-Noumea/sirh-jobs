@@ -1,0 +1,17 @@
+#set( $dateAFaire = $eaeCampagneAction.dateAfaire )
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<h3>SIRH-EAE Mail de notification</h3>
+		<p><strong>Rappel</strong>: La t&acirc;che '<strong>${eaeCampagneAction.nomAction}</strong>' est a effectuer pour le <strong>${dateAFaire}</strong> oops $DateTool.format('dd MMM yyyy', $dateAFaire)</p>
+		<p><strong>Message</strong>: <i>${eaeCampagneAction.message}</i></p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>

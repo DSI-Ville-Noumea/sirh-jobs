@@ -99,4 +99,30 @@ public class EaeCampagneActionDaoTest {
 		verify(queryMock).setParameter("todayDate", today);
 	}
 	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testGetEaeCampagneActionToSend_2NotificationsToSend_ReturnListOf2() {
+		// Given
+		List<EaeCampagneAction> result = new ArrayList<EaeCampagneAction>();
+		result.add(new EaeCampagneAction());
+		result.add(new EaeCampagneAction());
+		
+		TypedQuery<EaeCampagneAction> queryMock = (TypedQuery<EaeCampagneAction>) Mockito.mock(TypedQuery.class);
+		when(queryMock.getResultList()).thenReturn(result);
+		
+		EntityManager eManagerMock = Mockito.mock(EntityManager.class);
+		when(eManagerMock.createNamedQuery("EaeCampagneAction.getTodayNotifications", EaeCampagneAction.class)).thenReturn(queryMock);
+		
+		EaeCampagneActionDao dao = new EaeCampagneActionDao();
+		ReflectionTestUtils.setField(dao, "eaeEntityManager", eManagerMock);
+		
+		// When
+		List<EaeCampagneAction> actualResult = dao.getEaeCampagneActionToSend(today);
+				
+		// Then
+		assertEquals(result.size(), actualResult.size());
+		
+		verify(queryMock).setParameter("todayDate", today);
+	}
+	
 }

@@ -28,6 +28,15 @@ public class EaeCampagneActionDao implements IEaeCampagneActionDao {
 	}
 	
 	@Override
+	public List<EaeCampagneAction> getEaeCampagneActionToSend(Date asOfDate) {
+		TypedQuery<EaeCampagneAction> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.getTodayNotifications", EaeCampagneAction.class);
+		eaeQuery.setParameter("todayDate", asOfDate);
+		List<EaeCampagneAction> result = eaeQuery.getResultList();
+		
+		return result;
+	}
+	
+	@Override
 	public EaeCampagneAction getNextEaeCampagneActionToSend(Date asOfDate) {
 
 		TypedQuery<EaeCampagneAction> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.getNextTodayNotification", EaeCampagneAction.class);

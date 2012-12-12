@@ -28,6 +28,10 @@ import javax.persistence.TemporalType;
 			query = "SELECT count(eA.idCampagneAction) from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL)"
 			),
 	@NamedQuery(
+			name = "EaeCampagneAction.getTodayNotifications", 
+			query = "SELECT eA from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL)"
+			),
+	@NamedQuery(
 			name = "EaeCampagneAction.getNextTodayNotification", 
 			query = "SELECT eA from EaeCampagneAction eA WHERE (eA.dateTransmission <= :todayDate AND eA.dateMailEnvoye is NULL) order by eA.dateTransmission ASC"
 			),

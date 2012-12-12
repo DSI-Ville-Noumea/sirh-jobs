@@ -57,4 +57,29 @@
                mail.smtp.starttls.enable="false"
                description="Global E-Mail Resource"
                />
+
+	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives" type="java.lang.Integer"
+		description="Maximum number of tentatives of retry on errors before giving up sending notifications" value="3"
+		override="false" />
+		
+	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
+		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored" 
+		value="file:////C:/Alphalog/Mairie/"
+		override="false" />
+		
+	<Environment name="ad/connectionURL" type="java.lang.String"
+		description="Url of the LDAP server" 
+		value="ldap://hurle.site-mairie.noumea.nc:389"
+		override="false" />
+		
+	<Environment name="ad/userBase" type="java.lang.String"
+		description="Read-only user Dn for SIRH jobs application" 
+		value="cn=adminwas,ou=was,ou=appli,ou=z-users,dc=site-mairie,dc=noumea,dc=nc"
+		override="false" />
+		
+	<Environment name="ad/userPassword" type="java.lang.String"
+		description="Password for the above defined ldap user" 
+		value="planet"
+		override="false" />
+	
 </Context>
