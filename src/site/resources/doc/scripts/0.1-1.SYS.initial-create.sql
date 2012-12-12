@@ -1,65 +1,29 @@
---
--- A hint submitted by a user: Oracle DB MUST be created as "shared" and the 
--- job_queue_processes parameter  must be greater than 2
--- However, these settings are pretty much standard after any
--- Oracle install, so most users need not worry about this.
---
--- Many other users (including the primary author of Quartz) have had success
--- runing in dedicated mode, so only consider the above as a hint ;-)
---
-
-delete from QRTZ_FIRED_TRIGGERS;
-delete from QRTZ_SIMPLE_TRIGGERS;
-delete from QRTZ_SIMPROP_TRIGGERS;
-delete from QRTZ_CRON_TRIGGERS;
-delete from QRTZ_BLOB_TRIGGERS;
-delete from QRTZ_TRIGGERS;
-delete from QRTZ_JOB_DETAILS;
-delete from QRTZ_CALENDARS;
-delete from QRTZ_PAUSED_TRIGGER_GRPS;
-delete from QRTZ_LOCKS;
-delete from QRTZ_SCHEDULER_STATE;
-
-drop table QRTZ_CALENDARS;
-drop table QRTZ_FIRED_TRIGGERS;
-drop table QRTZ_BLOB_TRIGGERS;
-drop table QRTZ_CRON_TRIGGERS;
-drop table QRTZ_SIMPLE_TRIGGERS;
-drop table QRTZ_SIMPROP_TRIGGERS;
-drop table QRTZ_TRIGGERS;
-drop table QRTZ_JOB_DETAILS;
-drop table QRTZ_PAUSED_TRIGGER_GRPS;
-drop table QRTZ_LOCKS;
-drop table QRTZ_SCHEDULER_STATE;
-
-
-
 ----------------------------------------------------------------
 -- connecte en SYSTEM
 ----------------------------------------------------------------
 -- creation des roles et users
-create role R_SIRH_JOBS_ADM;
-create role R_SIRH_JOBS_USR;
-create role R_SIRH_JOBS_READ;
+create role R_QRTZ_ADM;
+create role R_QRTZ_USR;
+create role R_QRTZ_READ;
 
-grant connect, create session, create table, create sequence, create public synonym to R_SIRH_JOBS_ADM;
-grant unlimited tablespace to R_SIRH_JOBS_ADM;
-grant connect, create session to R_SIRH_JOBS_USR;
-grant connect, create session to R_SIRH_JOBS_READ;
+grant connect, create session, create table, create sequence, create public synonym to R_QRTZ_ADM;
+grant unlimited tablespace to R_QRTZ_ADM;
+grant connect, create session to R_QRTZ_USR;
+grant connect, create session to R_QRTZ_READ;
 
-create user SIRH_JOBS_ADM identified by PASSWORD_SECRET_SIE;
-create user SIRH_JOBS_USR identified by PASSWORD_SECRET_SIE_2;
-create user SIRH_JOBS_READ identified by PASSWORD_DONNER_AU_SED;
+create user QRTZ_ADM identified by PASSWORD_SECRET_SIE;
+create user QRTZ_USR identified by PASSWORD_SECRET_SIE_2;
+create user QRTZ_READ identified by PASSWORD_DONNER_AU_SED;
 
-grant R_SIRH_JOBS_ADM to SIRH_JOBS_ADM;
-grant R_SIRH_JOBS_USR to SIRH_JOBS_USR;
-grant R_SIRH_JOBS_READ to SIRH_JOBS_READ;
+grant R_QRTZ_ADM to QRTZ_ADM;
+grant R_QRTZ_USR to QRTZ_USR;
+grant R_QRTZ_READ to QRTZ_READ;
 
 ----------------------------------------------------------------
 -- Creation des tablespaces : finaliser les nomns de fichiers par le SIE
 
 -- petit, prevoir des extends de 20 Mo, initial 20 Mo
-CREATE TABLESPACE TS_SIRH_JOBS_PARAM DATAFILE
+CREATE TABLESPACE TS_QRTZ_PARAM DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 20M AUTOEXTEND ON NEXT 20M MAXSIZE 100M
 LOGGING
@@ -72,7 +36,7 @@ FLASHBACK OFF;
 
 
 -- prevoir des extends de 100 Mo, initial 50 Mo
-CREATE TABLESPACE TS_SIRH_JOBS_DATA DATAFILE
+CREATE TABLESPACE TS_QRTZ_DATA DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 50M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
 LOGGING
@@ -85,7 +49,7 @@ FLASHBACK OFF;
 
 
 -- moyen, prevoir des extends de 100 Mo, initial 20 Mo
-CREATE TABLESPACE TS_SIRH_JOBS_INDEX DATAFILE
+CREATE TABLESPACE TS_QRTZ_INDEX DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 20M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
 LOGGING
@@ -98,7 +62,7 @@ FLASHBACK OFF;
 
 
 -- le plus petit possible, pas d'extend, bloque
-CREATE TABLESPACE TS_SIRH_JOBS_DEFAULT DATAFILE
+CREATE TABLESPACE TS_QRTZ_DEFAULT DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 10M AUTOEXTEND OFF MAXSIZE 2000M
 LOGGING
@@ -109,17 +73,17 @@ BLOCKSIZE 8K
 SEGMENT SPACE MANAGEMENT AUTO
 FLASHBACK OFF;
 
-alter tablespace TS_SIRH_JOBS_DEFAULT read only;
+alter tablespace TS_QRTZ_DEFAULT read only;
 
 
 -- on redirige par defaut sur le tablespace USERS pour flagger les mises en recette sauvages...
-alter user SIRH_JOBS_ADM default tablespace TS_SIRH_JOBS_DEFAULT;
+alter user QRTZ_ADM default tablespace TS_QRTZ_DEFAULT;
 
 -- fin de la section admin bdd
 ----------------------------------------------------------------
 
 ----------------------------------------------------------------
--- Connecte en SIRH_JOBS_ADM
+-- Connecte en QRTZ_ADM
 ----------------------------------------------------------------
 
 --==============================================================
@@ -139,11 +103,11 @@ CREATE TABLE QRTZ_JOB_DETAILS
     JOB_DATA BLOB NULL,
     CONSTRAINT QRTZ_JOB_DETAILS_PK PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_JOB_DETAILS for QRTZ_JOB_DETAILS;
-grant select, insert, update, delete on QRTZ_JOB_DETAILS to R_SIRH_JOBS_USR;
-grant select on QRTZ_JOB_DETAILS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_JOB_DETAILS to R_QRTZ_USR;
+grant select on QRTZ_JOB_DETAILS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_TRIGGERS
@@ -170,11 +134,11 @@ CREATE TABLE QRTZ_TRIGGERS
     CONSTRAINT QRTZ_TRIGGER_TO_JOBS_FK FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP) 
       REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP) 
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_TRIGGERS for QRTZ_TRIGGERS;
-grant select, insert, update, delete on QRTZ_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_SIMPLE_TRIGGERS
@@ -191,11 +155,11 @@ CREATE TABLE QRTZ_SIMPLE_TRIGGERS
     CONSTRAINT QRTZ_SIMPLE_TRIG_TO_TRIG_FK FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
 	REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_SIMPLE_TRIGGERS for QRTZ_SIMPLE_TRIGGERS;
-grant select, insert, update, delete on QRTZ_SIMPLE_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_SIMPLE_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_SIMPLE_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_SIMPLE_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_CRON_TRIGGERS
@@ -211,11 +175,11 @@ CREATE TABLE QRTZ_CRON_TRIGGERS
     CONSTRAINT QRTZ_CRON_TRIG_TO_TRIG_FK FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
       REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_CRON_TRIGGERS for QRTZ_CRON_TRIGGERS;
-grant select, insert, update, delete on QRTZ_CRON_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_CRON_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_CRON_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_CRON_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_SIMPROP_TRIGGERS
@@ -240,11 +204,11 @@ CREATE TABLE QRTZ_SIMPROP_TRIGGERS
     CONSTRAINT QRTZ_SIMPROP_TRIG_TO_TRIG_FK FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
       REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_SIMPROP_TRIGGERS for QRTZ_SIMPROP_TRIGGERS;
-grant select, insert, update, delete on QRTZ_SIMPROP_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_SIMPROP_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_SIMPROP_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_SIMPROP_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_BLOB_TRIGGERS
@@ -259,11 +223,11 @@ CREATE TABLE QRTZ_BLOB_TRIGGERS
     CONSTRAINT QRTZ_BLOB_TRIG_TO_TRIG_FK FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
         REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_BLOB_TRIGGERS for QRTZ_BLOB_TRIGGERS;
-grant select, insert, update, delete on QRTZ_BLOB_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_BLOB_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_BLOB_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_BLOB_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_CALENDARS
@@ -275,11 +239,11 @@ CREATE TABLE QRTZ_CALENDARS
     CALENDAR BLOB NOT NULL,
     CONSTRAINT QRTZ_CALENDARS_PK PRIMARY KEY (SCHED_NAME,CALENDAR_NAME)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_CALENDARS for QRTZ_CALENDARS;
-grant select, insert, update, delete on QRTZ_CALENDARS to R_SIRH_JOBS_USR;
-grant select on QRTZ_CALENDARS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_CALENDARS to R_QRTZ_USR;
+grant select on QRTZ_CALENDARS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_PAUSED_TRIGGER_GRPS
@@ -290,11 +254,11 @@ CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS
     TRIGGER_GROUP  VARCHAR2(200) NOT NULL, 
     CONSTRAINT QRTZ_PAUSED_TRIG_GRPS_PK PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_PAUSED_TRIGGER_GRPS for QRTZ_PAUSED_TRIGGER_GRPS;
-grant select, insert, update, delete on QRTZ_PAUSED_TRIGGER_GRPS to R_SIRH_JOBS_USR;
-grant select on QRTZ_PAUSED_TRIGGER_GRPS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_PAUSED_TRIGGER_GRPS to R_QRTZ_USR;
+grant select on QRTZ_PAUSED_TRIGGER_GRPS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_FIRED_TRIGGERS
@@ -315,11 +279,11 @@ CREATE TABLE QRTZ_FIRED_TRIGGERS
     REQUESTS_RECOVERY VARCHAR2(1) NULL,
     CONSTRAINT QRTZ_FIRED_TRIGGER_PK PRIMARY KEY (SCHED_NAME,ENTRY_ID)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_FIRED_TRIGGERS for QRTZ_FIRED_TRIGGERS;
-grant select, insert, update, delete on QRTZ_FIRED_TRIGGERS to R_SIRH_JOBS_USR;
-grant select on QRTZ_FIRED_TRIGGERS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_FIRED_TRIGGERS to R_QRTZ_USR;
+grant select on QRTZ_FIRED_TRIGGERS to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_SCHEDULER_STATE
@@ -332,11 +296,11 @@ CREATE TABLE QRTZ_SCHEDULER_STATE
     CHECKIN_INTERVAL NUMBER(13) NOT NULL,
     CONSTRAINT QRTZ_SCHEDULER_STATE_PK PRIMARY KEY (SCHED_NAME,INSTANCE_NAME)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_SCHEDULER_STATE for QRTZ_SCHEDULER_STATE;
-grant select, insert, update, delete on QRTZ_SCHEDULER_STATE to R_SIRH_JOBS_USR;
-grant select on QRTZ_SCHEDULER_STATE to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_SCHEDULER_STATE to R_QRTZ_USR;
+grant select on QRTZ_SCHEDULER_STATE to R_QRTZ_READ;
 
 --==============================================================
 -- Table: QRTZ_LOCKS
@@ -347,40 +311,40 @@ CREATE TABLE QRTZ_LOCKS
     LOCK_NAME  VARCHAR2(40) NOT NULL, 
     CONSTRAINT QRTZ_LOCKS_PK PRIMARY KEY (SCHED_NAME,LOCK_NAME)
 )
-TABLESPACE TS_SIRH_JOBS_DATA;
+TABLESPACE TS_QRTZ_DATA;
 
 create public synonym QRTZ_LOCKS for QRTZ_LOCKS;
-grant select, insert, update, delete on QRTZ_LOCKS to R_SIRH_JOBS_USR;
-grant select on QRTZ_LOCKS to R_SIRH_JOBS_READ;
+grant select, insert, update, delete on QRTZ_LOCKS to R_QRTZ_USR;
+grant select on QRTZ_LOCKS to R_QRTZ_READ;
 
 
 
 
-create index idx_qrtz_j_req_recovery on QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_j_grp on QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
+create index idx_qrtz_j_req_recovery on QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_j_grp on QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_QRTZ_INDEX;
 
-create index idx_qrtz_t_j on QRTZ_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_jg on QRTZ_TRIGGERS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_c on QRTZ_TRIGGERS(SCHED_NAME,CALENDAR_NAME) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_g on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_n_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_n_g_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_next_fire_time on QRTZ_TRIGGERS(SCHED_NAME,NEXT_FIRE_TIME) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_nft_st on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_nft_misfire on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_nft_st_misfire on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_t_nft_st_misfire_grp on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_SIRH_JOBS_INDEX;
+create index idx_qrtz_t_j on QRTZ_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_jg on QRTZ_TRIGGERS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_c on QRTZ_TRIGGERS(SCHED_NAME,CALENDAR_NAME) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_g on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_n_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_n_g_state on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_next_fire_time on QRTZ_TRIGGERS(SCHED_NAME,NEXT_FIRE_TIME) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_nft_st on QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_nft_misfire on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_nft_st_misfire on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_t_nft_st_misfire_grp on QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE) TABLESPACE TS_QRTZ_INDEX;
 
-create index idx_qrtz_ft_trig_inst_name on QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_ft_inst_job_req_rcvry on QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_ft_j_g on QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_ft_jg on QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_ft_t_g on QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
-create index idx_qrtz_ft_tg on QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_GROUP) TABLESPACE TS_SIRH_JOBS_INDEX;
+create index idx_qrtz_ft_trig_inst_name on QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_ft_inst_job_req_rcvry on QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_ft_j_g on QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_ft_jg on QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_ft_t_g on QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) TABLESPACE TS_QRTZ_INDEX;
+create index idx_qrtz_ft_tg on QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_GROUP) TABLESPACE TS_QRTZ_INDEX;
 
 ----------------------------------------------------------------
--- Connecte en SIRH_JOBS_ADM
+-- Connecte en QRTZ_USR
 ----------------------------------------------------------------
 select * from QRTZ_TRIGGERS;
 select * from QRTZ_SIMPLE_TRIGGERS;

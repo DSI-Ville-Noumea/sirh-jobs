@@ -1,12 +1,12 @@
 ﻿ -----
- SIRH-EAE WS
+ SIRH-JOBS
  -----
  Nicolas RAYNAUD
  -----
-  02/10/2012
+ 12/12/2012
 
-SIRH EAE WebServices
+SIRH JOBS Web Application
 
- SIRH EAE WS représente l'ensemble des webservices relatifs à la gestion des EAE.
- Ces WS sont accédés depuis le portail Kiosque et repose sur la base de données des EAE ainsi que la base de données SIRH.
+ SIRH JOBS représente l'ensemble des jobs relatifs à l'application SIRH.
+ Ces jobs ont pour but d'envoyer des notifications ou d'effectuer des travaux journaliers pour l'application SIRH.
  

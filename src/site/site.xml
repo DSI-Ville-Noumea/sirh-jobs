@@ -27,7 +27,7 @@
 		
 		<menu name="Exploitation">
         	<item name="Releases" href="exploitation/releases.html"/>
-        	<item name="Datasource dans Tomcat" href="exploitation/datasourceTomcat.html"/>
+        	<item name="Configuration Tomcat" href="exploitation/configurationTomcat.html"/>
         	<item name="Fichier context.xml" href="exploitation/context.html"/>
 			<item name="Base de données" href="exploitation/baseDeDonnees.html"/>
         </menu>

@@ -12,7 +12,7 @@
 	<context:component-scan base-package="nc.noumea.mairie" />
 
 	<!-- Datasources -->
-	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/EAE_WS_DS1" resource-ref="true" />
+	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/SIRH_JOBS_DS3" resource-ref="true" />
 
 	<bean
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
@@ -28,7 +28,7 @@
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 	<tx:annotation-driven mode="aspectj" transaction-manager="eaeTransactionManager" />
 	
-	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2" resource-ref="true" />
+	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH_JOBS_DS2" resource-ref="true" />
 	<bean
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		id="sirhEntityManagerFactory">
@@ -69,6 +69,7 @@
 			<value>
 				resource.loader=class
 				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+				runtime.log.logsystem.class=org.apache.velocity.runtime.log.Log4JLogChute
 			</value>
 		</property>
 	</bean>

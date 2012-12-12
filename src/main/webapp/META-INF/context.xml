@@ -29,13 +29,13 @@
 		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@DVLP:1521:ORADEV"
 		poolPreparedStatements="true" />
 
-	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource"
+	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
 		maxWait="10000" initialSize="1" username="EAE" password="EAE"
 		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@DVLP:1521:ORADEV"
 		poolPreparedStatements="true" />
 		
-	<Resource name="jdbc/EAE_WS_DS2" auth="Container" type="javax.sql.DataSource"
+	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		validationQuery="select 1 from sysibm.sysdummy1" validationInterval="30000"
@@ -59,7 +59,8 @@
                />
 
 	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives" type="java.lang.Integer"
-		description="Maximum number of tentatives of retry on errors before giving up sending notifications" value="3"
+		description="Maximum number of tentatives of retry on errors before giving up sending notifications" 
+		value="3"
 		override="false" />
 		
 	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
