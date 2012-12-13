@@ -7,7 +7,7 @@
 	</head>
 	<body style="font-family:Calibri">
 		<h3>SIRH-EAE Mail de notification</h3>
-		<p><strong>Rappel</strong>: La t&acirc;che '<strong>${eaeCampagneAction.nomAction}</strong>' est a effectuer pour le <strong>${dateAFaire}</strong> oops $DateTool.format('dd MMM yyyy', $dateAFaire)</p>
+		<p><strong>Rappel</strong>: La t&acirc;che '<strong>${eaeCampagneAction.nomAction}</strong>' est a effectuer pour le <strong>${eaeCampagneAction.getFormattedDateAfaire()}</strong></p>
 		<p><strong>Message</strong>: <i>${eaeCampagneAction.message}</i></p>
 		<br/>
 		<div>

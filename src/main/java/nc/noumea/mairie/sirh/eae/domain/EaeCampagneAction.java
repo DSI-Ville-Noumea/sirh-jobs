@@ -1,7 +1,9 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -18,6 +20,7 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "EAE_CAMPAGNE_ACTION")
@@ -76,6 +79,12 @@ public class EaeCampagneAction {
 	@Column(name = "ID_AGENT_REALISATION")
 	private Integer idAgent;
 
+	@Transient
+	public String getFormattedDateAfaire() {
+		SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", new Locale("fr"));
+		return df.format(getDateAfaire());
+	}
+	
 	public Integer getIdCampagneAction() {
 		return idCampagneAction;
 	}

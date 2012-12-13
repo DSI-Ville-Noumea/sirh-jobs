@@ -1,6 +1,5 @@
 package nc.noumea.mairie.sirh.job;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -174,8 +173,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	            message.setText(text, true);
 	            
 	            // Set the subject
-	            SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy");
-	            message.setSubject(String.format("SIRH-EAE: Tâche à faire pour le %s", myFormat.format(eaeCampagneAction.getDateAfaire())));
+	            message.setSubject(String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(), eaeCampagneAction.getFormattedDateAfaire()));
 	            
 	            // Set the attached documents
 	            for (EaeDocument doc : eaeCampagneAction.getEaeDocuments()) {
