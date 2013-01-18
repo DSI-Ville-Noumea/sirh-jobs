@@ -35,7 +35,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
@@ -68,7 +67,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	@Autowired
 	@Qualifier("baseSirhDocumentsUrl")
 	private String baseSirhDocumentsUrl;
-	
+		
 	private static FileSystemManager fsManager;
 	
 	public EaeCampagneActionNotificationsJob() throws FileSystemException {
@@ -124,8 +123,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		logger.info("Finished sending today's notifications...");
 	}
 	
-	@Transactional(value = "eaeTransactionManager")
-	public void sendNotification(EaeCampagneAction eaeCampagneAction, Date theDate) throws Exception {
+	public void sendNotification(final EaeCampagneAction eaeCampagneAction, final Date theDate) throws Exception {
 		
 		logger.debug("Sending notification for action id #{} : {} due on {}", new Object[] { eaeCampagneAction.getIdCampagneAction(), eaeCampagneAction.getNomAction(), eaeCampagneAction.getDateAfaire()});
 		
@@ -144,7 +142,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		sendEmail(agentTo, agentsCc, eaeCampagneAction, theDate);
 		
 		// Set the action as notified in the database
-		//TODO: Switch to using JPA entitymanager instead of manually writing the update query using plain SQL
+		// Settings this before actually sending the email is ok because we're in a transaction and anything failing later on
+		// will result in a rollback action thus rewinding this write action
 		eaeCampagneActionDao.setDateMailEnvoye(eaeCampagneAction, theDate);
 	}
 	

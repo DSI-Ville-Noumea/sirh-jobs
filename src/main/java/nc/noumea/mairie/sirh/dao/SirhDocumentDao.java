@@ -1,21 +1,22 @@
 package nc.noumea.mairie.sirh.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import nc.noumea.mairie.sirh.domain.DocumentAssocie;
 
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class SirhDocumentDao implements ISirhDocumentDao {
 
-	@PersistenceContext(unitName = "sirhPersistenceUnit")
-	private EntityManager sirhEntityManager;
+	@Autowired
+	@Qualifier("sirhSessionFactory")
+	private SessionFactory sirhSessionFactory;
 	
 	@Override
 	public DocumentAssocie getDocumentAssocie(int id) {
-		return sirhEntityManager.find(DocumentAssocie.class, id);
+		return (DocumentAssocie) sirhSessionFactory.getCurrentSession().get(DocumentAssocie.class, id);
 	}
 
 }

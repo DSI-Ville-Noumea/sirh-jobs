@@ -7,7 +7,6 @@ create role R_QRTZ_USR;
 create role R_QRTZ_READ;
 
 grant connect, create session, create table, create sequence, create public synonym to R_QRTZ_ADM;
-grant unlimited tablespace to R_QRTZ_ADM;
 grant connect, create session to R_QRTZ_USR;
 grant connect, create session to R_QRTZ_READ;
 
@@ -15,6 +14,7 @@ create user QRTZ_ADM identified by PASSWORD_SECRET_SIE;
 create user QRTZ_USR identified by PASSWORD_SECRET_SIE_2;
 create user QRTZ_READ identified by PASSWORD_DONNER_AU_SED;
 
+grant unlimited tablespace to QRTZ_ADM;
 grant R_QRTZ_ADM to QRTZ_ADM;
 grant R_QRTZ_USR to QRTZ_USR;
 grant R_QRTZ_READ to QRTZ_READ;
@@ -64,7 +64,7 @@ FLASHBACK OFF;
 -- le plus petit possible, pas d'extend, bloque
 CREATE TABLESPACE TS_QRTZ_DEFAULT DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
-SIZE 10M AUTOEXTEND OFF MAXSIZE 2000M
+SIZE 10M AUTOEXTEND OFF
 LOGGING
 ONLINE
 PERMANENT

@@ -10,9 +10,7 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
+//@Repository
 public class EaeCampagneActionDao implements IEaeCampagneActionDao {
 
 	@PersistenceContext(unitName = "eaePersistenceUnit")
@@ -48,8 +46,9 @@ public class EaeCampagneActionDao implements IEaeCampagneActionDao {
 	}
 	
 	@Override
-	public int setDateMailEnvoye(EaeCampagneAction eaeCampagneAction, Date dateMailEnvoye) throws DaoException {
-
+	public int setDateMailEnvoye(final EaeCampagneAction eaeCampagneAction, final Date dateMailEnvoye) throws DaoException {
+		
+		
 		Query q = eaeEntityManager.createNativeQuery("UPDATE EAE_CAMPAGNE_ACTION SET DATE_MAIL_ENVOYE = :date WHERE ID_CAMPAGNE_ACTION = :id");
 		q.setParameter("date", dateMailEnvoye);
 		q.setParameter("id", eaeCampagneAction.getIdCampagneAction());
