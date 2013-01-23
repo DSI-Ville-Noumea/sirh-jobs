@@ -29,7 +29,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.hbm2ddl.auto">validate</prop>
 				<prop key="hibernate.current_session_context_class">thread</prop>
 			</props>
@@ -68,9 +68,13 @@
 		resource-ref="true" />
 	<jee:jndi-lookup id="adUserPassword" jndi-name="ad/userPassword"
 		resource-ref="true" />
+	<jee:jndi-lookup id="baseDn" jndi-name="ad/baseDn"
+		resource-ref="true" />
+	<jee:jndi-lookup id="userOu" jndi-name="ad/userOu"
+		resource-ref="true" />
 	<bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
 		<property name="url" ref="adUrl" />
-		<property name="base" value="dc=site-mairie,dc=noumea,dc=nc" />
+		<property name="base" ref="baseDn" />
 		<property name="userDn" ref="adUserBase" />
 		<property name="password" ref="adUserPassword" />
 	</bean>

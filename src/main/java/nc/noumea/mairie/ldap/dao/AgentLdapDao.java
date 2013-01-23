@@ -10,16 +10,22 @@ import nc.noumea.mairie.ldap.domain.AgentLdap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.stereotype.Repository;
 
-//@Repository
+@Repository
 public class AgentLdapDao implements IAgentLdapDao {
 
 	private Logger logger = LoggerFactory.getLogger(AgentLdapDao.class);
 	
 	@Autowired
 	private LdapTemplate ldapTemplate;
+	
+	@Autowired
+	@Qualifier("userOu")
+	private String userOu;
 	
 	public AgentLdapDao() {
 		
@@ -42,10 +48,14 @@ public class AgentLdapDao implements IAgentLdapDao {
 		
 		logger.info("Looking for agent employeeId '{}' in AD...", agentId);
 		
+		// "OU=Z-Users"
+		String ouSearchString = String.format("OU=%s", userOu);
+		String employeeNumbersearchString = String.format("(employeeNumber=%s)", agentId);
+		
 		@SuppressWarnings("unchecked")
 		List<AgentLdap> agents = ldapTemplate.search(
-							       "OU=Z-Users", "(employeeNumber=905138)",
-							       new AgentLdapAttributesMapper());
+				ouSearchString, employeeNumbersearchString,
+				new AgentLdapAttributesMapper());
 
 		if (agents.size() != 1)
 			throw new AgentLdapDaoException(

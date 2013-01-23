@@ -57,7 +57,7 @@
 
 	<Resource name="mail/MailServer" auth="Container"
                type="javax.mail.Session"
-               mail.debug="true"
+               mail.debug="false"
                mail.user="SIRH EAEs"
                mail.from="noreply@ville-noumea.nc"
                mail.transport.protocol="smtp"
@@ -91,6 +91,16 @@
 	<Environment name="ad/userPassword" type="java.lang.String"
 		description="Password for the above defined ldap user" 
 		value="planet"
+		override="false" />
+		
+	<Environment name="ad/baseDn" type="java.lang.String"
+		description="base directory for querying ldap" 
+		value="dc=site-mairie,dc=noumea,dc=nc"
+		override="false" />
+		
+	<Environment name="ad/userOu" type="java.lang.String"
+		description="user directory (OU) for querying with matricule number" 
+		value="z-users"
 		override="false" />
 	
 </Context>
