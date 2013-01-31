@@ -22,8 +22,8 @@
 			<list>
 				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</value>
 				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeur</value>
-		        <value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</value>
-		        <value>nc.noumea.mairie.sirh.eae.domain.EaeDocument</value>
+				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</value>
+				<value>nc.noumea.mairie.sirh.eae.domain.EaeDocument</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -38,7 +38,7 @@
 
 	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH_JOBS_DS2"
 		resource-ref="true" />
-	
+
 	<bean id="sirhSessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="sirhDb400DataSource" />
@@ -55,14 +55,18 @@
 				<prop key="hibernate.hbm2ddl.auto">validate</prop>
 				<prop key="hibernate.current_session_context_class">thread</prop>
 				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
-           		<prop key="hibernate.connection.charSet">UTF-8</prop>
-            	<prop key="hibernate.FlushMode">manual</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.FlushMode">manual</prop>
 			</props>
 		</property>
 	</bean>
 
 	<!-- Spring ldap -->
 	<jee:jndi-lookup id="adUrl" jndi-name="ad/connectionURL"
+		resource-ref="true" />
+	<jee:jndi-lookup id="adUrl2" jndi-name="ad/connectionURL2"
+		resource-ref="true" />
+	<jee:jndi-lookup id="adUrl3" jndi-name="ad/connectionURL3"
 		resource-ref="true" />
 	<jee:jndi-lookup id="adUserBase" jndi-name="ad/userBase"
 		resource-ref="true" />
@@ -73,7 +77,13 @@
 	<jee:jndi-lookup id="userOu" jndi-name="ad/userOu"
 		resource-ref="true" />
 	<bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-		<property name="url" ref="adUrl" />
+		<property name="urls">
+			<list>
+				<ref bean="adUrl" />
+				<ref bean="adUrl2" />
+				<ref bean="adUrl3" />
+			</list>
+		</property>
 		<property name="base" ref="baseDn" />
 		<property name="userDn" ref="adUserBase" />
 		<property name="password" ref="adUserPassword" />

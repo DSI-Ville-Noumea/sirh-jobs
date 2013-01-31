@@ -152,7 +152,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 	        @SuppressWarnings({ "rawtypes", "unchecked" })
 			public void prepare(MimeMessage mimeMessage) throws Exception {
-	            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true);
+	            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 	            
 	            // Set the To
 	            message.setTo(agentLdap.getMail());
