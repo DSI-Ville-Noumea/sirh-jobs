@@ -75,7 +75,7 @@
 		
 	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
 		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored" 
-		value="file:////C:/Alphalog/Mairie/"
+		value="file:///home/nicolas/docs_sirh/"
 		override="false" />
 		
 	<Environment name="ad/connectionURL" type="java.lang.String"
