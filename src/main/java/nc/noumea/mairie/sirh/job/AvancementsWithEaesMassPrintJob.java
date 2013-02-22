@@ -18,8 +18,9 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		IAvancementsWithEaesMassPrintJob {
 
@@ -56,8 +57,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	private int cupsServerPort;
 	
 	@Autowired
-	@Qualifier("cupsPrinterName")
-	private String cupsPrinterName;
+	@Qualifier("cupsSirhPrinterName")
+	private String cupsSirhPrinterName;
 	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
@@ -67,7 +68,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		
 		try {
 			job = getNextPrintJob();
-			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsPrinterName, "SIRH - Impression des documents de commissions d'avancements");
+			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsSirhPrinterName, "SIRH - Impression des documents de commissions d'avancements");
 			initializePrintJob(job);
 			generateAvancementsReport(job);
 			downloadRelatedEaes(job);

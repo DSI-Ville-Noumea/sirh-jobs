@@ -112,7 +112,7 @@
 		</property>
 	</bean>
 
-	<!-- Job properties -->
+	<!-- EaeCampagneActionNotificationsJob parameters -->
 	<jee:jndi-lookup id="numberOfTries"
 		jndi-name="eaeCampagneActionNotificationsJob.numberOfTentatives"
 		expected-type="java.lang.Integer" />
@@ -120,6 +120,26 @@
 		jndi-name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
 		expected-type="java.lang.String" />
 
+	<!-- Reporting service parameters -->
+	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_REPORT_PATH"
+		 expected-type="java.lang.String" />
+	
+	<!-- AvancementsWithEaesMassPrintJob parameters -->
+	<jee:jndi-lookup id="avcstTempWorkspacePath" jndi-name="AVCT_JOB_TEMP_DIR"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="sharepointEaeDocBaseUrl" jndi-name="GED_EAES_BASE_URL"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="sirhWsEndpointUrl" jndi-name="SIRH_WS_BASE_URL"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="cupsServerHostName" jndi-name="CUPS_SERVER_HOSTNAME"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="cupsServerPort" jndi-name="CUPS_SERVER_PORT"
+		 expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="CUPS_SIRH_PRINTER_NAME"
+		 expected-type="java.lang.String" />
+		 
 	<!-- <bean name="eaeCampagneActionNotificationsJob" class="nc.noumea.mairie.sirh.job.EaeCampagneActionNotificationsJob"/> -->
 
 	<!-- <bean name="eaeCampagneActionNotificationsJob" class="org.quartz.impl.JobDetailImpl"> -->

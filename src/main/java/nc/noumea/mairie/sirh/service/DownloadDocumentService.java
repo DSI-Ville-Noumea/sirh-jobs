@@ -11,6 +11,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -18,6 +19,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
 
+@Service
 public class DownloadDocumentService implements IDownloadDocumentService {
 	
 	public void downloadDocumentToLocalPath(String url, Map<String, String> urlParameters, String localPath) throws Exception {
