@@ -30,6 +30,7 @@
         	<item name="Configuration Tomcat" href="exploitation/configurationTomcat.html"/>
         	<item name="Fichier context.xml" href="exploitation/context.html"/>
 			<item name="Base de données" href="exploitation/baseDeDonnees.html"/>
+			<item name="Configuration env. de dev" href="exploitation/devenv.html"/>
         </menu>
         <menu ref="reports"/>
     </body>

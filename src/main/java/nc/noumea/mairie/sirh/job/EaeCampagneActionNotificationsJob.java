@@ -168,7 +168,7 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	            Map model = new HashMap();
 	            model.put("eaeCampagneAction", eaeCampagneAction);
 	            String text = VelocityEngineUtils.mergeTemplateIntoString(
-	               velocityEngine, "templates/sirhNotificationTemplate.vm", model);
+	               velocityEngine, "templates/sirhNotificationTemplate.vm", "UTF-8", model);
 	            message.setText(text, true);
 	            
 	            // Set the subject

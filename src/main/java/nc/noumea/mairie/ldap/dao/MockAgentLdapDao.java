@@ -2,7 +2,9 @@ package nc.noumea.mairie.ldap.dao;
 
 import nc.noumea.mairie.ldap.domain.AgentLdap;
 
-//@Repository
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class MockAgentLdapDao implements IAgentLdapDao {
 
 	@Override
