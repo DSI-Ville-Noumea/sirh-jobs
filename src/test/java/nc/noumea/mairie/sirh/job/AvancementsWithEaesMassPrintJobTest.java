@@ -16,6 +16,8 @@ import nc.noumea.mairie.sirh.service.PrinterHelper;
 import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
 
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,19 +110,31 @@ public class AvancementsWithEaesMassPrintJobTest {
 		
 		IDownloadDocumentService downloadDocumentServiceMock = Mockito.mock(IDownloadDocumentService.class);
 		Mockito.when(downloadDocumentServiceMock.downloadJsonDocumentAs(String.class, sirhWsEndpointUrl, sirhUrlParameters)).thenReturn(Arrays.asList("eae1", "eae2"));
+
+		FileObject foMock1 = Mockito.mock(FileObject.class);
+		FileObject fiMock1 = Mockito.mock(FileObject.class);
+		FileObject foMock2 = Mockito.mock(FileObject.class);
+		FileObject fiMock2 = Mockito.mock(FileObject.class);
+		
+		FileSystemManager fsmMock = Mockito.mock(FileSystemManager.class);
+		Mockito.when(fsmMock.resolveFile("/home/sirh/docs/20130222-090607_9005138_11_87_000_eae1.pdf")).thenReturn(foMock1);
+		Mockito.when(fsmMock.resolveFile("http://sharepointEaeDocBaseUrl/eae1")).thenReturn(fiMock1);
+		Mockito.when(fsmMock.resolveFile("/home/sirh/docs/20130222-090607_9005138_11_87_001_eae2.pdf")).thenReturn(foMock2);
+		Mockito.when(fsmMock.resolveFile("http://sharepointEaeDocBaseUrl/eae2")).thenReturn(fiMock2);
 		
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
 		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", avcstTempWorkspacePath);
 		ReflectionTestUtils.setField(job, "sharepointEaeDocBaseUrl", sharepointEaeDocBaseUrl);
-		ReflectionTestUtils.setField(job, "sirhWsEndpointUrl", sirhWsEndpointUrl);
+		ReflectionTestUtils.setField(job, "sirhWsAvctEaesEndpointUrl", sirhWsEndpointUrl);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", downloadDocumentServiceMock);
+		ReflectionTestUtils.setField(job, "vfsManager", fsmMock);
 
 		String expectedsharepointEaeDocBaseUrl = "http://sharepointEaeDocBaseUrl/";
 		Map<String, String> param1 = new HashMap<String, String>();
-		param1.put("eaeId", "eae1");
+		param1.put("ID", "eae1");
 		Map<String, String> param2 = new HashMap<String, String>();
-		param2.put("eaeId", "eae2");
+		param2.put("ID", "eae2");
 		String expectedOutputFileName1 = "/home/sirh/docs/20130222-090607_9005138_11_87_000_eae1.pdf";
 		String expectedOutputFileName2 = "/home/sirh/docs/20130222-090607_9005138_11_87_001_eae2.pdf";
 				
@@ -134,8 +148,8 @@ public class AvancementsWithEaesMassPrintJobTest {
 		assertEquals(expectedOutputFileName2, pj.getFilesToPrint().get(1));
 		
 		Mockito.verify(daoMock, Mockito.times(1)).updateStatus(pj);
-		Mockito.verify(downloadDocumentServiceMock, Mockito.times(1)).downloadDocumentToLocalPath(expectedsharepointEaeDocBaseUrl, param1, expectedOutputFileName1);
-		Mockito.verify(downloadDocumentServiceMock, Mockito.times(1)).downloadDocumentToLocalPath(expectedsharepointEaeDocBaseUrl, param2, expectedOutputFileName2);
+		Mockito.verify(foMock1, Mockito.times(1)).copyFrom(fiMock1, null);
+		Mockito.verify(foMock2, Mockito.times(1)).copyFrom(fiMock2, null);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.job;
 
 import nc.noumea.mairie.sirh.domain.PrintJob;
 import nc.noumea.mairie.sirh.service.PrinterHelper;
+import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 
 public interface IAvancementsWithEaesMassPrintJob {
 
@@ -42,11 +43,12 @@ public interface IAvancementsWithEaesMassPrintJob {
 	 * Erases all the downloaded and created documents from the working directory
 	 * - Update status in PrintJobTable
 	 */
-	public void wipeJobDocuments(PrintJob job);
+	public void wipeJobDocuments(PrintJob job) throws Exception;
 	
 	/**
 	 * Update a job's status
+	 * @param job
 	 * @param status
 	 */
-	public void updateStatus(PrintJob job, String status);
+	public void updateStatus(PrintJob job, AvancementsWithEaesMassPrintJobStatusEnum status);
 }

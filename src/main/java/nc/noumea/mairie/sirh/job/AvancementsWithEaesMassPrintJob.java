@@ -13,6 +13,10 @@ import nc.noumea.mairie.sirh.service.PrinterHelper;
 import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
 
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +49,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	private String sharepointEaeDocBaseUrl;
 	
 	@Autowired
-	@Qualifier("sirhWsEndpointUrl")
-	private String sirhWsEndpointUrl;
+	@Qualifier("sirhWsAvctEaesEndpointUrl")
+	private String sirhWsAvctEaesEndpointUrl;
 	
 	@Autowired
 	@Qualifier("cupsServerHostName")
@@ -59,6 +63,16 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	@Autowired
 	@Qualifier("cupsSirhPrinterName")
 	private String cupsSirhPrinterName;
+	
+	private FileSystemManager vfsManager;
+	
+	public FileSystemManager getVfsManager() throws FileSystemException {
+		
+		if (vfsManager == null)
+			vfsManager = VFS.getManager();
+		
+		return vfsManager;
+	}
 	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
@@ -105,8 +119,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void generateAvancementsReport(PrintJob job) throws Exception {
 		
 		// Update status
-		job.setStatus(AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT.toString());
-		printJobDao.updateStatus(job);
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT);
 
 		// TODO Download front and back page and add it to the list of prints
 		
@@ -120,24 +133,20 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void downloadRelatedEaes(PrintJob job) throws Exception {
 		
 		// Update status
-		job.setStatus(AvancementsWithEaesMassPrintJobStatusEnum.EAE_DOWNLOAD.toString());
-		printJobDao.updateStatus(job);
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.EAE_DOWNLOAD);
 		
 		// Get the list of EAEs documents to download from sharepoint
 		Map<String, String> sirhParams = new HashMap<String, String>();
 		sirhParams.put("idCap", String.valueOf(job.getIdCap()));
 		sirhParams.put("idCadreEmploi", String.valueOf(job.getIdCadreEmploi()));
-		List<String> eaesToDownload = downloadDocumentService.downloadJsonDocumentAs(String.class, sirhWsEndpointUrl, sirhParams);
+		List<String> eaesToDownload = downloadDocumentService.downloadJsonDocumentAs(String.class, sirhWsAvctEaesEndpointUrl, sirhParams);
 
 		Integer i = job.getFilesToPrint().size();
 		
 		// For each document, download it to local temp path
 		for(String eaeId : eaesToDownload) {
-			String eaeLocalFilePath = String.format("%s%s_%03d_%s.pdf", avcstTempWorkspacePath, job.getJobId(), i++ ,eaeId);
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("eaeId", eaeId);
-			downloadDocumentService.downloadDocumentToLocalPath(sharepointEaeDocBaseUrl, params, eaeLocalFilePath);
-			job.getFilesToPrint().add(eaeLocalFilePath);
+			String locaFilePath = copyEaeToLocalPathAndPrint(job, eaeId, i++);
+			job.getFilesToPrint().add(locaFilePath);
 		}
 	}
 
@@ -145,14 +154,30 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void printAllDocuments(PrintJob job, PrinterHelper pH) throws Exception {
 
 		// Update status
-		job.setStatus(AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT.toString());
-		printJobDao.updateStatus(job);
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT);
 		
 		 // Send each file to the printer
 		for(String filePath : job.getFilesToPrint()) {
 			Map<String, String> properties = createPrintProperties(job, filePath);
 			pH.printDocument(filePath, properties);
 		}
+	}
+
+	@Override
+	public void wipeJobDocuments(PrintJob job) throws Exception {
+		
+		FileSystemManager fsManager = getVfsManager();
+		
+		for(String file : job.getFilesToPrint()) {
+			fsManager.resolveFile(file).delete();
+		}
+		
+	}
+
+	@Override
+	public void updateStatus(PrintJob job, AvancementsWithEaesMassPrintJobStatusEnum status) {
+		job.setStatus(status.toString());
+		printJobDao.updateStatus(job);
 	}
 
 	private Map<String, String> createPrintProperties(PrintJob job, String filePath) {
@@ -169,16 +194,20 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
         return attributes;
 	}
 
-	@Override
-	public void wipeJobDocuments(PrintJob job) {
-		// TODO Auto-generated method stub
+	private String copyEaeToLocalPathAndPrint(PrintJob job, String eaeId, int sequenceNumber) throws Exception {
 		
-	}
-
-	@Override
-	public void updateStatus(PrintJob job, String status) {
-		// TODO Auto-generated method stub
+		String eaeRemoteFileUrl = sharepointEaeDocBaseUrl.concat(eaeId);
+		String eaeLocalFilePath = String.format("%s%s_%03d_%s.pdf", avcstTempWorkspacePath, job.getJobId(), sequenceNumber ,eaeId);
 		
+		try {
+			FileSystemManager fsManager = getVfsManager();
+			FileObject fsource = fsManager.resolveFile(eaeRemoteFileUrl);
+			FileObject ftarget = fsManager.resolveFile(eaeLocalFilePath);
+			ftarget.copyFrom(fsource, null);
+		} catch (FileSystemException e) {
+			throw new Exception(String.format("An error occured when trying to copy EAE document [%s] url [%s] to local path [%s]", eaeId, eaeRemoteFileUrl, eaeLocalFilePath), e);
+		}
+		
+		return eaeLocalFilePath;
 	}
-
 }
