@@ -130,7 +130,6 @@ public class AvancementsWithEaesMassPrintJobTest {
 		ReflectionTestUtils.setField(job, "downloadDocumentService", downloadDocumentServiceMock);
 		ReflectionTestUtils.setField(job, "vfsManager", fsmMock);
 
-		String expectedsharepointEaeDocBaseUrl = "http://sharepointEaeDocBaseUrl/";
 		Map<String, String> param1 = new HashMap<String, String>();
 		param1.put("ID", "eae1");
 		Map<String, String> param2 = new HashMap<String, String>();
