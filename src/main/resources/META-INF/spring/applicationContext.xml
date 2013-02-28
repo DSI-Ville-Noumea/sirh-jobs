@@ -46,6 +46,7 @@
 			<list>
 				<value>nc.noumea.mairie.sirh.domain.Agent</value>
 				<value>nc.noumea.mairie.sirh.domain.DocumentAssocie</value>
+				<value>nc.noumea.mairie.sirh.domain.AvctCapPrintJob</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -137,8 +138,13 @@
 		 expected-type="java.lang.Integer" />
 	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="CUPS_SIRH_PRINTER_NAME"
 		 expected-type="java.lang.String" />
+		 
 	<!-- URL for EAE documents hosted on Sharepoint -->
 	<jee:jndi-lookup id="sharepointEaeDocBaseUrl" jndi-name="URL_SHAREPOINT_GED"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="gedWebdavUser" jndi-name="GED_WEBDAV_USER"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="GED_WEBDAV_PWD"
 		 expected-type="java.lang.String" />
 		 
 	<!-- <bean name="eaeCampagneActionNotificationsJob" class="nc.noumea.mairie.sirh.job.EaeCampagneActionNotificationsJob"/> -->

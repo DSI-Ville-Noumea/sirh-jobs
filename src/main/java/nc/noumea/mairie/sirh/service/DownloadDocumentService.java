@@ -22,10 +22,9 @@ import flexjson.JSONDeserializer;
 @Service
 public class DownloadDocumentService implements IDownloadDocumentService {
 
-	public void downloadDocumentToLocalPathUsingVfs(String url, String localPath, String user, String password) throws Exception {
+	public void downloadDocumentToLocalPathUsingVfs(String url, String localPath) throws Exception  {
 		FileSystemManager fsManager = VFS.getManager();
 		FileObject fsource = fsManager.resolveFile(url);
-		
 		FileObject ftarget = fsManager.resolveFile(localPath);
 		ftarget.copyFrom(fsource, null);
 	}
@@ -36,7 +35,13 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 		readResponseIntoFile(response, url, urlParameters, localPath);
 	}
 	
-	public <R> List<R> downloadJsonDocumentAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
+	public <R> R downloadDocumentAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
+		
+		ClientResponse response = createAndFireRequest(url, urlParameters);
+		return readResponseAs(resultClass, response, url, urlParameters);
+	}
+
+	public <R> List<R> downloadJsonDocumentAsList(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
 		
 		ClientResponse response = createAndFireRequest(url, urlParameters);
 		return readJsonResponseAsList(response, url, urlParameters);
@@ -48,8 +53,10 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 
 		WebResource webResource = client.resource(url);
 		
-		for(String key : urlParameters.keySet()) {
-			webResource = webResource.queryParam(key, urlParameters.get(key));
+		if (urlParameters != null) {
+			for(String key : urlParameters.keySet()) {
+				webResource = webResource.queryParam(key, urlParameters.get(key));
+			}
 		}
 		
 		ClientResponse response = webResource.get(ClientResponse.class);
@@ -116,12 +123,14 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 		}
 	}
 	
-	private String getListOfParamsFromMap(Map<String, String> reportParameters) {
+	private String getListOfParamsFromMap(Map<String, String> urlParameters) {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		for(String key : reportParameters.keySet()) {
-			sb.append(String.format("[%s: %s] ", key, reportParameters.get(key)));
+		if (urlParameters != null) {
+			for(String key : urlParameters.keySet()) {
+				sb.append(String.format("[%s: %s] ", key, urlParameters.get(key)));
+			}
 		}
 		
 		return sb.toString();

@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.dao.IPrintJobDao;
-import nc.noumea.mairie.sirh.domain.PrintJob;
+import nc.noumea.mairie.sirh.dao.IAvctCapPrintJobDao;
+import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.service.IReportingService;
 import nc.noumea.mairie.sirh.service.PrinterHelper;
@@ -40,12 +40,12 @@ public class AvancementsWithEaesMassPrintJobTest {
 	public void testinitializePrintJob_GenerateId() {
 		
 		// Given
-		PrintJob pj = new PrintJob();
+		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.setIdCap(11);
 		pj.setIdCadreEmploi(87);
-		pj.setAgentId("9005138");
+		pj.setAgentId(9005138);
 
-		IPrintJobDao daoMock = Mockito.mock(IPrintJobDao.class);
+		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
 		ReflectionTestUtils.setField(job, "helper", helperMock);
@@ -64,13 +64,13 @@ public class AvancementsWithEaesMassPrintJobTest {
 	public void testgenerateAvancementsReport_callReprortingServiceWithReportName() throws Exception {
 		
 		// Given
-		PrintJob pj = new PrintJob();
+		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.setIdCap(11);
 		pj.setIdCadreEmploi(87);
 		pj.setJobId("20130222-090607_9005138_11_87");
 		String avcstTempWorkspacePath = "/home/sirh/docs/";
 		
-		IPrintJobDao daoMock = Mockito.mock(IPrintJobDao.class);
+		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		IReportingService reportingServiceMock = Mockito.mock(IReportingService.class);
 		
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
@@ -96,20 +96,20 @@ public class AvancementsWithEaesMassPrintJobTest {
 	public void testdownloadRelatedEaes_2Eaes() throws Exception {
 		
 		// Given
-		PrintJob pj = new PrintJob();
+		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.setIdCap(11);
 		pj.setIdCadreEmploi(87);
 		pj.setJobId("20130222-090607_9005138_11_87");
 		String avcstTempWorkspacePath = "/home/sirh/docs/";
 		String sharepointEaeDocBaseUrl = "http://sharepointEaeDocBaseUrl/";
 		String sirhWsEndpointUrl = "http://sirhWsEndpointUrl/";
-		IPrintJobDao daoMock = Mockito.mock(IPrintJobDao.class);
+		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		Map<String, String> sirhUrlParameters = new HashMap<String, String>();
 		sirhUrlParameters.put("idCap", "11");
 		sirhUrlParameters.put("idCadreEmploi", "87");
 		
 		IDownloadDocumentService downloadDocumentServiceMock = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.when(downloadDocumentServiceMock.downloadJsonDocumentAs(String.class, sirhWsEndpointUrl, sirhUrlParameters)).thenReturn(Arrays.asList("eae1", "eae2"));
+		Mockito.when(downloadDocumentServiceMock.downloadJsonDocumentAsList(String.class, sirhWsEndpointUrl, sirhUrlParameters)).thenReturn(Arrays.asList("eae1", "eae2"));
 
 		FileObject foMock1 = Mockito.mock(FileObject.class);
 		FileObject fiMock1 = Mockito.mock(FileObject.class);
@@ -156,11 +156,11 @@ public class AvancementsWithEaesMassPrintJobTest {
 	public void testprintAllDocuments_sendAllDocumentsToPrinter() throws Exception {
 		
 		// Given
-		PrintJob pj = new PrintJob();
+		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.getFilesToPrint().add("doc1.pdf");
 		pj.getFilesToPrint().add("doc2.pdf");
 		
-		IPrintJobDao daoMock = Mockito.mock(IPrintJobDao.class);
+		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		PrinterHelper pHMock = Mockito.mock(PrinterHelper.class);
 		
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();

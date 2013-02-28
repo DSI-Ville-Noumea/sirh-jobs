@@ -21,18 +21,18 @@ public class PrinterHelper {
 	private CupsPrinter cupsPrinter;
 	private FileSystemManager fsManager;
 	
+	private FileSystemManager getFsManager() throws FileSystemException {
+		if (fsManager == null)
+			fsManager = VFS.getManager();
+		
+		return fsManager;
+	}
+	
 	public PrinterHelper(String host, int port, String printerName, String printJobName) throws Exception {
 		this.host= host;
 		this.port = port;
 		this.printerName = printerName;
 		this.printJobName = printJobName;
-		
-		try {
-			fsManager = VFS.getManager();
-		} catch (FileSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		initializeCupsPrinter();
 	}
@@ -56,7 +56,7 @@ public class PrinterHelper {
 
 	public void printDocument(String filePath, Map<String, String> properties) throws Exception {
 		
-		InputStream is = fsManager.resolveFile(filePath).getContent().getInputStream();
+		InputStream is = getFsManager().resolveFile(filePath).getContent().getInputStream();
         PrintJob pj = new PrintJob.Builder(is).build();
         pj.setAttributes(properties);
         PrintRequestResult res = cupsPrinter.print(pj);

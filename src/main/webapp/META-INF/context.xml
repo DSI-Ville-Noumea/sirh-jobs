@@ -119,10 +119,7 @@
 	
 	<!-- SIRH AVCT printing job -->
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/sirh/"
-		override="false" />
-	<Environment name="GED_EAES_BASE_URL" type="java.lang.String"
-		description="Sharepoint base URL to download EAEs as PDF documents" value="http://svq-sp/eaes/"
+		description="Temp directory for SIRH avancements printing job" value="C:/Alphalog/Mairie/temp/"
 		override="false" />
 	<Environment name="SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
@@ -134,9 +131,18 @@
 		description="CUPS printing server port" value="631"
 		override="false" />
 	<Environment name="CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
-		description="CUPS SIRH printer name" value="http://***REMOVED***:631/printers/COP120"
+		description="CUPS SIRH printer name" value="http://***REMOVED***:631/printers/Printer_SED"
 		override="false" />
 	<Environment name="URL_SHAREPOINT_GED" type="java.lang.String"
-		 description="URL GED Shareoint" value="http://username:password@svq-sp/kiosque-rh/_layouts/DocIdRedir.aspx?ID="
+		 description="URL GED Sharepoint" value="http://***REMOVED***:8085/sharepoint-mock/eaes?ID="
 		 override="false" />
+	<Environment name="GED_WEBDAV_USER" type="java.lang.String"
+		 description="GED Sharepoint app user" value="admin"
+		 override="false" />
+	<Environment name="GED_WEBDAV_PWD" type="java.lang.String"
+		 description="GED Sharepoint app pwd" value="admin"
+		 override="false" />
+	<!-- 	<Environment name="URL_SHAREPOINT_GED" type="java.lang.String" -->
+<!-- 		 description="URL GED Sharepoint" value="http://svpsp/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" -->
+<!-- 		 override="false" /> -->
 </Context>
