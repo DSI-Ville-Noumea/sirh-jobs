@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.job;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
@@ -70,6 +72,14 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	@Qualifier("cupsSirhPrinterName")
 	private String cupsSirhPrinterName;
 	
+	@Autowired
+	@Qualifier("gedWebdavUser")
+	private String gedWebdavUser;
+	
+	@Autowired
+	@Qualifier("gedWebdavPwd")
+	private String gedWebdavPwd;
+	
 	private FileSystemManager vfsManager;
 	
 	public FileSystemManager getVfsManager() throws FileSystemException {
@@ -95,7 +105,10 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsSirhPrinterName, "SIRH - Impression des documents de commissions d'avancements");
 			initializePrintJob(job);
 			generateAvancementsReport(job);
-			downloadRelatedEaes(job);
+			
+			if (job.isEaes())
+				downloadRelatedEaes(job);
+			
 			printAllDocuments(job, pH);
 			
 		} catch (Exception e) {
@@ -109,7 +122,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 					wipeJobDocuments(job);
 			}
 			catch (Exception e) {
-				// do nothing as this is just here for deleting temp docs
+				logger.error("An error occured during 'wipeJobDocuments'", e);
 			}
 		}
 	}
@@ -134,8 +147,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		SimpleDateFormat df = new SimpleDateFormat("yyyMMdd-HHmmss");
 		String jobId = String.format("%s_%s_%s_%s", df.format(helper.getCurrentDate()), job.getAgentId(), job.getIdCap(), job.getIdCadreEmploi());
 		job.setJobId(jobId);
-		job.setStatus(AvancementsWithEaesMassPrintJobStatusEnum.START.toString());
-		printJobDao.updateJobIdAndStatus(job);
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.START);
 		
 		logger.info("Generated Job Id: [{}]", job.getJobId());
 	}
@@ -146,11 +158,18 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		// Update status
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT);
 
-		// TODO Download front and back page and add it to the list of prints
 		try {
 			// download report and add it to the list of prints
 			String targetReportFilePath = String.format("%s%s_001_%s", avcstTempWorkspacePath, job.getJobId(), "avct_table_report.pdf");
 			reportingService.getTableauAvancementsReportAndSaveItToFile(job.getIdCap(), job.getIdCadreEmploi(), targetReportFilePath);
+			job.getFilesToPrint().add(targetReportFilePath);
+			
+			targetReportFilePath = String.format("%s%s_000_%s", avcstTempWorkspacePath, job.getJobId(), "firstPage.pdf");
+			reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(), job.getLibCadreEmploi(), job.getSubmissionDate(), true, job.isEaes(), targetReportFilePath);
+			job.getFilesToPrint().add(targetReportFilePath);
+			
+			targetReportFilePath = String.format("%s%s_999_%s", avcstTempWorkspacePath, job.getJobId(), "lastPage.pdf");
+			reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(), job.getLibCadreEmploi(), job.getSubmissionDate(), false, job.isEaes(), targetReportFilePath);
 			job.getFilesToPrint().add(targetReportFilePath);
 		} catch (Exception e) {
 			throw new AvancementsWithEaesMassPrintException(
@@ -178,7 +197,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			// For each document, download it to local temp path
 			for (String eaeId : eaesToDownload) {
 				logger.info("Downloading EAE document [{}] to local path...", eaeId);
-				String locaFilePath = copyEaeToLocalPathAndPrint(job, eaeId, i++);
+				String locaFilePath = copyEaeToLocalPath(job, eaeId, ++i);
 				job.getFilesToPrint().add(locaFilePath);
 			}
 
@@ -194,6 +213,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 
 		// Update status
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT);
+		
+		Collections.sort(job.getFilesToPrint());
 		
 		try {
 			// Send each file to the printer
@@ -215,10 +236,11 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		logger.info("Removing documents from temp path...", job.getJobId(), job.getStatus());
 		
 		try {
-			
+
 			FileSystemManager fsManager = getVfsManager();
-			for (String file : job.getFilesToPrint()) {
-				fsManager.resolveFile(file).delete();
+			fsManager.resolveFile(avcstTempWorkspacePath);
+			for (FileObject file : fsManager.resolveFile(avcstTempWorkspacePath).getChildren()) {
+				file.delete();
 			}
 			
 		} catch (Exception e) {
@@ -233,27 +255,26 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void updateStatus(AvctCapPrintJob job, AvancementsWithEaesMassPrintJobStatusEnum status) {
 
 		job.setStatus(status.toString());
-		
+		job.setStatusDate(helper.getCurrentDate());
 		logger.info("Changing Job Id [{}] to status [{}]...", job.getJobId(), job.getStatus());
 		
-		printJobDao.updateStatus(job);
+		printJobDao.updateAvctCapPrintJob(job);
 	}
 
 	private Map<String, String> createPrintProperties(AvctCapPrintJob job, String filePath) {
 
 		Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("", "job-name=SIRH");
-        attributes.put("job-attributes", String.format("job-name:%s", job.getJobId()));
-        attributes.put("job-attributes", "job-more-info:Impression d'une commission d'avancement");
-        attributes.put("job-attributes", String.format("job-originating-user-name:%s", job.getAgentId()));
-		attributes.put("job-attributes", "detailed-name:Impression d'une commission d'avancement");
-		attributes.put("job-attributes", String.format("document-name:%s", filePath));
-		attributes.put("job-attributes", "document-natural-language:FR");
+        attributes.put("job-name", job.getJobId());
+        attributes.put("job-more-info", "Impression d'une commission d'avancement");
+        attributes.put("job-originating-user-name", job.getLogin());
+		attributes.put("detailed-name", String.format("Impression de la commission d'avancement %s %s", job.getCodeCap(), job.getLibCadreEmploi()));
+		attributes.put("document-name", filePath);
+		attributes.put("document-natural-language", "FR");
         
         return attributes;
 	}
 
-	private String copyEaeToLocalPathAndPrint(AvctCapPrintJob job, String eaeId, int sequenceNumber) throws Exception {
+	public String copyEaeToLocalPath(AvctCapPrintJob job, String eaeId, int sequenceNumber) throws Exception {
 		
 		String eaeLocalFilePath = String.format("%s%s_%03d_%s.pdf", avcstTempWorkspacePath, job.getJobId(), sequenceNumber ,eaeId);
 		String eaeRemoteFileUri = null;
@@ -264,7 +285,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		logger.debug("Sharepoint WS query: URL [{}] Response [{}]", url, webDavUri);
 		
 		// format result
-		eaeRemoteFileUri = String.format(webDavUri, "admin", "admin");
+		eaeRemoteFileUri = String.format(webDavUri, gedWebdavUser, gedWebdavPwd);
 		
 		// Copy doc using downloadDocument
 		logger.debug("Copying [{}] into [{}]", eaeRemoteFileUri, eaeLocalFilePath);
@@ -277,7 +298,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			out = new BufferedOutputStream(getVfsManager().resolveFile(eaeLocalFilePath).getContent().getOutputStream(false));
 			IOUtils.copy(in, out);
 		} catch (Exception ex) {
-			
+			throw new Exception("An error occured while copying a remote EAE into the local file path", ex);
 		} finally {
 			IOUtils.closeQuietly(out);
 			IOUtils.closeQuietly(in);

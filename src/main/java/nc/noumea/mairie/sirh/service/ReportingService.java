@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,27 @@ public class ReportingService extends DownloadDocumentService implements IReport
 		map.put(PARAM_FORMAT, "PDF");
 		map.put("idCap", String.valueOf(idCap));
 		map.put("idCadreEmploi", String.valueOf(idCadreEmploi));
+		
+		String url = reportingBaseUrl + REPORT_PAGE;
+		
+		ClientResponse response = createAndFireRequest(url, map);
+		readResponseIntoFile(response, url, map, targetPath);
+	}
+	
+	@Override
+	public void getAvctFirstLastPrintPage(String jobId, String jobUser, String codeCap, String cadreEmploi, Date submissionDate, boolean isFirst, boolean isEaes, String targetPath) throws Exception {
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put(PARAM_REPORT, reportServerPath + "pageGardeJobAvctCap.rptdesign");
+		map.put(PARAM_FORMAT, "PDF");
+		map.put("jobId", jobId);
+		map.put("jobUser", jobUser);
+		map.put("codeCap", codeCap);
+		map.put("cadreEmploi", cadreEmploi);
+		map.put("debut", String.valueOf(isFirst));
+		map.put("isEaes", String.valueOf(isEaes));
+		SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		map.put("dateSubmission", sf.format(submissionDate));
 		
 		String url = reportingBaseUrl + REPORT_PAGE;
 		

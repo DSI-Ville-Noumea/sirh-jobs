@@ -5,6 +5,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,14 +41,11 @@ public class AvctCapPrintJobDao implements IAvctCapPrintJobDao {
 	}
 
 	@Override
-	public void updateJobIdAndStatus(AvctCapPrintJob job) {
-		// TODO Auto-generated method stub
+	public void updateAvctCapPrintJob(AvctCapPrintJob job) {
 		
-	}
-
-	@Override
-	public void updateStatus(AvctCapPrintJob job) {
-		// TODO Auto-generated method stub
-		
+		Session session = sirhSessionFactory.getCurrentSession();
+		session.beginTransaction();
+		session.merge(job);
+		session.getTransaction().commit();
 	}
 }

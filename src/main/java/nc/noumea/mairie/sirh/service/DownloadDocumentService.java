@@ -22,13 +22,6 @@ import flexjson.JSONDeserializer;
 @Service
 public class DownloadDocumentService implements IDownloadDocumentService {
 
-	public void downloadDocumentToLocalPathUsingVfs(String url, String localPath) throws Exception  {
-		FileSystemManager fsManager = VFS.getManager();
-		FileObject fsource = fsManager.resolveFile(url);
-		FileObject ftarget = fsManager.resolveFile(localPath);
-		ftarget.copyFrom(fsource, null);
-	}
-
 	public void downloadDocumentToLocalPath(String url, Map<String, String> urlParameters, String localPath) throws Exception {
 		
 		ClientResponse response = createAndFireRequest(url, urlParameters);

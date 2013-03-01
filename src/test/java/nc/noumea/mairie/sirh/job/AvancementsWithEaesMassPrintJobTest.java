@@ -17,7 +17,8 @@ import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
 
 import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class AvancementsWithEaesMassPrintJobTest {
 		// Then
 		assertEquals("20130222-090607_9005138_11_87", pj.getJobId());
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.START.toString(), pj.getStatus());
-		Mockito.verify(daoMock, Mockito.times(1)).updateJobIdAndStatus(pj);
+		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 	}
 	
 	@Test
@@ -66,7 +67,12 @@ public class AvancementsWithEaesMassPrintJobTest {
 		// Given
 		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.setIdCap(11);
+		pj.setLogin("login");
+		pj.setEaes(true);
+		pj.setCodeCap("CODE CAP");
 		pj.setIdCadreEmploi(87);
+		pj.setLibCadreEmploi("CADRE EMPLOI");
+		pj.setSubmissionDate(new DateTime(2013, 02, 25, 10, 48, 0).toDate());
 		pj.setJobId("20130222-090607_9005138_11_87");
 		String avcstTempWorkspacePath = "/home/sirh/docs/";
 		
@@ -77,19 +83,30 @@ public class AvancementsWithEaesMassPrintJobTest {
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
 		ReflectionTestUtils.setField(job, "reportingService", reportingServiceMock);
 		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", avcstTempWorkspacePath);
+		ReflectionTestUtils.setField(job, "helper", helperMock);
 
 		String expectedOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_001_avct_table_report.pdf";
+		String expectedFirstPageOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_000_firstPage.pdf";
+		String expectedLastPageOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_999_lastPage.pdf";
 				
 		// When
 		job.generateAvancementsReport(pj);
 		
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT.toString(), pj.getStatus());
-		assertEquals(1, pj.getFilesToPrint().size());
+		assertEquals(3, pj.getFilesToPrint().size());
 		assertEquals(expectedOutputFileName, pj.getFilesToPrint().get(0));
+		assertEquals(expectedFirstPageOutputFileName, pj.getFilesToPrint().get(1));
+		assertEquals(expectedLastPageOutputFileName, pj.getFilesToPrint().get(2));
 		
-		Mockito.verify(daoMock, Mockito.times(1)).updateStatus(pj);
+		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReportAndSaveItToFile(11,  87, expectedOutputFileName);
+		Mockito.verify(reportingServiceMock, Mockito.times(1))
+			.getAvctFirstLastPrintPage("20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
+					true, true, expectedFirstPageOutputFileName);
+		Mockito.verify(reportingServiceMock, Mockito.times(1))
+			.getAvctFirstLastPrintPage("20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
+					false, true, expectedLastPageOutputFileName);
 	}
 	
 	@Test
@@ -100,8 +117,6 @@ public class AvancementsWithEaesMassPrintJobTest {
 		pj.setIdCap(11);
 		pj.setIdCadreEmploi(87);
 		pj.setJobId("20130222-090607_9005138_11_87");
-		String avcstTempWorkspacePath = "/home/sirh/docs/";
-		String sharepointEaeDocBaseUrl = "http://sharepointEaeDocBaseUrl/";
 		String sirhWsEndpointUrl = "http://sirhWsEndpointUrl/";
 		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		Map<String, String> sirhUrlParameters = new HashMap<String, String>();
@@ -109,46 +124,28 @@ public class AvancementsWithEaesMassPrintJobTest {
 		sirhUrlParameters.put("idCadreEmploi", "87");
 		
 		IDownloadDocumentService downloadDocumentServiceMock = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.when(downloadDocumentServiceMock.downloadJsonDocumentAsList(String.class, sirhWsEndpointUrl, sirhUrlParameters)).thenReturn(Arrays.asList("eae1", "eae2"));
-
-		FileObject foMock1 = Mockito.mock(FileObject.class);
-		FileObject fiMock1 = Mockito.mock(FileObject.class);
-		FileObject foMock2 = Mockito.mock(FileObject.class);
-		FileObject fiMock2 = Mockito.mock(FileObject.class);
+		Mockito.when(downloadDocumentServiceMock.downloadJsonDocumentAsList(String.class, sirhWsEndpointUrl, sirhUrlParameters))
+			.thenReturn(Arrays.asList("eae1", "eae2"));
 		
-		FileSystemManager fsmMock = Mockito.mock(FileSystemManager.class);
-		Mockito.when(fsmMock.resolveFile("/home/sirh/docs/20130222-090607_9005138_11_87_000_eae1.pdf")).thenReturn(foMock1);
-		Mockito.when(fsmMock.resolveFile("http://sharepointEaeDocBaseUrl/eae1")).thenReturn(fiMock1);
-		Mockito.when(fsmMock.resolveFile("/home/sirh/docs/20130222-090607_9005138_11_87_001_eae2.pdf")).thenReturn(foMock2);
-		Mockito.when(fsmMock.resolveFile("http://sharepointEaeDocBaseUrl/eae2")).thenReturn(fiMock2);
-		
-		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
+		AvancementsWithEaesMassPrintJob job = Mockito.spy(new AvancementsWithEaesMassPrintJob());
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
-		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", avcstTempWorkspacePath);
-		ReflectionTestUtils.setField(job, "sharepointEaeDocBaseUrl", sharepointEaeDocBaseUrl);
 		ReflectionTestUtils.setField(job, "sirhWsAvctEaesEndpointUrl", sirhWsEndpointUrl);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", downloadDocumentServiceMock);
-		ReflectionTestUtils.setField(job, "vfsManager", fsmMock);
+		ReflectionTestUtils.setField(job, "helper", helperMock);
 
-		Map<String, String> param1 = new HashMap<String, String>();
-		param1.put("ID", "eae1");
-		Map<String, String> param2 = new HashMap<String, String>();
-		param2.put("ID", "eae2");
-		String expectedOutputFileName1 = "/home/sirh/docs/20130222-090607_9005138_11_87_000_eae1.pdf";
-		String expectedOutputFileName2 = "/home/sirh/docs/20130222-090607_9005138_11_87_001_eae2.pdf";
-				
+	    Mockito.doReturn("eaeFileName1.pdf").when(job).copyEaeToLocalPath(pj, "eae1", 1);
+	    Mockito.doReturn("eaeFileName2.pdf").when(job).copyEaeToLocalPath(pj, "eae2", 2);
+		
 		// When
 		job.downloadRelatedEaes(pj);
 		
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.EAE_DOWNLOAD.toString(), pj.getStatus());
 		assertEquals(2, pj.getFilesToPrint().size());
-		assertEquals(expectedOutputFileName1, pj.getFilesToPrint().get(0));
-		assertEquals(expectedOutputFileName2, pj.getFilesToPrint().get(1));
+		assertEquals("eaeFileName1.pdf", pj.getFilesToPrint().get(0));
+		assertEquals("eaeFileName2.pdf", pj.getFilesToPrint().get(1));
 		
-		Mockito.verify(daoMock, Mockito.times(1)).updateStatus(pj);
-		Mockito.verify(foMock1, Mockito.times(1)).copyFrom(fiMock1, null);
-		Mockito.verify(foMock2, Mockito.times(1)).copyFrom(fiMock2, null);
+		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -165,14 +162,34 @@ public class AvancementsWithEaesMassPrintJobTest {
 		
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
+		ReflectionTestUtils.setField(job, "helper", helperMock);
 		
 		// When
 		job.printAllDocuments(pj, pHMock);
 		
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT.toString(), pj.getStatus());
-		Mockito.verify(daoMock, Mockito.times(1)).updateStatus(pj);
+		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 		Mockito.verify(pHMock, Mockito.times(1)).printDocument(Mockito.eq("doc1.pdf"), Mockito.anyMap());
 		Mockito.verify(pHMock, Mockito.times(1)).printDocument(Mockito.eq("doc2.pdf"), Mockito.anyMap());
+	}
+
+	@Test
+	public void testwipeJobDocuments() throws FileSystemException, AvancementsWithEaesMassPrintException {
+		
+		// Given
+		String tempFilePath = "ram:///temp/folder/";
+		FileObject fo = VFS.getManager().resolveFile(tempFilePath);
+		fo.resolveFile("doc1.pdf").createFile();
+		fo.resolveFile("doc2.pdf").createFile();
+		
+		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
+		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", tempFilePath);
+		
+		// When
+		job.wipeJobDocuments(new AvctCapPrintJob());
+		
+		// Then
+		assertEquals(0, fo.getChildren().length);
 	}
 }
