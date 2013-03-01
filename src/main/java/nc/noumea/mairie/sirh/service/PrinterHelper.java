@@ -2,8 +2,8 @@ package nc.noumea.mairie.sirh.service;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
@@ -54,11 +54,11 @@ public class PrinterHelper {
 		}
 	}
 
-	public void printDocument(String filePath, Map<String, String> properties) throws Exception {
+	public void printDocument(String filePath, String userName) throws Exception {
 		
-		InputStream is = getFsManager().resolveFile(filePath).getContent().getInputStream();
-        PrintJob pj = new PrintJob.Builder(is).build();
-        pj.setAttributes(properties);
+		FileObject fo = getFsManager().resolveFile(filePath);
+		InputStream is = fo.getContent().getInputStream();
+		PrintJob pj = new PrintJob.Builder(is).jobName(fo.getName().getBaseName()).userName(userName).build();
         PrintRequestResult res = cupsPrinter.print(pj);
         
         if (!res.isSuccessfulResult()) {

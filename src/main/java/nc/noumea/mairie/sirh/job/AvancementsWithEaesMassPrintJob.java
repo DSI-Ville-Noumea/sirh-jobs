@@ -222,8 +222,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			// Send each file to the printer
 			for(String filePath : job.getFilesToPrint()) {
 				logger.info("Sending document [{}] to printer...", filePath);
-				Map<String, String> properties = createPrintProperties(job, filePath);
-				pH.printDocument(filePath, properties);
+				pH.printDocument(filePath, job.getLogin());
 			}
 		} catch (Exception e) {
 			throw new AvancementsWithEaesMassPrintException(
@@ -264,19 +263,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		logger.info("Changing Job Id [{}] to status [{}]...", job.getJobId(), job.getStatus());
 		
 		printJobDao.updateAvctCapPrintJob(job);
-	}
-
-	private Map<String, String> createPrintProperties(AvctCapPrintJob job, String filePath) {
-
-		Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("job-name", job.getJobId());
-        attributes.put("job-more-info", "Impression d'une commission d'avancement");
-        attributes.put("job-originating-user-name", job.getLogin());
-		attributes.put("detailed-name", String.format("Impression de la commission d'avancement %s %s", job.getCodeCap(), job.getLibCadreEmploi()));
-		attributes.put("document-name", filePath);
-		attributes.put("document-natural-language", "FR");
-        
-        return attributes;
 	}
 
 	public String copyEaeToLocalPath(AvctCapPrintJob job, String eaeId, int sequenceNumber) throws Exception {

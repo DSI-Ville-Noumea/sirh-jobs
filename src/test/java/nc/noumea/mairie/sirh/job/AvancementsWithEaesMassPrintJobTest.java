@@ -148,12 +148,12 @@ public class AvancementsWithEaesMassPrintJobTest {
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testprintAllDocuments_sendAllDocumentsToPrinter() throws Exception {
 		
 		// Given
 		AvctCapPrintJob pj = new AvctCapPrintJob();
+		pj.setLogin("login");
 		pj.getFilesToPrint().add("doc1.pdf");
 		pj.getFilesToPrint().add("doc2.pdf");
 		
@@ -170,8 +170,8 @@ public class AvancementsWithEaesMassPrintJobTest {
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT.toString(), pj.getStatus());
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
-		Mockito.verify(pHMock, Mockito.times(1)).printDocument(Mockito.eq("doc1.pdf"), Mockito.anyMap());
-		Mockito.verify(pHMock, Mockito.times(1)).printDocument(Mockito.eq("doc2.pdf"), Mockito.anyMap());
+		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc1.pdf", "login");
+		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc2.pdf", "login");
 	}
 
 	@Test
