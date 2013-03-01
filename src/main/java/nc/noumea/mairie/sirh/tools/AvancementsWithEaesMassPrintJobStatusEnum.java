@@ -7,7 +7,7 @@ public enum AvancementsWithEaesMassPrintJobStatusEnum {
 	EAE_DOWNLOAD("Téléchargement des EAEs"),
 	QUEUE_PRINT("Mise en file d'impression"),
 	HOUSEKEEPING("Nettoyage de l'environnement"),
-	DONE("Job terminé");
+	DONE("Envoi à l'imprimante terminé");
 	
 	private String status;
 	

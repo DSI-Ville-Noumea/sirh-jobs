@@ -111,6 +111,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			
 			printAllDocuments(job, pH);
 			
+			updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
+			
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
 			throw new JobExecutionException(
@@ -234,6 +236,9 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void wipeJobDocuments(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException {
 
 		logger.info("Removing documents from temp path...", job.getJobId(), job.getStatus());
+		
+		// Update status
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.HOUSEKEEPING);
 		
 		try {
 
