@@ -11,7 +11,7 @@ Liste des Jobs QUARTZ de l'application
 
  Ce job sert à envoyer des mails pour les tâches à faire lors d'une campagne EAE: envoi automatique de mails de rappel dans la boite des personnes chargées d'effectuer une action. 
  
- ** Input
+** Input
  
  Tables: 
 		EAE.EAE_CAMPAGNE_ACTION / 
@@ -20,7 +20,7 @@ Liste des Jobs QUARTZ de l'application
 		SIRH.DOCUMENT_ASSOCIE / 
 		SIRH.AGENT
  
- ** Process
+** Process
  
  - Vérification de la présence de mails de rappel à envoyer (la veille pour une date à effectuer précisée au lendemain)
 
@@ -33,19 +33,26 @@ Liste des Jobs QUARTZ de l'application
  - Envoi du mail
 
  
- ** Périodicité
+** Paramètres context
+ 
+ - <<eaeCampagneActionNotificationsJob.numberOfTentatives>> : nombre de tentatives d'envoie d'un email avant de considérer le job comme en échec.
+ 
+ - <<eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl>> : path du répertoire partagé SIRH ou se trouvent les documents à attacher en pièce jointe.
+ 
+** Périodicité
  
  Tous les jours à 05h00 locales (GMT+11) - CRON: [0 0 5 * * ?]
-
+ 
+ 
 * AvancementsWithEaesMassPrintJob
 
  Ce job sert à imprimer en masse les documents nécessaires à une commission d'avancement.
  
- ** Input
+** Input
  
  Table: SIRH.AVCT_CAP_PRINT_JOB
  
- ** Process
+** Process
  
  - Vérification de la présence de jobs d'impression
  
@@ -60,7 +67,30 @@ Liste des Jobs QUARTZ de l'application
  - Nettoyage du répertoire temporaire de travail
 
  
- ** Périodicité
+** Paramètres context
+ 
+ - <<REPORTING_SERVER_REPORT_PATH>> : path des reports SIRH sur le serveur de reporting BIRT
+ 
+ - <<REPORTING_BASE_URL>> : URL du serveur de reporting BIRT
+ 
+ - <<AVCT_JOB_TEMP_DIR>> : Path vers le répertoire temporaire de travail du job (avec droit à l'écriture)
+ 
+ - <<AVCT_SIRH_WS_AVCT_EAE_URL>> : URL du webservice SIRH-WS permettant de retrouver un ID d'EAE finalisé à partir d'un agent
+ 
+ - <<AVCT_CUPS_SERVER_HOSTNAME>> : URL du serveur d'impression CUPS
+ 
+ - <<AVCT_CUPS_SERVER_PORT>> : Port du serveur d'impression CUPS
+ 
+ - <<AVCT_CUPS_SIRH_PRINTER_NAME>> : URL de l'imprimante sur laquelle envoyer les documents au format CUPS
+ 
+ - <<AVCT_URL_SHAREPOINT_GED>> : URL du webservice Sharepoint servant à récupérer le path webdav d'un EAE
+ 
+ - <<AVCT_GED_WEBDAV_USER>> : Username pour accès en webdav aux documents EAEs
+ 
+ - <<AVCT_GED_WEBDAV_PWD>> : Password pour accès en webdav aux documents EAEs
+ 
+ 
+** Périodicité
  
  Polling toutes les minutes. Effectue la tâche soumise la plus ancienne. - CRON: [0 * * * * ?]
  
@@ -68,17 +98,24 @@ Liste des Jobs QUARTZ de l'application
 
  Ce job sert à s'assurer que le répertoire de travail temporaire du job d'impression des avancements est totalement nettoyé régulèrement.
  
- ** Input
+** Input
  
  -
  
- ** Process
+** Process
  
  - Recherche des fichiers dont la dernière date de modification est plus ancienne que la valeur paramétrée (par défaut 6 heures)
 
  - Effacement de ces fichiers
 
  
- ** Périodicité
+** Paramètres context
+ 
+ - <<AVCT_JOB_TEMP_DIR>> : Path vers le répertoire temporaire de travail du job (avec droit à l'écriture)
+ 
+ - <<AVCT_SIRH_PAST_DOCS_THRESHOLD_MS>> : Temps en millisecondes au bout duquel un document est considérer comme à supprimer lors de l'exacution du job.
+ 
+ 
+** Périodicité
  
  Tous les jours à 06h00 locales (GMT+11) - CRON: [0 0 6 * * ?]
