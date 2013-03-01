@@ -118,10 +118,13 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			
 			// send all the documents above to the configured printer
 			printAllDocuments(job, pH);
+			
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
+			
 			if (job != null)
 				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.ERROR);
+			
 			throw new JobExecutionException(
 					String.format("An error occured during 'Avancement Print Job' [%s]", 
 							job != null ? job.getJobId() : "-"), e);
@@ -131,13 +134,14 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 					return;
 
 				wipeJobDocuments(job);
-				// set the job as DONE
-				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
 			}
 			catch (Exception e) {
 				logger.error("An error occured during 'wipeJobDocuments'", e);
 			}
 		}
+
+		// set the job as DONE
+		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
 	}
 	
 	@Override
@@ -246,9 +250,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void wipeJobDocuments(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException {
 
 		logger.info("Removing documents from temp path...", job.getJobId(), job.getStatus());
-		
-		// Update status
-		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.HOUSEKEEPING);
 		
 		try {
 

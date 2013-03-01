@@ -183,19 +183,14 @@ public class AvancementsWithEaesMassPrintJobTest {
 		fo.resolveFile("doc1.pdf").createFile();
 		fo.resolveFile("doc2.pdf").createFile();
 		AvctCapPrintJob pj = new AvctCapPrintJob();
-		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
-		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
 		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", tempFilePath);
-		ReflectionTestUtils.setField(job, "helper", helperMock);
 		
 		// When
 		job.wipeJobDocuments(pj);
 		
 		// Then
 		assertEquals(0, fo.getChildren().length);
-		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.HOUSEKEEPING.toString(), pj.getStatus());
-		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 	}
 }
