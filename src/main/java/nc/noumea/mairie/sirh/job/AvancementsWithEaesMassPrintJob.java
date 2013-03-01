@@ -102,19 +102,30 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			if (job == null)
 				return;
 			
-			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsSirhPrinterName, "SIRH - Impression des documents de commissions d'avancements");
+			// initialize printer helper early so that documents are not downloaded when no printer is reachable
+			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsSirhPrinterName, 
+					"SIRH - Impression des documents de commissions d'avancements");
+			
+			// initialize the print job id and status
 			initializePrintJob(job);
+			
+			// generate the avct reports, cover and back pages
 			generateAvancementsReport(job);
 			
+			// if selected, the eaes should be downloaded from sharepoint
 			if (job.isEaes())
 				downloadRelatedEaes(job);
 			
+			// send all the documents above to the configured printer
 			printAllDocuments(job, pH);
 			
+			// set the job as DONE
 			updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
 			
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
+			if (job != null)
+				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.ERROR);
 			throw new JobExecutionException(
 					String.format("An error occured during 'Avancement Print Job' [%s]", 
 							job != null ? job.getJobId() : "-"), e);
