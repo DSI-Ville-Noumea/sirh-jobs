@@ -145,7 +145,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 	public void initializePrintJob(AvctCapPrintJob job) {
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyMMdd-HHmmss");
-		String jobId = String.format("%s_%s_%s_%s", df.format(helper.getCurrentDate()), job.getAgentId(), job.getIdCap(), job.getIdCadreEmploi());
+		String jobId = String.format("SIRH_AVCT_%s_%s_%s_%s", df.format(helper.getCurrentDate()), job.getAgentId(), job.getIdCap(), job.getIdCadreEmploi());
 		job.setJobId(jobId);
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.START);
 		

@@ -56,7 +56,7 @@ public class AvancementsWithEaesMassPrintJobTest {
 		job.initializePrintJob(pj);
 		
 		// Then
-		assertEquals("20130222-090607_9005138_11_87", pj.getJobId());
+		assertEquals("SIRH_AVCT_20130222-090607_9005138_11_87", pj.getJobId());
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.START.toString(), pj.getStatus());
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 	}
@@ -73,7 +73,7 @@ public class AvancementsWithEaesMassPrintJobTest {
 		pj.setIdCadreEmploi(87);
 		pj.setLibCadreEmploi("CADRE EMPLOI");
 		pj.setSubmissionDate(new DateTime(2013, 02, 25, 10, 48, 0).toDate());
-		pj.setJobId("20130222-090607_9005138_11_87");
+		pj.setJobId("SIRH_AVCT_20130222-090607_9005138_11_87");
 		String avcstTempWorkspacePath = "/home/sirh/docs/";
 		
 		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
@@ -85,9 +85,9 @@ public class AvancementsWithEaesMassPrintJobTest {
 		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", avcstTempWorkspacePath);
 		ReflectionTestUtils.setField(job, "helper", helperMock);
 
-		String expectedOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_001_avct_table_report.pdf";
-		String expectedFirstPageOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_000_firstPage.pdf";
-		String expectedLastPageOutputFileName = "/home/sirh/docs/20130222-090607_9005138_11_87_999_lastPage.pdf";
+		String expectedOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_001_avct_table_report.pdf";
+		String expectedFirstPageOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_000_firstPage.pdf";
+		String expectedLastPageOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_999_lastPage.pdf";
 				
 		// When
 		job.generateAvancementsReport(pj);
@@ -102,10 +102,10 @@ public class AvancementsWithEaesMassPrintJobTest {
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReportAndSaveItToFile(11,  87, expectedOutputFileName);
 		Mockito.verify(reportingServiceMock, Mockito.times(1))
-			.getAvctFirstLastPrintPage("20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
+			.getAvctFirstLastPrintPage("SIRH_AVCT_20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
 					true, true, expectedFirstPageOutputFileName);
 		Mockito.verify(reportingServiceMock, Mockito.times(1))
-			.getAvctFirstLastPrintPage("20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
+			.getAvctFirstLastPrintPage("SIRH_AVCT_20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), 
 					false, true, expectedLastPageOutputFileName);
 	}
 	
@@ -116,7 +116,7 @@ public class AvancementsWithEaesMassPrintJobTest {
 		AvctCapPrintJob pj = new AvctCapPrintJob();
 		pj.setIdCap(11);
 		pj.setIdCadreEmploi(87);
-		pj.setJobId("20130222-090607_9005138_11_87");
+		pj.setJobId("SIRH_AVCT_20130222-090607_9005138_11_87");
 		String sirhWsEndpointUrl = "http://sirhWsEndpointUrl/";
 		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		Map<String, String> sirhUrlParameters = new HashMap<String, String>();
