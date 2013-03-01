@@ -32,6 +32,9 @@
 			<item name="Base de données" href="exploitation/baseDeDonnees.html"/>
 			<item name="Configuration env. de dev" href="exploitation/devenv.html"/>
         </menu>
+		<menu name="Conception">
+        	<item name="Liste des jobs" href="conception/jobs.html"/>
+        </menu>
         <menu ref="reports"/>
     </body>
 </project>

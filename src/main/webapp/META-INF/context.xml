@@ -121,28 +121,32 @@
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
 		description="Temp directory for SIRH avancements printing job" value="C:/Alphalog/Mairie/temp/"
 		override="false" />
-	<Environment name="SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
+	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
 		override="false" />
-	<Environment name="CUPS_SERVER_HOSTNAME" type="java.lang.String"
+	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
 		description="CUPS printing server hostname" value="***REMOVED***"
 		override="false" />
-	<Environment name="CUPS_SERVER_PORT" type="java.lang.Integer"
+	<Environment name="AVCT_CUPS_SERVER_PORT" type="java.lang.Integer"
 		description="CUPS printing server port" value="631"
 		override="false" />
-	<Environment name="CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
+	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
 		description="CUPS SIRH printer name" value="http://***REMOVED***:631/printers/Printer_SED"
 		override="false" />
-	<Environment name="URL_SHAREPOINT_GED" type="java.lang.String"
+	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
 		 description="URL GED Sharepoint" value="http://***REMOVED***:8085/sharepoint-mock/eaes?ID="
 		 override="false" />
-	<Environment name="GED_WEBDAV_USER" type="java.lang.String"
+	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
 		 description="GED Sharepoint app user" value="admin"
 		 override="false" />
-	<Environment name="GED_WEBDAV_PWD" type="java.lang.String"
+	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
 		 description="GED Sharepoint app pwd" value="admin"
 		 override="false" />
-	<!-- 	<Environment name="URL_SHAREPOINT_GED" type="java.lang.String" -->
-<!-- 		 description="URL GED Sharepoint" value="http://svpsp/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" -->
-<!-- 		 override="false" /> -->
+
+	<!-- SIRH AVCT DELETE DOCS JOB -->
+	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
+		 description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)" 
+		 value="21600000"
+		 override="false" />
+	
 </Context>

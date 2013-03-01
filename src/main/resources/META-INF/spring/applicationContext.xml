@@ -130,54 +130,31 @@
 	<!-- AvancementsWithEaesMassPrintJob parameters -->
 	<jee:jndi-lookup id="avcstTempWorkspacePath" jndi-name="AVCT_JOB_TEMP_DIR"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="sirhWsAvctEaesEndpointUrl" jndi-name="SIRH_WS_AVCT_EAE_URL"
+	<jee:jndi-lookup id="sirhWsAvctEaesEndpointUrl" jndi-name="AVCT_SIRH_WS_AVCT_EAE_URL"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="cupsServerHostName" jndi-name="CUPS_SERVER_HOSTNAME"
+	<jee:jndi-lookup id="cupsServerHostName" jndi-name="AVCT_CUPS_SERVER_HOSTNAME"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="cupsServerPort" jndi-name="CUPS_SERVER_PORT"
+	<jee:jndi-lookup id="cupsServerPort" jndi-name="AVCT_CUPS_SERVER_PORT"
 		 expected-type="java.lang.Integer" />
-	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="CUPS_SIRH_PRINTER_NAME"
+	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="AVCT_CUPS_SIRH_PRINTER_NAME"
 		 expected-type="java.lang.String" />
-		 
 	<!-- URL for EAE documents hosted on Sharepoint -->
-	<jee:jndi-lookup id="sharepointEaeDocBaseUrl" jndi-name="URL_SHAREPOINT_GED"
+	<jee:jndi-lookup id="sharepointEaeDocBaseUrl" jndi-name="AVCT_URL_SHAREPOINT_GED"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="gedWebdavUser" jndi-name="GED_WEBDAV_USER"
+	<jee:jndi-lookup id="gedWebdavUser" jndi-name="AVCT_GED_WEBDAV_USER"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="GED_WEBDAV_PWD"
+	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="AVCT_GED_WEBDAV_PWD"
 		 expected-type="java.lang.String" />
-		 
-	<!-- <bean name="eaeCampagneActionNotificationsJob" class="nc.noumea.mairie.sirh.job.EaeCampagneActionNotificationsJob"/> -->
-
-	<!-- <bean name="eaeCampagneActionNotificationsJob" class="org.quartz.impl.JobDetailImpl"> -->
-	<!-- <property name="jobClass" value="nc.noumea.mairie.sirh.job.EaeCampagneActionNotificationsJob"/> -->
-	<!-- <property name="group" value="sirh"/> -->
-	<!-- <property name="name" value="sendEaeMailJob"/> -->
-	<!-- </bean> -->
-
-	<!-- <bean name="cronTrigger" class="org.quartz.impl.triggers.CronTriggerImpl"> -->
-	<!-- <property name="name" value="cronEaeMailTrigger"/> -->
-	<!-- <property name="group" value="sirh"/> -->
-	<!-- <property name="jobName" value="sendEaeMailJob"/> -->
-	<!-- <property name="jobGroup" value="sirh"/> -->
-	<!-- <property name="cronExpression" value="0/10 * * * * ?"/> -->
-	<!-- </bean> -->
-
+	
+	<!-- EraseAvancementsWithEaesMassPrintDocumentsJob parameters -->
+	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds" jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS"
+		 expected-type="java.lang.Long" />
+	
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
 			<bean class="nc.noumea.mairie.sirh.job.SirhSpringJobFactory" />
 		</property>
-		<!-- <property name="triggers"> -->
-		<!-- <list> -->
-		<!-- <ref bean="cronTrigger"/> -->
-		<!-- </list> -->
-		<!-- </property> -->
-		<!-- <property name="jobDetails"> -->
-		<!-- <list> -->
-		<!-- <ref bean="eaeCampagneActionNotificationsJob"/> -->
-		<!-- </list> -->
-		<!-- </property> -->
 		<property name="configLocation" value="classpath:quartz.properties" />
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 	</bean>

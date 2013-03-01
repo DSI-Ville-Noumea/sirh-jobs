@@ -1,0 +1,84 @@
+﻿ -----
+ SIRH-JOBS
+ -----
+ Nicolas RAYNAUD
+ -----
+  01/03/2013
+  
+Liste des Jobs QUARTZ de l'application
+
+* EaeCampagneActionNotificationsJob
+
+ Ce job sert à envoyer des mails pour les tâches à faire lors d'une campagne EAE: envoi automatique de mails de rappel dans la boite des personnes chargées d'effectuer une action. 
+ 
+ ** Input
+ 
+ Tables: 
+		EAE.EAE_CAMPAGNE_ACTION / 
+		EAE.EAE_CAMPAGNE_ACTEURS / 
+		EAE.EAE_CAMPAGNE_EAE / 
+		SIRH.DOCUMENT_ASSOCIE / 
+		SIRH.AGENT
+ 
+ ** Process
+ 
+ - Vérification de la présence de mails de rappel à envoyer (la veille pour une date à effectuer précisée au lendemain)
+
+ - Préparation du mail par templating (Velocity)
+
+ - Récupération de l'adresse email du destinataire (Intégration LDAP)
+
+ - Récupération des pièces jointes (sur répertoire partagé SIRH)
+
+ - Envoi du mail
+
+ 
+ ** Périodicité
+ 
+ Tous les jours à 05h00 locales (GMT+11) - CRON: [0 0 5 * * ?]
+
+* AvancementsWithEaesMassPrintJob
+
+ Ce job sert à imprimer en masse les documents nécessaires à une commission d'avancement.
+ 
+ ** Input
+ 
+ Table: SIRH.AVCT_CAP_PRINT_JOB
+ 
+ ** Process
+ 
+ - Vérification de la présence de jobs d'impression
+ 
+ - Création du report "Tableau des avancements" (par appel au serveur de reporting BIRT)
+
+ - Créations de la première et dernière page du rapport (par appel au serveur de reporting BIRT)
+
+ - Téléchargement optionnel des EAEs liés à la commission (par appel de WS sharepoint pour récupérer l'url webdav et ensuite téléchargement webdav)
+
+ - Mise en file d'impression sur imprimante de la DRH (via CUPS4J)
+
+ - Nettoyage du répertoire temporaire de travail
+
+ 
+ ** Périodicité
+ 
+ Polling toutes les minutes. Effectue la tâche soumise la plus ancienne. - CRON: [0 * * * * ?]
+ 
+* EraseAvancementsWithEaesMassPrintDocumentsJob
+
+ Ce job sert à s'assurer que le répertoire de travail temporaire du job d'impression des avancements est totalement nettoyé régulèrement.
+ 
+ ** Input
+ 
+ -
+ 
+ ** Process
+ 
+ - Recherche des fichiers dont la dernière date de modification est plus ancienne que la valeur paramétrée (par défaut 6 heures)
+
+ - Effacement de ces fichiers
+
+ 
+ ** Périodicité
+ 
+ Tous les jours à 06h00 locales (GMT+11) - CRON: [0 0 6 * * ?]
