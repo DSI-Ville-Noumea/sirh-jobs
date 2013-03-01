@@ -118,10 +118,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 			
 			// send all the documents above to the configured printer
 			printAllDocuments(job, pH);
-			
-			// set the job as DONE
-			updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
-			
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
 			if (job != null)
@@ -131,8 +127,12 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 							job != null ? job.getJobId() : "-"), e);
 		} finally {
 			try {
-				if (job != null)
-					wipeJobDocuments(job);
+				if (job == null)
+					return;
+
+				wipeJobDocuments(job);
+				// set the job as DONE
+				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.DONE);
 			}
 			catch (Exception e) {
 				logger.error("An error occured during 'wipeJobDocuments'", e);
