@@ -22,7 +22,8 @@ public class AvctCapPrintJobDao implements IAvctCapPrintJobDao {
 	@Override
 	public AvctCapPrintJob getNextPrintJob() {
 
-		sirhSessionFactory.getCurrentSession().beginTransaction();
+		if (!sirhSessionFactory.getCurrentSession().getTransaction().isActive())
+			sirhSessionFactory.getCurrentSession().beginTransaction();
 		
 		Query jobQuery = sirhSessionFactory.getCurrentSession()
 				.createQuery("select job from AvctCapPrintJob job where job.jobId is null order by job.submissionDate asc");

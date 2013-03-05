@@ -133,8 +133,11 @@
 	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
 		description="CUPS SIRH printer name" value="http://***REMOVED***:631/printers/Printer_SED"
 		override="false" />
+<!-- 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String" -->
+<!-- 		 description="URL GED Sharepoint" value="http://***REMOVED***:8085/sharepoint-mock/eaes?ID=" -->
+<!-- 		 override="false" /> -->
 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
-		 description="URL GED Sharepoint" value="http://***REMOVED***:8085/sharepoint-mock/eaes?ID="
+		 description="URL GED Sharepoint" value="***REMOVED***"
 		 override="false" />
 	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
 		 description="GED Sharepoint app user" value="admin"
