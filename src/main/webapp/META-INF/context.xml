@@ -110,7 +110,7 @@
 		override="false" />
 	
 	<!-- Reporting service -->
-	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String"
+	<Environment name="REPORTING_SERVER_SIRH_REPORT_PATH" type="java.lang.String"
 		description="SIRH-EAE reports path on Birt" value="report/sirh-reports/"
 		override="false" />
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
@@ -119,7 +119,7 @@
 	
 	<!-- SIRH AVCT printing job -->
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" value="C:/Alphalog/Mairie/temp/"
+		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/"
 		override="false" />
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
