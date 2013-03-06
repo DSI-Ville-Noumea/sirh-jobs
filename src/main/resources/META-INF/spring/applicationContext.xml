@@ -124,7 +124,7 @@
 	<!-- Reporting service parameters -->
 	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL"
 		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_REPORT_PATH"
+	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_SIRH_REPORT_PATH"
 		 expected-type="java.lang.String" />
 	
 	<!-- AvancementsWithEaesMassPrintJob parameters -->
