@@ -119,7 +119,7 @@
 	
 	<!-- SIRH AVCT printing job -->
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/"
+		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/temp/"
 		override="false" />
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
