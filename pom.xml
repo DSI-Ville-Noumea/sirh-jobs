@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-jobs</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>SIRH-JOBS web application</name>
 	<url>http://maven.apache.org</url>
 
@@ -119,11 +119,6 @@
 		<!-- These 2 dependencies need to be here with Spring 3.2.1.RELEASE A bug 
 			https://jira.springsource.org/browse/SPR-10218 prevents the transitive dependencies 
 			from begin loaded. To be removed when switchinh to 3.2.2.RELEASE -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>

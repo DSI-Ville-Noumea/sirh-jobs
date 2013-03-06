@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<h3>SIRH-JOBS Avancements : Mail de notification d'erreur</h3>
+		<p>Le processus d'impression des avancements n'a pas pu terminer l'impression id [${jobId}] que vous aviez soumis pour la CAP <strong>"${CAP}"</strong> et le CadreEmploi <strong>"${CE}"</strong>.</p>
+		<p>Une erreur s'est produite alors que le processus &eacute;tait au status <strong>"${status}"</strong>.</p>
+		<p>Veuillez contacter le support avec ces informations afin de r&eacute;soudre le probl&egrave;me.</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH-JOBS.</i></span></p>
+		</div>
+	</body>
+</html>

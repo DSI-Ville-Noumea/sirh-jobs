@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.MimeMessage;
+
+import nc.noumea.mairie.ldap.dao.AgentLdapDaoException;
+import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
+import nc.noumea.mairie.ldap.domain.AgentLdap;
 import nc.noumea.mairie.sirh.dao.IAvctCapPrintJobDao;
 import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
@@ -21,14 +26,19 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.apache.velocity.app.VelocityEngine;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
 public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
@@ -47,6 +57,15 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;
+	
+	@Autowired
+	private IAgentLdapDao agentLdapDao;
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private VelocityEngine velocityEngine;
 	
 	@Autowired
 	@Qualifier("avcstTempWorkspacePath")
@@ -122,8 +141,16 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
 			
-			if (job != null)
+			if (job != null) {
+				
+				try {
+					sendErrorEmail(job);
+				} catch (AgentLdapDaoException e1) {
+					logger.error("An error occured while sending the error email", e);
+				}
+				
 				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.ERROR);
+			}
 			
 			throw new JobExecutionException(
 					String.format("An error occured during 'Avancement Print Job' [%s]", 
@@ -310,5 +337,38 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 //		downloadDocumentService.downloadDocumentToLocalPathUsingVfs(eaeRemoteFileUri, eaeLocalFilePath);
 		
 		return eaeLocalFilePath;
+	}
+	
+	public void sendErrorEmail(final AvctCapPrintJob job) throws AgentLdapDaoException {
+		
+		logger.debug("Sending error email for job id [{}] on status {}", job.getJobId(), job.getStatus().toString());
+		
+		final AgentLdap agentTo = agentLdapDao.retrieveAgentFromLdapFromMatricule(String.valueOf(job.getAgentId()));
+		
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+	        @SuppressWarnings({ "rawtypes", "unchecked" })
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+	            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+	            
+	            // Set the To
+	            message.setTo(agentTo.getMail());
+	            
+	            // Set the body with velocity
+	            Map model = new HashMap();
+	            model.put("jobId", job.getJobId());
+	            model.put("CAP", job.getCodeCap());
+	            model.put("CE", job.getLibCadreEmploi());
+	            model.put("status", job.getStatus().toString());
+	            String text = VelocityEngineUtils.mergeTemplateIntoString(
+	               velocityEngine, "templates/sirhAvctErrorMailTemplate.vm", "UTF-8", model);
+	            message.setText(text, true);
+	            
+	            // Set the subject
+	            message.setSubject(String.format("[SIRH-JOBS] Erreur lors de l'impression des avancements"));
+	         }
+	      };
+	      
+	      // Actually send the email
+	      mailSender.send(preparator);
 	}
 }
