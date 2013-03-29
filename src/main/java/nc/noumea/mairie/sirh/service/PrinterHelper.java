@@ -44,6 +44,10 @@ public class PrinterHelper {
 		try {
 			CupsClient cc = new CupsClient(host, port);
 			cupsPrinter = cc.getPrinter(new URL(printerName));
+			
+			if (cupsPrinter == null)
+				throw new Exception("CUPS did not answer with a printer...");
+						
 			cupsPrinter.setDescription(printJobName);
 		} catch (Exception e) {
 			throw new Exception(

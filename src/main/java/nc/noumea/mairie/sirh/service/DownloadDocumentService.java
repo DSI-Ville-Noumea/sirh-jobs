@@ -75,7 +75,7 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 			throw new Exception(
 					String.format(
 							"An error occured while writing the downloaded file to the following path '%s'.",
-							url));
+							targetPath), e);
 		} finally {
 			
 			IOUtils.closeQuietly(bos);
