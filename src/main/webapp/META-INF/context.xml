@@ -48,12 +48,12 @@
 		description="AS400 SIRH Schema"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-		validationQuery="select 1 from sysibm.sysdummy1" validationInterval="30000"
+		validationQuery="select 1 from sysdummy1" validationInterval="30000"
 		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="adminwas" password="planet"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea;naming=system;libraries=SIRH,SYSIBM;" />
 
 	<!-- Mail Server conf -->
 	<Resource name="mail/MailServer" auth="Container"

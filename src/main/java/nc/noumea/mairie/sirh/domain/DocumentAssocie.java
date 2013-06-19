@@ -7,7 +7,7 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "DOCUMENT_ASSOCIE", schema = "SIRH")
+@Table(name = "DOCUMENT_ASSOCIE")
 @PersistenceUnit(unitName = "sirhPersistenceUnit")
 public class DocumentAssocie {
 

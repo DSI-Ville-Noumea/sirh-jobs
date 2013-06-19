@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "AVCT_CAP_PRINT_JOB", schema = "SIRH")
+@Table(name = "AVCT_CAP_PRINT_JOB")
 @PersistenceUnit(unitName = "sirhPersistenceUnit")
 public class AvctCapPrintJob {
 

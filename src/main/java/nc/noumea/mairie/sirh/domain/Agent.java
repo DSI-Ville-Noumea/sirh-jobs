@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "AGENT", schema = "SIRH")
+@Table(name = "AGENT")
 @PersistenceUnit(unitName = "sirhPersistenceUnit")
 public class Agent {
 
