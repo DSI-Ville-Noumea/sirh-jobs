@@ -53,7 +53,7 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="adminwas" password="planet"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea;naming=system;libraries=SIRH,SYSIBM;" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" />
 
 	<!-- Mail Server conf -->
 	<Resource name="mail/MailServer" auth="Container"
