@@ -52,7 +52,7 @@
 		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="adminwas" password="planet"
+		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" />
 
 	<!-- Mail Server conf -->
