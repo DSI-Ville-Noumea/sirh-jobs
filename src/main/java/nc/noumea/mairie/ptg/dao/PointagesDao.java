@@ -4,6 +4,7 @@ import java.util.List;
 
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
+import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +34,7 @@ public class PointagesDao implements IPointagesDao {
 		
 		@SuppressWarnings("unchecked")
 		List<VentilTask> result = ptgSessionFactory.getCurrentSession().getNamedQuery("VentilTask.getNextVentilTask")
-				.setMaxResults(1).list();
+				.setLockMode("vT", LockMode.PESSIMISTIC_WRITE).setMaxResults(1).list();
 		
 		if (result.size() == 0)
 			return null;

@@ -4,40 +4,64 @@ import java.util.Date;
 
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.VentilTask;
+import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PointagesVentilationJob extends QuartzJobBean implements IPointagesVentilationJob {
+public class PointagesVentilationJob extends QuartzJobBean {
 
 	private Logger logger = LoggerFactory.getLogger(PointagesVentilationJob.class);
 	
 	@Autowired
 	private IPointagesDao pointagesDao;
 	
+	@Autowired
+	@Qualifier("SIRH_PTG_WS_VentilationTaskUrl")
+	private String SIRH_PTG_WS_VentilationTaskUrl;
+	
+	@Autowired
+	private IDownloadDocumentService downloadDocumentService;
+	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
 		
-		pointagesDao.beginTransaction();
-		VentilTask vT = pointagesDao.getNextVentilTask();
+		VentilTask vT = null;
 		
-		if (vT == null) {
-			logger.info("Did not find any VentilTask to process... exiting job.");
-			pointagesDao.rollBackTransaction();
-			return;
-		}
+		do {
+			pointagesDao.beginTransaction();
+			vT = pointagesDao.getNextVentilTask();
+			
+			if (vT == null) {
+				logger.info("Did not find any VentilTask to process... exiting job.");
+				pointagesDao.rollBackTransaction();
+				continue;
+			}
+			
+			logger.info("Processing VentilTask id [{}] for Agent [{}], schedulded by [{}]...", vT.getIdVentilTask(), vT.getIdAgent(), vT.getIdAgentCreation());
+	
+			try {
+				downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s", SIRH_PTG_WS_VentilationTaskUrl, vT.getIdVentilTask()), null);
+				vT.setTaskStatus("OK");
+			} catch (Exception ex) {
+				logger.error("An error occured trying to process VentilTask :", ex);
+				vT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
+			}
+			
+			vT.setDateVentilation(new Date());
+			pointagesDao.commitTransaction();
+			
+			logger.info("Processed VentilTask id [{}].", vT.getIdVentilTask());
 		
-		logger.debug("has been called for task id {} !", vT.getIdVentilTask());
-		vT.setTaskStatus("DONE !");
-		vT.setDateVentilation(new Date());
-		pointagesDao.commitTransaction();
+		} while (vT != null);
 	}
 
 }
