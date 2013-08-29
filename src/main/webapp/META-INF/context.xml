@@ -55,6 +55,13 @@
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" />
 
+	<Resource name="jdbc/SIRH_JOBS_DS4" auth="Container" type="javax.sql.DataSource"
+		description="PTG database"
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
+		maxWait="10000" initialSize="1" username="PTG" password="PTG"
+		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@DVLP:1521:ORADEV"
+		poolPreparedStatements="true" />
+		
 	<!-- Mail Server conf -->
 	<Resource name="mail/MailServer" auth="Container"
                type="javax.mail.Session"
@@ -151,5 +158,13 @@
 		 description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)" 
 		 value="21600000"
 		 override="false" />
+		 
+	<!-- SIRH PTG Ventilation job -->
+	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/ventilation/processTask?idVentilTask="
+		override="false" />
+<!-- 	<Environment name="SIRH_PTG_WS_VENTILATION_DONE_URL" type="java.lang.String" -->
+<!-- 		description="sirh-ptg-ws Url endpoint for notifying a job is done" value="http://172.16.24.19:8085/sirh-ptg-ws/ventilation/processTask?idVentilTask=" -->
+<!-- 		override="false" /> -->
 	
 </Context>

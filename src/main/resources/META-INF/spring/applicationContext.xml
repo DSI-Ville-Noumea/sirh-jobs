@@ -62,6 +62,27 @@
 		</property>
 	</bean>
 
+	<jee:jndi-lookup id="ptgOracleDataSource" jndi-name="jdbc/SIRH_JOBS_DS4"
+		resource-ref="true" />
+
+	<bean id="ptgSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="ptgOracleDataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>nc.noumea.mairie.ptg.domain.VentilTask</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+			</props>
+		</property>
+	</bean>
+
 	<!-- Spring ldap -->
 	<jee:jndi-lookup id="adUrl" jndi-name="ad/connectionURL"
 		resource-ref="true" />
@@ -149,6 +170,12 @@
 	<!-- EraseAvancementsWithEaesMassPrintDocumentsJob parameters -->
 	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds" jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS"
 		 expected-type="java.lang.Long" />
+	
+	<!-- Reporting service parameters -->
+	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl" jndi-name="SIRH_PTG_WS_VENTILATION_TASK_URL"
+		 expected-type="java.lang.String" />
+<!-- 	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationDoneUrl" jndi-name="SIRH_PTG_WS_VENTILATION_DONE_URL" -->
+<!-- 		 expected-type="java.lang.String" /> -->
 	
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
