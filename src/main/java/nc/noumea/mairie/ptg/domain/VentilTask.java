@@ -39,8 +39,8 @@ public class VentilTask {
 	private Date dateCreation;
 	
 	@NotNull
-	@Column(name = "AGENT_STATUT")
-	private String  statut;
+	@Column(name = "TYPE_CHAINE_PAIE")
+	private String  typeChainePaie;
 	
 	@Column(name = "ID_TYPE_POINTAGE")
 	private Integer idRefTypePointage;
@@ -91,12 +91,12 @@ public class VentilTask {
 		this.dateCreation = dateCreation;
 	}
 
-	public String getStatut() {
-		return statut;
+	public String getTypeChainePaie() {
+		return typeChainePaie;
 	}
 
-	public void setStatut(String statut) {
-		this.statut = statut;
+	public void setTypeChainePaie(String typeChainePaie) {
+		this.typeChainePaie = typeChainePaie;
 	}
 
 	public Integer getIdRefTypePointage() {
