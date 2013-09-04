@@ -169,7 +169,7 @@
 		description="sirh-ptg-ws Url endpoint for exporting a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/processTask?idExportPaieTask="
 		override="false" />
 	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/stop"
+		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/stop?typeChainePaie="
 		override="false" />
 	
 </Context>

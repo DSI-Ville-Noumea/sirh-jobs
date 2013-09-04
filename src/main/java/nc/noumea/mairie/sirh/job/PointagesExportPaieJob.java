@@ -38,42 +38,42 @@ public class PointagesExportPaieJob  extends QuartzJobBean {
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
 		
-		ExportPaieTask vT = null;
-		boolean hasExported = false;
+		ExportPaieTask eT = null;
+		String exportedChainePaie = null;
 		
 		do {
 			pointagesDao.beginTransaction();
-			vT = pointagesDao.getNextExportPaieTask();
+			eT = pointagesDao.getNextExportPaieTask();
 			
-			if (vT == null) {
+			if (eT == null) {
 				logger.info("Did not find any ExportPaieTask to process... exiting job.");
 				pointagesDao.rollBackTransaction();
 				continue;
 			}
 			
-			logger.info("Processing ExportPaieTask id [{}] for Agent [{}], schedulded by [{}]...", vT.getIdExportPaieTask(), vT.getIdAgent(), vT.getIdAgentCreation());
-	
+			logger.info("Processing ExportPaieTask id [{}] for Agent [{}], schedulded by [{}]...", eT.getIdExportPaieTask(), eT.getIdAgent(), eT.getIdAgentCreation());
+			exportedChainePaie = eT.getTypeChainePaie();
 			try {
-				downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s", SIRH_PTG_WS_ExportPaieTaskUrl, vT.getIdExportPaieTask()), null);
-				vT.setTaskStatus("OK");
+				downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s", SIRH_PTG_WS_ExportPaieTaskUrl, eT.getIdExportPaieTask()), null);
+				eT.setTaskStatus("OK");
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ExportPaieTask :", ex);
-				vT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
+				eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
 			}
 			
-			vT.setDateExport(new Date());
+			eT.setDateExport(new Date());
 			pointagesDao.commitTransaction();
 			
-			logger.info("Processed ExportPaieTask id [{}].", vT.getIdExportPaieTask());
+			logger.info("Processed ExportPaieTask id [{}].", eT.getIdExportPaieTask());
 		
-		} while (vT != null);
+		} while (eT != null);
 		
-		if (!hasExported)
+		if (exportedChainePaie == null)
 			return;
 		
-		// If at least one task has been processed, SIRH-PTG-WS needs to update the workflow status
+		// If at least one task has been processed, SIRH-PTG-WS needs to update the workflow status for the given typeChainePaie
 		try {
-			downloadDocumentService.downloadDocumentAs(String.class, SIRH_PTG_WS_ExportPaieDoneUrl, null);
+			downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s", SIRH_PTG_WS_ExportPaieDoneUrl, exportedChainePaie), null);
 		} catch (Exception ex) {
 			logger.error("An error occured trying to notify SIRH-PTG-WS that all ExportPaieTask have been processed :", ex);
 		}
