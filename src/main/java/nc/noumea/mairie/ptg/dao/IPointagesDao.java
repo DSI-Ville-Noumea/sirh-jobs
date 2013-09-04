@@ -1,5 +1,6 @@
 package nc.noumea.mairie.ptg.dao;
 
+import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
 public interface IPointagesDao {
@@ -8,4 +9,5 @@ public interface IPointagesDao {
 	void commitTransaction();
 	void rollBackTransaction();
 	VentilTask getNextVentilTask();
+	ExportPaieTask getNextExportPaieTask();
 }

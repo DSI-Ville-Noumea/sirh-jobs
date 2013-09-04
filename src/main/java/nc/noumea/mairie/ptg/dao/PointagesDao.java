@@ -2,6 +2,7 @@ package nc.noumea.mairie.ptg.dao;
 
 import java.util.List;
 
+import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
 import org.hibernate.LockMode;
@@ -39,7 +40,20 @@ public class PointagesDao implements IPointagesDao {
 		if (result.size() == 0)
 			return null;
 		
-		return result.get(0);	
+		return result.get(0);
+	}
+
+	@Override
+	public ExportPaieTask getNextExportPaieTask() {
+
+		@SuppressWarnings("unchecked")
+		List<ExportPaieTask> result = ptgSessionFactory.getCurrentSession().getNamedQuery("ExportPaieTask.getNextExportPaieTask")
+				.setLockMode("eT", LockMode.PESSIMISTIC_WRITE).setMaxResults(1).list();
+		
+		if (result.size() == 0)
+			return null;
+		
+		return result.get(0);
 	}
 	
 }

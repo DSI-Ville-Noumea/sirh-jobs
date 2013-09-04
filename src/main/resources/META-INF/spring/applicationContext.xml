@@ -71,6 +71,7 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>nc.noumea.mairie.ptg.domain.VentilTask</value>
+				<value>nc.noumea.mairie.ptg.domain.ExportPaieTask</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -171,12 +172,16 @@
 	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds" jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS"
 		 expected-type="java.lang.Long" />
 	
-	<!-- Reporting service parameters -->
+	<!-- Ventilation service parameters -->
 	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl" jndi-name="SIRH_PTG_WS_VENTILATION_TASK_URL"
 		 expected-type="java.lang.String" />
-<!-- 	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationDoneUrl" jndi-name="SIRH_PTG_WS_VENTILATION_DONE_URL" -->
-<!-- 		 expected-type="java.lang.String" /> -->
-	
+
+	<!-- Export Paie service parameters -->
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieTaskUrl" jndi-name="SIRH_PTG_WS_EXPORT_TASK_URL"
+		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieDoneUrl" jndi-name="SIRH_PTG_WS_EXPORT_DONE_URL"
+		 expected-type="java.lang.String" />
+
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">

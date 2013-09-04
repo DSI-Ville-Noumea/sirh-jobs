@@ -163,8 +163,13 @@
 	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String"
 		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/ventilation/processTask?idVentilTask="
 		override="false" />
-<!-- 	<Environment name="SIRH_PTG_WS_VENTILATION_DONE_URL" type="java.lang.String" -->
-<!-- 		description="sirh-ptg-ws Url endpoint for notifying a job is done" value="http://172.16.24.19:8085/sirh-ptg-ws/ventilation/processTask?idVentilTask=" -->
-<!-- 		override="false" /> -->
+
+	<!-- SIRH PTG Ventilation job -->
+	<Environment name="SIRH_PTG_WS_EXPORT_TASK_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for exporting a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/processTask?idExportPaieTask="
+		override="false" />
+	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/stop"
+		override="false" />
 	
 </Context>
