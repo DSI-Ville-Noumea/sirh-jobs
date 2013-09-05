@@ -6,6 +6,7 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
+@DisallowConcurrentExecution
 public class PointagesVentilationJob extends QuartzJobBean {
 
 	private Logger logger = LoggerFactory.getLogger(PointagesVentilationJob.class);

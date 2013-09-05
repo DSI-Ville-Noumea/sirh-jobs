@@ -7,6 +7,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.VFS;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
+@DisallowConcurrentExecution
 public class EraseAvancementsWithEaesMassPrintDocumentsJob extends QuartzJobBean implements
 IEraseAvancementsWithEaesMassPrintDocumentsJob {
 

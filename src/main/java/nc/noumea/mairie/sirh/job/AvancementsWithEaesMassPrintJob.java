@@ -27,6 +27,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.apache.velocity.app.VelocityEngine;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
+@DisallowConcurrentExecution
 public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements
 		IAvancementsWithEaesMassPrintJob {
 	

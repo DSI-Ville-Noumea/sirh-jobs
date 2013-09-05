@@ -1,4 +1,4 @@
-﻿ -----
+ -----
  SIRH-JOBS
  -----
  Nicolas RAYNAUD
@@ -119,3 +119,53 @@ Liste des Jobs QUARTZ de l'application
 ** Périodicité
  
  Tous les jours à 06h00 locales (GMT+11) - CRON: [0 0 6 * * ?]
+ 
+ 
+* PointagesVentilationJob
+
+ Ce job sert à effectuer les tâches de ventilations de pointages pour l'application SIRH-PTG-WS.
+ 
+** Input
+ 
+ - Table PTG.PTG_VENTIL_TASK
+ 
+** Process
+ 
+ - Vérification de la présence de jobs de ventilation
+ 
+ - Ventilation des jobs (un job est défini par agent, type de pointage (optionnel) et date de ventilation) : La ventilation est faite par appel de web services SIRH-PTG-WS.
+ 
+** Paramètres context
+ 
+ - <<SIRH_PTG_WS_VENTILATION_TASK_URL>> : URL du webservice de ventilation d'un job. Cette URL prends un <<idVentilTask>> en paramètre.
+ 
+** Périodicité
+ 
+ Toutes les 2 minutes de 6h à 20h - CRON: [0 0/2 6-20 * * ?]
+
+
+* PointagesExportPaieJob
+
+ Ce job sert à effectuer les tâches d'exportation vers la paie des pointages pour l'application SIRH-PTG-WS.
+ 
+** Input
+ 
+ - Table PTG.PTG_EXPORT_PAIE_TASK
+ 
+** Process
+ 
+ - Vérification de la présence de jobs d'exportation
+ 
+ - Exportation des pointages (un job est défini par agent, et date de ventilation) : L'exportation est faite par appel de web services SIRH-PTG-WS.
+ 
+ - Notification à SIRH-PTG-WS de la fin du job d'exportation : via un appel de web service SIRH-PTG-WS.
+ 
+** Paramètres context
+ 
+ - <<SIRH_PTG_WS_EXPORT_TASK_URL>> : URL du webservice d'exportation de pointages. Cette URL prends un <<idExportPaieTask>> en paramètre.
+ 
+ - <<SIRH_PTG_WS_EXPORT_DONE_URL>> : URL du webservice de notification de fin de job. Cette URL un <<typeChainePaie>> en paramètre.
+ 
+** Périodicité
+ 
+ Toutes les 5 minutes de 6h à 20h  - CRON: [0 0/5 6-20 * * ?]
