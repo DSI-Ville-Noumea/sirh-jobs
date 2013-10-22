@@ -2,6 +2,7 @@ package nc.noumea.mairie.ptg.dao;
 
 import java.util.List;
 
+import nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
@@ -55,5 +56,19 @@ public class PointagesDao implements IPointagesDao {
 		
 		return result.get(0);
 	}
+
+	@Override
+	public ExportEtatsPayeurTask getNextExportEtatsPayeurTask() {
+		
+		@SuppressWarnings("unchecked")
+		List<ExportEtatsPayeurTask> result = ptgSessionFactory.getCurrentSession().getNamedQuery("ExportEtatsPayeurTask.getNextExportEtatsPayeurTask")
+				.setLockMode("eT", LockMode.PESSIMISTIC_WRITE).setMaxResults(1).list();
+		
+		if (result.size() == 0)
+			return null;
+		
+		return result.get(0);
+	}
+	
 	
 }
