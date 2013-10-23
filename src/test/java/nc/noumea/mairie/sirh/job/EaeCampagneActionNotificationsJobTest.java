@@ -15,7 +15,7 @@ import java.util.List;
 
 import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
 import nc.noumea.mairie.ldap.domain.AgentLdap;
-import nc.noumea.mairie.sirh.eae.dao.EaeCampagneActionDao;
+import nc.noumea.mairie.sirh.eae.dao.IEaeCampagneActionDao;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction;
 import nc.noumea.mairie.sirh.tools.Helper;
@@ -43,7 +43,7 @@ public class EaeCampagneActionNotificationsJobTest {
 	@Test
 	public void testSendNotificationsOneByOne_NoNotificationsToSend() throws EaeCampagneActionNotificationsException, FileSystemException {
 		// Given
-		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
+		IEaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(IEaeCampagneActionDao.class);
 		when(eaeCampagneActionDaoMock.getEaeCampagneActionToSend(theDate)).thenReturn(new ArrayList<EaeCampagneAction>());
 
 		EaeCampagneActionNotificationsJob service = new EaeCampagneActionNotificationsJob();
@@ -66,7 +66,7 @@ public class EaeCampagneActionNotificationsJobTest {
 		campagneAction.setIdAgent(9);
 		notificationsToSend.add(campagneAction);
 		
-		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
+		IEaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(IEaeCampagneActionDao.class);
 		when(eaeCampagneActionDaoMock.getEaeCampagneActionToSend(theDate)).thenReturn(notificationsToSend);
 
 		AgentLdap agentLdap = new AgentLdap();
@@ -102,7 +102,7 @@ public class EaeCampagneActionNotificationsJobTest {
 		campagneAction.setEaeCampagne(campagne);
 		notificationsToSend.add(campagneAction);
 		
-		EaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(EaeCampagneActionDao.class);
+		IEaeCampagneActionDao eaeCampagneActionDaoMock = Mockito.mock(IEaeCampagneActionDao.class);
 		when(eaeCampagneActionDaoMock.getEaeCampagneActionToSend(theDate)).thenReturn(notificationsToSend);
 
 		AgentLdap agentLdap = new AgentLdap();

@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.job;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,10 +177,12 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	            // Set the subject
 	            message.setSubject(String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(), eaeCampagneAction.getFormattedDateAfaire()));
 	            
+	            logger.debug("nb docs {}", eaeCampagneAction.getEaeDocuments().size());
+	            
 	            // Set the attached documents
 	            for (EaeDocument doc : eaeCampagneAction.getEaeDocuments()) {
 	            	DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
-	            	FileObject attachedFileVfs = fsManager.resolveFile(String.format("%s%s", baseSirhDocumentsUrl, docA.getLienDocument()));
+	            	FileObject attachedFileVfs = fsManager.resolveFile(Paths.get(baseSirhDocumentsUrl, docA.getLienDocument()).toString());
 	            	logger.debug("Adding file '{}' [Exists {}] as attachment...", attachedFileVfs.getURL(), attachedFileVfs.exists());
 	            	VfsInputStreamSource res = new VfsInputStreamSource(attachedFileVfs);
 	            	message.addAttachment(docA.getNomDocument(), res);
