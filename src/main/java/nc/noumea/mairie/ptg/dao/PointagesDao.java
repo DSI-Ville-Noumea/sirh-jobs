@@ -2,6 +2,8 @@ package nc.noumea.mairie.ptg.dao;
 
 import java.util.List;
 
+import nc.noumea.mairie.ptg.domain.EtatPointage;
+import nc.noumea.mairie.ptg.domain.EtatPointageEnum;
 import nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
@@ -70,5 +72,23 @@ public class PointagesDao implements IPointagesDao {
 		return result.get(0);
 	}
 	
+	@Override
+	public List<EtatPointage> getListePtgRefusesEtRejetesPlus3Mois(EtatPointageEnum etat) {
+		
+		@SuppressWarnings("unchecked")
+		List<EtatPointage> result = ptgSessionFactory.getCurrentSession().getNamedQuery("EtatPointage.getListePtgRefusesEtRejetesPlus3Mois").setParameter("etat", etat).list();
+		
+		if (null == result || result.size() == 0)
+			return null;
+		
+		return result; 
+	}
 	
+	@Override
+	public void createEtatPointage(EtatPointage etatPointage) {
+		
+		if (null != etatPointage && etatPointage.getIdEtatPointage() == null || etatPointage.getIdEtatPointage().equals(0)) {
+			ptgSessionFactory.getCurrentSession().persist(etatPointage);
+        }
+	}
 }

@@ -73,6 +73,7 @@
 				<value>nc.noumea.mairie.ptg.domain.VentilTask</value>
 				<value>nc.noumea.mairie.ptg.domain.ExportPaieTask</value>
 				<value>nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask</value>
+				<value>nc.noumea.mairie.ptg.domain.EtatPointage</value> 
 			</list>
 		</property>
 		<property name="hibernateProperties">
