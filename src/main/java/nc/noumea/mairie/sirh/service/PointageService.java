@@ -51,6 +51,7 @@ public class PointageService implements IPointageService {
 				
 				newEp.setIdAgent(ep.getIdAgent());
 				newEp.setIdPointage(ep.getIdPointage());
+				newEp.setVersion(ep.getVersion());
 				
 				pointagesDao.createEtatPointage(newEp);
 			}

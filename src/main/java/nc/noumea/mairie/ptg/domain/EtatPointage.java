@@ -9,8 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -21,12 +19,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "PTG_ETAT_POINTAGE")
 @PersistenceUnit(unitName = "ptgPersistenceUnit")
-@NamedQueries({
-	@NamedQuery(
-			name = "EtatPointage.getListePtgRefusesEtRejetesPlus3Mois", 
-			query = "select ptg from EtatPointage ptg where (ptg.idPointage, ptg.idEtatPointage) in (select e.idPointage, max(e.idEtatPointage) as id_ptg_etat from EtatPointage e group by e.idPointage ) and ptg.dateEtat <= ADD_MONTHS(SYSDATE, -3) and ptg.etat = :etat  "
-			)
-})
 public class EtatPointage {
 
 	@Id
@@ -55,6 +47,10 @@ public class EtatPointage {
 	@NotNull
 	@Column(name = "ID_AGENT")
 	private Integer idAgent;
+	
+	@NotNull
+	@Column(name = "VERSION")
+	private Integer version;
 
 
 	public Integer getIdEtatPointage() {
@@ -114,6 +110,16 @@ public class EtatPointage {
 
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
+	}
+
+
+	public Integer getVersion() {
+		return version;
+	}
+
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 	
 	
