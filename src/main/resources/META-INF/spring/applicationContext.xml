@@ -189,6 +189,9 @@
 		 expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneUrl" jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL"
 		 expected-type="java.lang.String" />
+		 
+	 <jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl" jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL"
+		 expected-type="java.lang.String" />
 
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

@@ -1,18 +1,27 @@
 package nc.noumea.mairie.sirh.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
-import nc.noumea.mairie.ptg.domain.EtatPointage;
 import nc.noumea.mairie.ptg.domain.EtatPointageEnum;
+import nc.noumea.mairie.sirh.ws.BaseWsConsumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@Service
-public class PointageService implements IPointageService {
+import com.sun.jersey.api.client.ClientResponse;
 
+@Service
+public class PointageService extends BaseWsConsumer implements IPointageService {
+
+	@Autowired
+	@Qualifier("SIRH_PTG_WS_etatPointageUrl")
+	private String etatPointageUrl;
+	
 	@Autowired
 	private IPointagesDao pointagesDao;
 	
@@ -31,31 +40,34 @@ public class PointageService implements IPointageService {
 	
 	private void majEtatPointages(EtatPointageEnum etat, Date dateJour) {
 		
-		List<EtatPointage> listEp = null;
-		EtatPointage newEp = null;
+		List<Integer> listEp = null;
 		
 		listEp = pointagesDao.getListePtgRefusesEtRejetesPlus3Mois(etat);
 		
 		if(null != listEp) {
-			for(EtatPointage ep : listEp) {
+			for(Integer ep : listEp) {
 				
-				newEp = new EtatPointage();
-				newEp.setDateEtat(dateJour);
-				newEp.setDateMaj(dateJour);
+				String etatParam = null;
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("idEtatPointage", String.valueOf(ep));
 				
-				if(EtatPointageEnum.REFUSE.equals(ep.getEtat())) {
-					newEp.setEtat(EtatPointageEnum.REFUSE_DEFINITIVEMENT);
-				}else if(EtatPointageEnum.REJETE.equals(ep.getEtat())) {
-					newEp.setEtat(EtatPointageEnum.REJETE_DEFINITIVEMENT);
+				if(EtatPointageEnum.REFUSE.equals(etat)) {
+					etatParam = EtatPointageEnum.REFUSE_DEFINITIVEMENT.toString();
+				}else if(EtatPointageEnum.REJETE.equals(etat)) {
+					etatParam = EtatPointageEnum.REJETE_DEFINITIVEMENT.toString();
 				}
 				
-				newEp.setIdAgent(ep.getIdAgent());
-				newEp.setIdPointage(ep.getIdPointage());
-				newEp.setVersion(ep.getVersion());
+				map.put("etat", String.valueOf(etatParam));
 				
-				pointagesDao.createEtatPointage(newEp);
+				String url = etatPointageUrl;
+				
+				ClientResponse res = createAndFirePostRequest(map, url);
+
+				readResponse(res, url);
 			}
 		}
 	}
 
+	
+	
 }

@@ -185,5 +185,8 @@
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" type="java.lang.String"
 		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
 		override="false" />
+	<Environment name="SIRH_PTG_WS_ETAT_POINTAGE_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" value="http://172.16.24.19:8085/sirh-ptg-ws/etatPointage/majEtatPointagesByListId"
+		override="false" />
 	
 </Context>
