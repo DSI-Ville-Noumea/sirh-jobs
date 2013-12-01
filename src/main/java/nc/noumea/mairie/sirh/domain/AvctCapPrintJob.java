@@ -56,6 +56,9 @@ public class AvctCapPrintJob {
 	
 	@Column(name = "JOB_ID")
 	private String jobId;
+	
+	@Column(name = "AVIS_EAE")
+	private boolean avisEAE;
 
 	@Transient
 	private List<String> filesToPrint = new ArrayList<String>();
@@ -162,5 +165,13 @@ public class AvctCapPrintJob {
 
 	public void setFilesToPrint(List<String> filesToPrint) {
 		this.filesToPrint = filesToPrint;
+	}
+
+	public boolean isAvisEAE() {
+		return avisEAE;
+	}
+
+	public void setAvisEAE(boolean avisEAE) {
+		this.avisEAE = avisEAE;
 	}
 }
