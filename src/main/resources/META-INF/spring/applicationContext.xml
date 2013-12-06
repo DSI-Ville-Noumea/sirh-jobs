@@ -73,7 +73,7 @@
 				<value>nc.noumea.mairie.ptg.domain.VentilTask</value>
 				<value>nc.noumea.mairie.ptg.domain.ExportPaieTask</value>
 				<value>nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask</value>
-				<value>nc.noumea.mairie.ptg.domain.EtatPointage</value> 
+				<value>nc.noumea.mairie.ptg.domain.EtatPointage</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -147,51 +147,53 @@
 
 	<!-- Reporting service parameters -->
 	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL"
-		 expected-type="java.lang.String" />
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_SIRH_REPORT_PATH"
-		 expected-type="java.lang.String" />
-	
+		expected-type="java.lang.String" />
+
 	<!-- AvancementsWithEaesMassPrintJob parameters -->
 	<jee:jndi-lookup id="avcstTempWorkspacePath" jndi-name="AVCT_JOB_TEMP_DIR"
-		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="sirhWsAvctEaesEndpointUrl" jndi-name="AVCT_SIRH_WS_AVCT_EAE_URL"
-		 expected-type="java.lang.String" />
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="sirhWsAvctEaesEndpointUrl"
+		jndi-name="AVCT_SIRH_WS_AVCT_EAE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="cupsServerHostName" jndi-name="AVCT_CUPS_SERVER_HOSTNAME"
-		 expected-type="java.lang.String" />
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="cupsServerPort" jndi-name="AVCT_CUPS_SERVER_PORT"
-		 expected-type="java.lang.Integer" />
+		expected-type="java.lang.Integer" />
 	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="AVCT_CUPS_SIRH_PRINTER_NAME"
-		 expected-type="java.lang.String" />
+		expected-type="java.lang.String" />
 	<!-- URL for EAE documents hosted on Sharepoint -->
-	<jee:jndi-lookup id="sharepointEaeDocBaseUrl" jndi-name="AVCT_URL_SHAREPOINT_GED"
-		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="sharepointEaeDocBaseUrl"
+		jndi-name="AVCT_URL_SHAREPOINT_GED" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="gedWebdavUser" jndi-name="AVCT_GED_WEBDAV_USER"
-		 expected-type="java.lang.String" />
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="AVCT_GED_WEBDAV_PWD"
-		 expected-type="java.lang.String" />
-	
+		expected-type="java.lang.String" />
+
 	<!-- EraseAvancementsWithEaesMassPrintDocumentsJob parameters -->
-	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds" jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS"
-		 expected-type="java.lang.Long" />
-	
+	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds"
+		jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" expected-type="java.lang.Long" />
+
 	<!-- Ventilation service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl" jndi-name="SIRH_PTG_WS_VENTILATION_TASK_URL"
-		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl"
+		jndi-name="SIRH_PTG_WS_VENTILATION_TASK_URL" expected-type="java.lang.String" />
 
 	<!-- Export Paie service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieTaskUrl" jndi-name="SIRH_PTG_WS_EXPORT_TASK_URL"
-		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieDoneUrl" jndi-name="SIRH_PTG_WS_EXPORT_DONE_URL"
-		 expected-type="java.lang.String" />
-		 
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieTaskUrl"
+		jndi-name="SIRH_PTG_WS_EXPORT_TASK_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieDoneUrl"
+		jndi-name="SIRH_PTG_WS_EXPORT_DONE_URL" expected-type="java.lang.String" />
+
 	<!-- Export Etats Payeur service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurTaskUrl" jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL"
-		 expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneUrl" jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL"
-		 expected-type="java.lang.String" />
-		 
-	 <jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl" jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL"
-		 expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurTaskUrl"
+		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneUrl"
+		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl"
+		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl"
+		jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL" expected-type="java.lang.String" />
 
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

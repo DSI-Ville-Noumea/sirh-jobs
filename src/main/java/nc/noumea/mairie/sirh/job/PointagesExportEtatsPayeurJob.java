@@ -32,6 +32,10 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 	@Autowired
 	@Qualifier("SIRH_PTG_WS_ExportEtatsPayeurDoneUrl")
 	private String SIRH_PTG_WS_ExportEtatsPayeurDoneUrl;
+	
+	@Autowired
+	@Qualifier("SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl")
+	private String SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl;
 
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;
@@ -57,8 +61,7 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 			logger.info("Calling url {}...", url);
 			downloadDocumentService.downloadDocumentAs(String.class, url, null);
 
-			// Second WS call to mark all pointages as JOURNALISE and move
-			// workflow status
+			// Second WS call to mark all pointages as JOURNALISE 
 			url = String.format("%s%s", SIRH_PTG_WS_ExportEtatsPayeurDoneUrl, eT.getIdExportEtatsPayeurTask());
 			logger.info("Calling url {}...", url);
 			downloadDocumentService.downloadDocumentAs(String.class, url, null);
@@ -70,11 +73,19 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 			eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
 		}
 
+		// At last we call to stop the process and move the workflow status
+		try {
+			String url = String.format("%s%s", SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl, eT.getTypeChainePaie());
+			logger.info("Calling url {}...", url);
+			downloadDocumentService.downloadDocumentAs(String.class, url, null);
+		} catch (Exception ex) {
+			logger.error("An error occured trying to stop the ExportEtatsPayeurTask :", ex);
+		}
+		
 		eT.setDateExport(new Date());
 		pointagesDao.commitTransaction();
 
 		logger.info("Processed ExportEtatsPayeurTask id [{}].", eT.getIdExportEtatsPayeurTask());
-
 	}
 
 }
