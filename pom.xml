@@ -32,7 +32,7 @@
 		<site>
 			<id>sirhjobs.website.prod</id>
 			<name>SIRH JOBS Website Prod</name>
-			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH-JOBS\</url>
+			<url>file:\\cristal\dsi$\DSI\PROJETS\doxia\SIRH-JOBS\</url>
 		</site>
 	</distributionManagement>
 
