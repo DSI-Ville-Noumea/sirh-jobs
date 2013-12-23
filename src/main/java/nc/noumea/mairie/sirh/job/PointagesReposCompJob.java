@@ -1,9 +1,8 @@
 package nc.noumea.mairie.sirh.job;
-import java.util.Date;
-
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.ReposCompTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
+import nc.noumea.mairie.sirh.tools.Helper;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,7 +14,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PointagesReposCompJob extends QuartzJobBean{
+public class PointagesReposCompJob extends QuartzJobBean {
 
 	private Logger logger = LoggerFactory.getLogger(PointagesReposCompJob.class);
 	
@@ -24,6 +23,9 @@ public class PointagesReposCompJob extends QuartzJobBean{
 	
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;
+	
+	@Autowired
+	private Helper helper;
 	
 	@Autowired
 	@Qualifier("SIRH_PTG_WS_Base_URL")
@@ -58,7 +60,7 @@ public class PointagesReposCompJob extends QuartzJobBean{
 				rcT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
 			}
 			
-			rcT.setDateCalcul(new Date());
+			rcT.setDateCalcul(helper.getCurrentDate());
 			pointagesDao.commitTransaction();
 			
 			logger.info("Processed ReposCompTask id [{}].", rcT.getIdRcTask());
