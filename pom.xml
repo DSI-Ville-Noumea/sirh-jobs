@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nc.noumea.mairie</groupId>
@@ -32,7 +32,7 @@
 		<site>
 			<id>sirhjobs.website.prod</id>
 			<name>SIRH JOBS Website Prod</name>
-			<url>file:\\cristal\dsi$\DSI\PROJETS\doxia\SIRH-JOBS\</url>
+			<url>file:\\cristal\DSI$\DSI\PROJETS\doxia\${project.name}</url>
 		</site>
 	</distributionManagement>
 
@@ -302,7 +302,7 @@
 						</resource>
 						<resource>
 							<directory>src/main/webapp</directory>
-							<targetPath></targetPath>
+							<targetPath/>
 							<filtering>true</filtering>
 						</resource>
 					</webResources>
