@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @DisallowConcurrentExecution
-public class PointagesExportPaieJob  extends QuartzJobBean {
+public class PointagesExportPaieJob extends QuartzJobBean {
 
 	private Logger logger = LoggerFactory.getLogger(PointagesExportPaieJob.class);
 	
