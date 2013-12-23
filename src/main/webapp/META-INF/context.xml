@@ -22,13 +22,6 @@
 		on session expiration as well as webapp lifecycle) -->
 	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
 		/> -->
-
-<!-- 	<Resource name="jdbc/SIRH_JOBS_DS1" auth="Container" type="javax.sql.DataSource" -->
-<!-- 		description="QRTZ SIRH-JOBS databasource" -->
-<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" -->
-<!-- 		maxWait="10000" initialSize="1" username="EAE_NICO" password="EAE_NICO" -->
-<!-- 		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@DVLP:1521:ORADEV" -->
-<!-- 		poolPreparedStatements="true" /> -->
 		
 	<Resource name="jdbc/SIRH_JOBS_DS1" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
@@ -36,13 +29,6 @@
 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
 		poolPreparedStatements="true" />
 
-<!--  	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource" -->
-<!--  		description="EAE database" -->
-<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" -->
-<!-- 		maxWait="10000" initialSize="1" driverClassName="oracle.jdbc.driver.OracleDriver"  -->
-<!-- 		url="jdbc:oracle:thin:@svq-doracle:1521:SIRHR" username="***REMOVED***" password="kouqk501" -->
-<!-- 		poolPreparedStatements="true" /> -->
-		
 	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource"
 		description="EAE database"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
@@ -90,10 +76,6 @@
 		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored" 
 		value="file:///home/nicolas/docs_sirh/"
 		override="false" />
-	<!-- <Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
-		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored" 
-		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Jobs/" 
-		override="false" /> -->
 	
 	<!-- AD connection information -->
 	<Environment name="ad/connectionURL" type="java.lang.String"
@@ -137,10 +119,6 @@
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
 		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/temp/"
 		override="false" />
-	<!-- <Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" 
-		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" 
-		override="false" /> -->
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://172.16.24.19:8085/sirhws/avancements/getEaesGedIds"
 		override="false" />
@@ -151,11 +129,8 @@
 		description="CUPS printing server port" value="631"
 		override="false" />
 	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
-		description="CUPS SIRH printer name" value="http://172.16.24.19:631/printers/Printer_SED"
+		description="CUPS SIRH printer name" value="Printer_SED"
 		override="false" />
-<!-- 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String" -->
-<!-- 		 description="URL GED Sharepoint" value="http://172.16.24.19:8085/sharepoint-mock/eaes?ID=" -->
-<!-- 		 override="false" /> -->
 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
 		 description="URL GED Sharepoint" value="***REMOVED***"
 		 override="false" />
@@ -174,30 +149,30 @@
 		 
 	<!-- SIRH PTG Ventilation job -->
 	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/ventilation/processTask?idVentilTask="
+		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="ventilation/processTask?idVentilTask="
 		override="false" />
 
 	<!-- SIRH PTG Export Paie job -->
 	<Environment name="SIRH_PTG_WS_EXPORT_TASK_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for exporting a Task" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/processTask?idExportPaieTask="
+		description="sirh-ptg-ws Url endpoint for exporting a Task" value="exportPaie/processTask?idExportPaieTask="
 		override="false" />
 	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/exportPaie/stop?typeChainePaie="
+		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="exportPaie/stop?typeChainePaie="
 		override="false" />
 		
 	<!-- SIRH PTG Export Etats Payeur job -->
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task" value="http://172.16.24.19:8085/sirh-ptg-ws/etatsPayeur/startExportTask?idExportEtatsPayeurTask="
+		description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task" value="etatsPayeur/startExportTask?idExportEtatsPayeurTask="
 		override="false" />
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)" value="http://172.16.24.19:8085/sirh-ptg-ws/etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
+		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)" value="etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
 		override="false" />
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process" value="http://172.16.24.19:8085/sirh-ptg-ws/etatsPayeur/stop?typeChainePaie="
+		description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process" value="etatsPayeur/stop?typeChainePaie="
 		override="false" />
 		
 	<Environment name="SIRH_PTG_WS_ETAT_POINTAGE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" value="http://172.16.24.19:8085/sirh-ptg-ws/etatPointage/majEtatPointagesByListId"
+		description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" value="etatPointage/majEtatPointagesByListId"
 		override="false" />
 		
 	<!-- ReposComp Job service parameters -->

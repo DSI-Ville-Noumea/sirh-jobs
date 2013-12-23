@@ -137,7 +137,9 @@ Liste des Jobs QUARTZ de l'application
  
 ** Paramètres context
  
- - <<SIRH_PTG_WS_VENTILATION_TASK_URL>> : URL du webservice de ventilation d'un job. Cette URL prends un <<idVentilTask>> en paramètre.
+ - <<SIRH_PTG_WS_BASE_URL>> : URL de l'application SIRH-PTG-WS.
+ 
+ - <<SIRH_PTG_WS_VENTILATION_TASK_URL>> : URL part du webservice de ventilation d'un job. Cette URL prends un <<idVentilTask>> en paramètre.
  
 ** Périodicité
  
@@ -162,9 +164,11 @@ Liste des Jobs QUARTZ de l'application
  
 ** Paramètres context
  
- - <<SIRH_PTG_WS_EXPORT_TASK_URL>> : URL du webservice d'exportation de pointages. Cette URL prends un <<idExportPaieTask>> en paramètre.
+ - <<SIRH_PTG_WS_BASE_URL>> : URL de l'application SIRH-PTG-WS.
  
- - <<SIRH_PTG_WS_EXPORT_DONE_URL>> : URL du webservice de notification de fin de job. Cette URL un <<typeChainePaie>> en paramètre.
+ - <<SIRH_PTG_WS_EXPORT_TASK_URL>> : URL part du webservice d'exportation de pointages. Cette URL prends un <<idExportPaieTask>> en paramètre.
+ 
+ - <<SIRH_PTG_WS_EXPORT_DONE_URL>> : URL part du webservice de notification de fin de job. Cette URL un <<typeChainePaie>> en paramètre.
  
 ** Périodicité
  
@@ -188,11 +192,38 @@ Liste des Jobs QUARTZ de l'application
  - Notification à SIRH-PTG-WS de la fin du job d'exportation : via un appel de web service SIRH-PTG-WS.
  
 ** Paramètres context
+
+ - <<SIRH_PTG_WS_BASE_URL>> : URL de l'application SIRH-PTG-WS.
  
- - <<SIRH_PTG_WS_ETATS_PAYEUR_URL>> : URL du webservice d'exportation des états du payeur. Cette URL prends un <<idExportEtatsPayeurTask>> en paramètre.
+ - <<SIRH_PTG_WS_ETATS_PAYEUR_URL>> : URL part du webservice d'exportation des états du payeur. Cette URL prends un <<idExportEtatsPayeurTask>> en paramètre.
  
- - <<SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL>> : URL du webservice de notification de fin de job. Cette URL un <<idExportEtatsPayeurTask>> en paramètre.
+ - <<SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL>> : URL part du webservice de notification de fin de job. Cette URL un <<idExportEtatsPayeurTask>> en paramètre.
  
 ** Périodicité
  
  Toutes les 5 minutes de 6h à 20h  - CRON: [0 0/5 6-20 * * ?]
+
+ 
+* PointagesReposCompJob
+
+ Ce job sert à calculer les repos compensateurs des agents ayant effectué des heures supplémentaires pointées. Ce job effectue la mise à jour des repos compensateurs dans SIRH-ABS-WS pour l'application SIRH-PTG-WS.
+ 
+** Input
+ 
+ - Table PTG.PTG_RC_TASK
+ 
+** Process
+ 
+ - Vérification de la présence de jobs de calcul
+ 
+ - Calcul des repos compensateurs et mise à jour du compteur dans SIRH-ABS-WS via un appel de web service SIRH-PTG-WS.
+ 
+** Paramètres context
+ 
+ - <<SIRH_PTG_WS_BASE_URL>> : URL de l'application SIRH-PTG-WS.
+ 
+ - <<SIRH_PTG_WS_RC_TASK_URL_PART>> : URL part du webservice de calcul des repos compensateurs par SIRH-PTG-WS. Cette URL un <<idReposCompTask>> en paramètre.
+ 
+** Périodicité
+ 
+ Toutes les 5 minutes de 20h à 24h  - CRON: [0 0/5 20-0 * * ?]

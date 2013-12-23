@@ -30,6 +30,10 @@ public class PointagesVentilationJob extends QuartzJobBean {
 	private String SIRH_PTG_WS_VentilationTaskUrl;
 	
 	@Autowired
+	@Qualifier("SIRH_PTG_WS_Base_URL")
+	private String SIRH_PTG_WS_Base_URL;
+	
+	@Autowired
 	private IDownloadDocumentService downloadDocumentService;
 	
 	@Override
@@ -51,7 +55,7 @@ public class PointagesVentilationJob extends QuartzJobBean {
 			logger.info("Processing VentilTask id [{}] for Agent [{}], schedulded by [{}]...", vT.getIdVentilTask(), vT.getIdAgent(), vT.getIdAgentCreation());
 	
 			try {
-				downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s", SIRH_PTG_WS_VentilationTaskUrl, vT.getIdVentilTask()), null);
+				downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_VentilationTaskUrl, vT.getIdVentilTask()), null);
 				vT.setTaskStatus("OK");
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process VentilTask :", ex);

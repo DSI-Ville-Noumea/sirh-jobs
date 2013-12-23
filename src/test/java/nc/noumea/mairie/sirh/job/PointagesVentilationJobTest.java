@@ -24,7 +24,8 @@ public class PointagesVentilationJobTest {
 		
 		PointagesVentilationJob job = new PointagesVentilationJob();
 		ReflectionTestUtils.setField(job, "pointagesDao", pDao);
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_VentilationTaskUrl", "theUrl");
+		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "the");
+		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_VentilationTaskUrl", "Url");
 		ReflectionTestUtils.setField(job, "downloadDocumentService", ddS);
 		
 		// When
@@ -52,7 +53,8 @@ public class PointagesVentilationJobTest {
 		
 		PointagesVentilationJob job = new PointagesVentilationJob();
 		ReflectionTestUtils.setField(job, "pointagesDao", pDao);
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_VentilationTaskUrl", "theUrl");
+		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "the");
+		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_VentilationTaskUrl", "Url");
 		ReflectionTestUtils.setField(job, "downloadDocumentService", ddS);
 		
 		// When

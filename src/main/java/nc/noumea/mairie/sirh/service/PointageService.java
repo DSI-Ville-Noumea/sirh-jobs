@@ -19,6 +19,10 @@ import com.sun.jersey.api.client.ClientResponse;
 public class PointageService extends BaseWsConsumer implements IPointageService {
 
 	@Autowired
+	@Qualifier("SIRH_PTG_WS_Base_URL")
+	private String SIRH_PTG_WS_Base_URL;
+	
+	@Autowired
 	@Qualifier("SIRH_PTG_WS_etatPointageUrl")
 	private String etatPointageUrl;
 	
@@ -59,7 +63,7 @@ public class PointageService extends BaseWsConsumer implements IPointageService 
 				
 				map.put("etat", String.valueOf(etatParam));
 				
-				String url = etatPointageUrl;
+				String url = String.format("%s%s", SIRH_PTG_WS_Base_URL, etatPointageUrl);
 				
 				ClientResponse res = createAndFirePostRequest(map, url);
 

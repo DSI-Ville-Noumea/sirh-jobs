@@ -123,7 +123,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 			// initialize printer helper early so that documents are not
 			// downloaded when no printer is reachable
-			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, cupsSirhPrinterName,
+			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, String.format("http://%s:%s/printers/%s", cupsServerHostName, cupsServerPort, cupsSirhPrinterName),
 					"SIRH - Impression des documents de commissions d'avancements");
 
 			// initialize the print job id and status
