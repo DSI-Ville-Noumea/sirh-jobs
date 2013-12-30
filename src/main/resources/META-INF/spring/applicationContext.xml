@@ -87,6 +87,27 @@
 		</property>
 	</bean>
 
+	<jee:jndi-lookup id="absPostgreDataSource" jndi-name="jdbc/SIRH_JOBS_DS5"
+		resource-ref="true" />
+
+	<bean id="absSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="absPostgreDataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<!-- <value>nc.noumea.mairie.abs.domain.EtatAbsence</value> -->
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+			</props>
+		</property>
+	</bean>
+
 	<!-- Spring ldap -->
 	<jee:jndi-lookup id="adUrl" jndi-name="ad/connectionURL"
 		resource-ref="true" />
@@ -201,6 +222,13 @@
 
 	<jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl"
 		jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL" expected-type="java.lang.String" />
+		
+	<!-- Pour les absences -->
+	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL"
+		jndi-name="SIRH_ABS_WS_BASE_URL" expected-type="java.lang.String" />
+
+	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
+		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
 
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
