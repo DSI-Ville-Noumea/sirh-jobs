@@ -230,6 +230,9 @@
 	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
 
+	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
+		jndi-name="SIRH_ABS_WS_SUPP_ABSENCE_URL" expected-type="java.lang.String" />
+
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">

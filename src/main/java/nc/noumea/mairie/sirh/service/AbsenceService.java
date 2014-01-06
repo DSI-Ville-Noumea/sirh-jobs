@@ -27,6 +27,10 @@ public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
 	private String etatAbsenceUrl;
 
 	@Autowired
+	@Qualifier("SIRH_ABS_WS_suppressionAbsenceUrl")
+	private String suppressionAbsenceUrl;
+
+	@Autowired
 	private IAbsencesDao absencesDao;
 
 	@Override
@@ -36,14 +40,14 @@ public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
 
 		Date dateJour = new Date();
 
-		majEtatPointages(EtatAbsenceEnum.APPROUVEE, dateJour);
+		majEtatAbsences(EtatAbsenceEnum.APPROUVEE, dateJour);
 
 		absencesDao.commitTransaction();
 	}
 
-	private void majEtatPointages(EtatAbsenceEnum etat, Date dateJour) {
+	private void majEtatAbsences(EtatAbsenceEnum etat, Date dateJour) {
 
-		List<Integer> listEp = absencesDao.getListeAbsApprouve(etat);
+		List<Integer> listEp = absencesDao.getListeAbsWithEtat(etat);
 
 		if (listEp != null) {
 			String csvIdDemande = "";
@@ -64,6 +68,41 @@ public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
 			readResponse(res, url);
 		}
 
+	}
+
+	@Override
+	public void supprimerAbsencesProvisoires() {
+
+		absencesDao.beginTransaction();
+
+		supprimerAbsences(EtatAbsenceEnum.PROVISOIRE);
+
+		absencesDao.commitTransaction();
+	}
+
+	private void supprimerAbsences(EtatAbsenceEnum etat) {
+
+		List<Integer> listEp = absencesDao.getListeAbsWithEtat(etat);
+
+		if (listEp != null) {
+			String csvIdDemande = "";
+			for (Integer i : listEp) {
+				csvIdDemande += i + ",";
+			}
+			if (csvIdDemande.endsWith(",")) {
+				csvIdDemande = csvIdDemande.substring(0, csvIdDemande.length() - 1);
+			}
+
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("listIdDemande", csvIdDemande);
+
+			String url = String.format("%s%s", SIRH_ABS_WS_Base_URL, suppressionAbsenceUrl);
+
+			ClientResponse res = createAndFirePostRequest(map, url);
+
+			readResponse(res, url);
+		}
+		
 	}
 
 }

@@ -30,7 +30,7 @@ public class AbsencesDao implements IAbsencesDao {
 	}
 
 	@Override
-	public List<Integer> getListeAbsApprouve(EtatAbsenceEnum etat) {
+	public List<Integer> getListeAbsWithEtat(EtatAbsenceEnum etat) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select abs.ID_DEMANDE as idEtatDemande from ABS_ETAT_DEMANDE abs ");
 		sb.append("where (abs.ID_DEMANDE, abs.ID_ETAT_DEMANDE) in ");

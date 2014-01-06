@@ -12,5 +12,5 @@ public interface IAbsencesDao {
 
 	void rollBackTransaction();
 
-	List<Integer> getListeAbsApprouve(EtatAbsenceEnum etat);
+	List<Integer> getListeAbsWithEtat(EtatAbsenceEnum etat);
 }

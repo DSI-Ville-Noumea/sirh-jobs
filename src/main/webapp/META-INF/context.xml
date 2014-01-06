@@ -22,22 +22,22 @@
 		on session expiration as well as webapp lifecycle) -->
 	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
 		/> -->
-		
-	<Resource name="jdbc/SIRH_JOBS_DS1" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
-		poolPreparedStatements="true" />
 
-	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource"
-		description="EAE database"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
-		maxWait="10000" initialSize="1" username="EAE" password="EAE"
+	<Resource name="jdbc/SIRH_JOBS_DS1" auth="Container"
+		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
+		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
+		password="***REMOVED***" driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
+
+	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container"
+		type="javax.sql.DataSource" description="EAE database" maxActive="100"
+		maxIdle="30" minIdle="0" validationQuery="select 1 from dual" maxWait="10000"
+		initialSize="1" username="EAE" password="EAE"
 		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@DVLP:1521:ORADEV"
 		poolPreparedStatements="true" />
 
-	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container" type="javax.sql.DataSource"
-		description="AS400 SIRH Schema"
+	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container"
+		type="javax.sql.DataSource" description="AS400 SIRH Schema"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		validationQuery="select 1 from sysdummy1" validationInterval="30000"
@@ -45,74 +45,61 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+		url="***REMOVED***;" />
 
-	<Resource name="jdbc/SIRH_JOBS_DS4" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
-		poolPreparedStatements="true" />
+	<Resource name="jdbc/SIRH_JOBS_DS4" auth="Container"
+		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
+		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
+		password="***REMOVED***" driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
 
-	<Resource name="jdbc/SIRH_JOBS_DS5" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
-		poolPreparedStatements="true" />
-		
+	<Resource name="jdbc/SIRH_JOBS_DS5" auth="Container"
+		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
+		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
+		password="***REMOVED***" driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
+
 	<!-- Mail Server conf -->
-	<Resource name="mail/MailServer" auth="Container"
-               type="javax.mail.Session"
-               mail.debug="false"
-               mail.user="SIRH EAEs"
-               mail.from="noreply@ville-noumea.nc"
-               mail.transport.protocol="smtp"
-               mail.smtp.host= "smtp"
-               mail.smtp.auth= "false"
-               mail.smtp.port= "25"
-               mail.smtp.starttls.enable="false"
-               description="Global E-Mail Resource"
-               />
+	<Resource name="mail/MailServer" auth="Container" type="javax.mail.Session"
+		mail.debug="false" mail.user="SIRH EAEs" mail.from="noreply@ville-noumea.nc"
+		mail.transport.protocol="smtp" mail.smtp.host="smtp" mail.smtp.auth="false"
+		mail.smtp.port="25" mail.smtp.starttls.enable="false" description="Global E-Mail Resource" />
 
 	<!-- Parameters for eaeCampagneActionNotificationsJob -->
-	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives" type="java.lang.Integer"
-		description="Maximum number of tentatives of retry on errors before giving up sending notifications" 
-		value="3"
-		override="false" />
-	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
-		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored" 
-		value="file:///home/nicolas/docs_sirh/"
-		override="false" />
-	
+	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives"
+		type="java.lang.Integer"
+		description="Maximum number of tentatives of retry on errors before giving up sending notifications"
+		value="3" override="false" />
+	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
+		type="java.lang.String"
+		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
+		value="file:///home/nicolas/docs_sirh/" override="false" />
+
 	<!-- AD connection information -->
 	<Environment name="ad/connectionURL" type="java.lang.String"
-		description="Url of the LDAP server" 
-		value="ldap://hurle.site-mairie.noumea.nc:389"
+		description="Url of the LDAP server" value="ldap://hurle.site-mairie.noumea.nc:389"
 		override="false" />
 	<Environment name="ad/connectionURL2" type="java.lang.String"
-		description="Url of the LDAP server" 
-		value="ldap://gberge.site-mairie.noumea.nc:389"
+		description="Url of the LDAP server" value="ldap://gberge.site-mairie.noumea.nc:389"
 		override="false" />
 	<Environment name="ad/connectionURL3" type="java.lang.String"
-		description="Url of the LDAP server" 
-		value="ldap://netone.site-mairie.noumea.nc:389"
+		description="Url of the LDAP server" value="ldap://netone.site-mairie.noumea.nc:389"
 		override="false" />
 	<Environment name="ad/userBase" type="java.lang.String"
-		description="Read-only user Dn for SIRH jobs application" 
+		description="Read-only user Dn for SIRH jobs application"
 		value="cn=adminwas,ou=was,ou=appli,ou=z-users,dc=site-mairie,dc=noumea,dc=nc"
 		override="false" />
 	<Environment name="ad/userPassword" type="java.lang.String"
-		description="Password for the above defined ldap user" 
-		value="planet"
+		description="Password for the above defined ldap user" value="planet"
 		override="false" />
 	<Environment name="ad/baseDn" type="java.lang.String"
-		description="base directory for querying ldap" 
-		value="dc=site-mairie,dc=noumea,dc=nc"
+		description="base directory for querying ldap" value="dc=site-mairie,dc=noumea,dc=nc"
 		override="false" />
 	<Environment name="ad/userOu" type="java.lang.String"
-		description="user directory (OU) for querying with matricule number" 
-		value="z-users"
-		override="false" />
-	
+		description="user directory (OU) for querying with matricule number"
+		value="z-users" override="false" />
+
 	<!-- Reporting service -->
 	<Environment name="REPORTING_SERVER_SIRH_REPORT_PATH" type="java.lang.String"
 		description="SIRH-EAE reports path on Birt" value="report/sirh-reports/"
@@ -120,39 +107,36 @@
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
 		description="BIRT report viewer base URL for EAEs reporting" value="http://172.16.24.19:8085/birt/"
 		override="false" />
-	
+
 	<!-- SIRH AVCT printing job -->
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
 		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/temp/"
 		override="false" />
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
-		description="SIRH WS endpoint url for EAEs" value="http://172.16.24.19:8085/sirhws/avancements/getEaesGedIds"
+		description="SIRH WS endpoint url for EAEs"
+		value="http://172.16.24.19:8085/sirhws/avancements/getEaesGedIds"
 		override="false" />
 	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
 		description="CUPS printing server hostname" value="172.16.24.19"
 		override="false" />
 	<Environment name="AVCT_CUPS_SERVER_PORT" type="java.lang.Integer"
-		description="CUPS printing server port" value="631"
-		override="false" />
+		description="CUPS printing server port" value="631" override="false" />
 	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
-		description="CUPS SIRH printer name" value="Printer_SED"
-		override="false" />
+		description="CUPS SIRH printer name" value="Printer_SED" override="false" />
 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
-		 description="URL GED Sharepoint" value="***REMOVED***"
-		 override="false" />
+		description="URL GED Sharepoint"
+		value="***REMOVED***"
+		override="false" />
 	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
-		 description="GED Sharepoint app user" value="admin"
-		 override="false" />
+		description="GED Sharepoint app user" value="admin" override="false" />
 	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
-		 description="GED Sharepoint app pwd" value="admin"
-		 override="false" />
+		description="GED Sharepoint app pwd" value="admin" override="false" />
 
 	<!-- SIRH AVCT DELETE DOCS JOB -->
 	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
-		 description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)" 
-		 value="21600000"
-		 override="false" />
-		 
+		description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)"
+		value="21600000" override="false" />
+
 	<!-- SIRH PTG Ventilation job -->
 	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String"
 		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="ventilation/processTask?idVentilTask="
@@ -163,24 +147,25 @@
 		description="sirh-ptg-ws Url endpoint for exporting a Task" value="exportPaie/processTask?idExportPaieTask="
 		override="false" />
 	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)" value="exportPaie/stop?typeChainePaie="
-		override="false" />
-		
+		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)"
+		value="exportPaie/stop?typeChainePaie=" override="false" />
+
 	<!-- SIRH PTG Export Etats Payeur job -->
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task" value="etatsPayeur/startExportTask?idExportEtatsPayeurTask="
-		override="false" />
+		description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task"
+		value="etatsPayeur/startExportTask?idExportEtatsPayeurTask=" override="false" />
 	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)" value="etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
+		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)"
+		value="etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
 		override="false" />
-	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" type="java.lang.String"
-		description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process" value="etatsPayeur/stop?typeChainePaie="
-		override="false" />
-		
+	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL"
+		type="java.lang.String" description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process"
+		value="etatsPayeur/stop?typeChainePaie=" override="false" />
+
 	<Environment name="SIRH_PTG_WS_ETAT_POINTAGE_URL" type="java.lang.String"
 		description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" value="etatPointage/majEtatPointagesByListId"
 		override="false" />
-		
+
 	<!-- ReposComp Job service parameters -->
 	<Environment name="SIRH_PTG_WS_BASE_URL" type="java.lang.String"
 		description="sirh-ptg-ws base Url endpoint" value="http://172.16.24.19:8085/sirh-ptg-ws/"
@@ -188,14 +173,19 @@
 	<Environment name="SIRH_PTG_WS_RC_TASK_URL_PART" type="java.lang.String"
 		description="sirh-ptg-ws base Url endpoint" value="reposcomp/startReposCompTask?idReposCompTask="
 		override="false" />
-		
-	<!--Job demande prises  -->
+
+	<!--Job demande prises -->
 	<Environment name="SIRH_ABS_WS_BASE_URL" type="java.lang.String"
-		description="sirh-abs-ws base Url endpoint" value="http://localhost:8090/sirh-abs-ws/"
+		description="sirh-abs-ws base Url endpoint" value="http://172.16.24.19:8085/sirh-abs-ws/"
 		override="false" />
-		
+
 	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an Etat Pris Task" value="demandes/etatsPris"
 		override="false" />
-	
+		
+	<!--Job suppression demandes provisoires -->
+	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
+		description="sirh-abs-ws Url endpoint for an absence suppression Task"
+		value="demandes/supprimerDemandes" override="false" />
+
 </Context>
