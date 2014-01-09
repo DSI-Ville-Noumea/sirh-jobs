@@ -66,10 +66,10 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 				result = downloadDocumentService.downloadDocumentAs(ReturnMessageDto.class, url, map);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
-				incidentLoggerService.logIncident("AbsenceSupprimerJob", "Erreur:", ex);
+				incidentLoggerService.logIncident("AbsenceSupprimerJob", ex.getCause().getMessage(), ex);
 			}
 			
-			if (result.getErrors().size() != 0) {
+			if (result != null && result.getErrors().size() != 0) {
 				for (String err : result.getErrors()) {
 					logger.info(err);
 				}

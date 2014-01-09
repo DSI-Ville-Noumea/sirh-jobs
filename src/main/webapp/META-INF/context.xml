@@ -179,8 +179,9 @@
 		description="sirh-abs-ws base Url endpoint" value="http://172.16.24.19:8085/sirh-abs-ws/"
 		override="false" />
 
+	<!--Job maj des demandes à l'état PRIS -->
 	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String"
-		description="sirh-abs-ws Url endpoint for an Etat Pris Task" value="demandes/etatsPris"
+		description="sirh-abs-ws Url endpoint for an Etat Pris Task" value="demandes/updateToEtatPris"
 		override="false" />
 		
 	<!--Job suppression demandes provisoires -->
