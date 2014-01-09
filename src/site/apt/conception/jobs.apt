@@ -227,3 +227,48 @@ Liste des Jobs QUARTZ de l'application
 ** Périodicité
  
  Toutes les 5 minutes de 20h à 24h  - CRON: [0 0/5 20-0 * * ?]
+
+ 
+* AbsencePriseJob
+
+ Ce job sert à passer les demandes de l'état APPROUVEE à l'état PRISE de manière automatique lorsque la date de l'absence est égale à la date du jour.
+ 
+** Input
+ 
+ - Table ABS.ABS_DEMANDE & ABS.ABD_ETAT_DEMANDE
+ 
+** Process
+ 
+ - Pour chacune des demandes à l'état APPROUVEE et dont la date est antérieure ou égale à la date du jour, mise à jour de l'état à PRISE.
+ 
+** Paramètres context
+ 
+ - <<SIRH_ABS_WS_BASE_URL>> : URL de l'application SIRH-ABS-WS.
+ 
+ - <<SIRH_ABS_WS_ETAT_ABSENCE_URL>> : URL part du webservice de mise à jour de l'état.
+ 
+** Périodicité
+ 
+ Tous les jours à 7h - CRON: [0 0 7 * * ?]
+ 
+* AbsenceSupprimerJob
+
+ Ce job sert à supprimer les demandes à l'état PROVISOIRE dont la date est passée.
+
+** Input
+ 
+ - Table ABS.ABS_DEMANDE & ABS.ABD_ETAT_DEMANDE
+ 
+** Process
+ 
+ - Pour chacune des demandes à l'état PROVISOIRE et dont la date est antérieure ou égale à la date du jour, supprimer la demande.
+ 
+** Paramètres context
+ 
+ - <<SIRH_ABS_WS_BASE_URL>> : URL de l'application SIRH-ABS-WS.
+ 
+ - <<SIRH_ABS_WS_SUPP_ABSENCE_URL>> : URL part du webservice de suppression des demandes.
+ 
+** Périodicité
+ 
+ Tous les jours à 7h15 - CRON: [0 15 7 * * ?]

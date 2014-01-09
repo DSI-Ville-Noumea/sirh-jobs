@@ -174,7 +174,7 @@
 		description="sirh-ptg-ws base Url endpoint" value="reposcomp/startReposCompTask?idReposCompTask="
 		override="false" />
 
-	<!--Job demande prises -->
+	<!--Job Absences -->
 	<Environment name="SIRH_ABS_WS_BASE_URL" type="java.lang.String"
 		description="sirh-abs-ws base Url endpoint" value="http://172.16.24.19:8085/sirh-abs-ws/"
 		override="false" />
