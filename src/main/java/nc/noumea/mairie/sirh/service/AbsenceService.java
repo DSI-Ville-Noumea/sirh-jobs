@@ -7,16 +7,14 @@ import java.util.Map;
 
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
-import nc.noumea.mairie.sirh.ws.BaseWsConsumer;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.sun.jersey.api.client.ClientResponse;
-
 @Service
-public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
+public class AbsenceService implements IAbsenceService {
 
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_Base_URL")
@@ -30,6 +28,12 @@ public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
 	@Qualifier("SIRH_ABS_WS_suppressionAbsenceUrl")
 	private String suppressionAbsenceUrl;
 
+	@Autowired
+	private IDownloadDocumentService downloadDocumentService;
+	
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
+	
 	@Autowired
 	private IAbsencesDao absencesDao;
 
@@ -63,46 +67,13 @@ public class AbsenceService extends BaseWsConsumer implements IAbsenceService {
 
 			String url = String.format("%s%s", SIRH_ABS_WS_Base_URL, etatAbsenceUrl);
 
-			ClientResponse res = createAndFirePostRequest(map, url);
+			try {
+				String result = downloadDocumentService.downloadDocumentAs(String.class, url, map);
+			} catch (Exception ex) {
 
-			readResponse(res, url);
+			}
 		}
 
-	}
-
-	@Override
-	public void supprimerAbsencesProvisoires() {
-
-		absencesDao.beginTransaction();
-
-		supprimerAbsences(EtatAbsenceEnum.PROVISOIRE);
-
-		absencesDao.commitTransaction();
-	}
-
-	private void supprimerAbsences(EtatAbsenceEnum etat) {
-
-		List<Integer> listEp = absencesDao.getListeAbsWithEtat(etat);
-
-		if (listEp != null) {
-			String csvIdDemande = "";
-			for (Integer i : listEp) {
-				csvIdDemande += i + ",";
-			}
-			if (csvIdDemande.endsWith(",")) {
-				csvIdDemande = csvIdDemande.substring(0, csvIdDemande.length() - 1);
-			}
-
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("listIdDemande", csvIdDemande);
-
-			String url = String.format("%s%s", SIRH_ABS_WS_Base_URL, suppressionAbsenceUrl);
-
-			ClientResponse res = createAndFirePostRequest(map, url);
-
-			readResponse(res, url);
-		}
-		
 	}
 
 }

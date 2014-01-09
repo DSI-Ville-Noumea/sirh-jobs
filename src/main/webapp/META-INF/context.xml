@@ -186,6 +186,6 @@
 	<!--Job suppression demandes provisoires -->
 	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an absence suppression Task"
-		value="demandes/supprimerDemandes" override="false" />
+		value="demandes/supprimerDemandeProvisoire" override="false" />
 
 </Context>
