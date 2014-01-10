@@ -24,13 +24,13 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 
 	public void downloadDocumentToLocalPath(String url, Map<String, String> urlParameters, String localPath) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters, false);
+		ClientResponse response = createAndFireRequest(url, urlParameters);
 		readResponseIntoFile(response, url, urlParameters, localPath);
 	}
 	
 	public <R> R downloadDocumentAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters, false);
+		ClientResponse response = createAndFireRequest(url, urlParameters);
 		return readResponseAs(resultClass, response, url, urlParameters);
 	}
 
@@ -46,8 +46,12 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 
 	public <R> List<R> downloadJsonDocumentAsList(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters, false);
+		ClientResponse response = createAndFireRequest(url, urlParameters);
 		return readJsonResponseAsList(response, url, urlParameters);
+	}
+	
+	protected ClientResponse createAndFireRequest(String url, Map<String, String> urlParameters) {
+		return createAndFireRequest(url, urlParameters, false);
 	}
 	
 	protected ClientResponse createAndFireRequest(String url, Map<String, String> urlParameters, boolean isPost) {

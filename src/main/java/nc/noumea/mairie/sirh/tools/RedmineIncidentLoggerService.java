@@ -4,10 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.taskadapter.redmineapi.RedmineException;
-import com.taskadapter.redmineapi.RedmineManager;
-import com.taskadapter.redmineapi.bean.Issue;
-
 @Service
 public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
@@ -23,16 +19,16 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
 		logger.info("Logging into redmine {}, {}, {}...", jobName, message, ex);
 		
-		RedmineManager mgr = new RedmineManager(redmineHost, apiAccessKey);
-		
-		Issue issueToCreate = new Issue();
-	    issueToCreate.setSubject("This is the summary line 123");
-	    try {
-			Issue newIssue = mgr.createIssue("SIRH-JOBS", issueToCreate);
-		} catch (RedmineException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		RedmineManager mgr = new RedmineManager(redmineHost, apiAccessKey);
+//		
+//		Issue issueToCreate = new Issue();
+//	    issueToCreate.setSubject("This is the summary line 123");
+//	    try {
+//			Issue newIssue = mgr.createIssue("SIRH-JOBS", issueToCreate);
+//		} catch (RedmineException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	    
 	}
 	
