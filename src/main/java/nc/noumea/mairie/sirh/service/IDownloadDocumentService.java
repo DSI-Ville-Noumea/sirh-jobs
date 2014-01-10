@@ -10,4 +10,7 @@ public interface IDownloadDocumentService {
 	public <R> R downloadDocumentAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception;
 	
 	public <R> List<R> downloadJsonDocumentAsList(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception;
+	
+	public <R> R postAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception;
+	
 }

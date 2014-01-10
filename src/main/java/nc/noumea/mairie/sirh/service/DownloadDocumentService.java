@@ -24,23 +24,33 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 
 	public void downloadDocumentToLocalPath(String url, Map<String, String> urlParameters, String localPath) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters);
+		ClientResponse response = createAndFireRequest(url, urlParameters, false);
 		readResponseIntoFile(response, url, urlParameters, localPath);
 	}
 	
 	public <R> R downloadDocumentAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters);
+		ClientResponse response = createAndFireRequest(url, urlParameters, false);
 		return readResponseAs(resultClass, response, url, urlParameters);
+	}
+
+	public <R> R postAs(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
+		
+		ClientResponse response = createAndFireRequest(url, urlParameters, true);
+		
+		String responseAsText = readResponseAs(String.class, response, url, urlParameters);
+		
+		R result = resultClass.newInstance();
+		return new JSONDeserializer<R>().deserializeInto(responseAsText, result);
 	}
 
 	public <R> List<R> downloadJsonDocumentAsList(Class<R> resultClass, String url, Map<String, String> urlParameters) throws Exception {
 		
-		ClientResponse response = createAndFireRequest(url, urlParameters);
+		ClientResponse response = createAndFireRequest(url, urlParameters, false);
 		return readJsonResponseAsList(response, url, urlParameters);
 	}
 	
-	protected ClientResponse createAndFireRequest(String url, Map<String, String> urlParameters) {
+	protected ClientResponse createAndFireRequest(String url, Map<String, String> urlParameters, boolean isPost) {
 		
 		Client client = Client.create();
 
@@ -52,7 +62,12 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 			}
 		}
 		
-		ClientResponse response = webResource.get(ClientResponse.class);
+		ClientResponse response = null;
+		
+		if (isPost)
+			response = webResource.post(ClientResponse.class);
+		else
+			response = webResource.get(ClientResponse.class);
 		
 		return response;
 	}

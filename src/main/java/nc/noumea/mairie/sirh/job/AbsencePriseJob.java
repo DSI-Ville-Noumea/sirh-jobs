@@ -53,8 +53,12 @@ public class AbsencePriseJob extends QuartzJobBean {
 		
 		logger.info("Start AbsencePriseJob");
 		
+		absencesDao.beginTransaction();
+		
 		List<Integer> listEp = absencesDao.getListeAbsWithEtat(EtatAbsenceEnum.APPROUVEE);
 		logger.info("Found {} demandes to update...", listEp.size());
+
+		absencesDao.rollBackTransaction();
 		
 		for (Integer idDemande : listEp) {
 			
@@ -67,7 +71,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 			ReturnMessageDto result = null;
 			
 			try {
-				result = downloadDocumentService.downloadDocumentAs(ReturnMessageDto.class, url, map);
+				result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
 				incidentLoggerService.logIncident("AbsencePriseJob", ex.getCause().getMessage(), ex);

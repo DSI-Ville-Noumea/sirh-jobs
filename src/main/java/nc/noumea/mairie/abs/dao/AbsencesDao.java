@@ -32,17 +32,15 @@ public class AbsencesDao implements IAbsencesDao {
 	@Override
 	public List<Integer> getListeAbsWithEtat(EtatAbsenceEnum etat) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select abs.ID_DEMANDE as idEtatDemande from ABS_ETAT_DEMANDE abs ");
-		sb.append("where (abs.ID_DEMANDE, abs.ID_ETAT_DEMANDE) in ");
-		sb.append("(select e.ID_DEMANDE, max(e.ID_ETAT_DEMANDE) as id_abs_etat from ABS_ETAT_DEMANDE e group by e.ID_DEMANDE ) ");
-		sb.append("and abs.DATE <= current_date  and abs.ID_REF_ETAT = :etat ");
+		sb.append("SELECT abs.ID_DEMANDE AS idEtatDemande FROM ABS_ETAT_DEMANDE abs ");
+		sb.append("INNER JOIN ABS_DEMANDE dem ON dem.ID_DEMANDE = abs.ID_DEMANDE ");
+		sb.append("WHERE (abs.ID_DEMANDE, abs.ID_ETAT_DEMANDE) in ");
+		sb.append("(SELECT e.ID_DEMANDE, max(e.ID_ETAT_DEMANDE) AS id_abs_etat FROM ABS_ETAT_DEMANDE e GROUP BY e.ID_DEMANDE ) ");
+		sb.append("AND dem.DATE_DEBUT <= current_date AND abs.ID_REF_ETAT = :etat ");
 
 		@SuppressWarnings("unchecked")
 		List<Integer> result = absSessionFactory.getCurrentSession().createSQLQuery(sb.toString())
 				.addScalar("idEtatDemande", StandardBasicTypes.INTEGER).setParameter("etat", etat.getCodeEtat()).list();
-
-		if (null == result || result.size() == 0)
-			return null;
 
 		return result;
 	}
