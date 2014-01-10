@@ -158,7 +158,6 @@
 		</dependency>
 
 		<!-- NHibernate -->
-		<!-- Not using 4.3.0.Final because of crash at startup of app #52503 -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
