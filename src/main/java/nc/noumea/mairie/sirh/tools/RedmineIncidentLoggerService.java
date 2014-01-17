@@ -1,35 +1,97 @@
 package nc.noumea.mairie.sirh.tools;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.CustomField;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
 
 @Service
 public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
-	private Logger logger = LoggerFactory.getLogger(RedmineIncidentLoggerService.class);
+	private Logger logger = LoggerFactory.getLogger(RedmineIncidentLoggerServiceTest.class);
+
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_API_URL")
+	private String redmineHost;
+
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_API_KEY")
+	private String apiAccessKey;
+
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_PROJECT_KEY")
+	private String projectKey;
+
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_ENV")
+	private String environnment;
+
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME")
+	private String incidentTrackerName;
 	
-	private static String redmineHost = "https://www.hostedredmine.com";
-    private static String apiAccessKey = "a3221bfcef5750219bd0a2df69519416dba17fc9";
-    private static String projectKey = "taskconnector-test";
-    private static Integer queryId = null; // any
-    
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID")
+	private Integer customFieldEnvironmentId;
+	
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME")
+	private String customFieldEnvironmentName;
+	
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID")
+	private Integer customFieldJobNameId;
+	
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME")
+	private String customFieldJobNameName;
+	
 	@Override
 	public void logIncident(String jobName, String message, Throwable ex) {
 
 		logger.info("Logging into redmine {}, {}, {}...", jobName, message, ex);
+
+		if (environnment == null || environnment == "") {
+			logger.info("Environment variable is not properly set: SIRH-JOBS will not create the redmine issue.");
+			return;
+		}
 		
-//		RedmineManager mgr = new RedmineManager(redmineHost, apiAccessKey);
-//		
-//		Issue issueToCreate = new Issue();
-//	    issueToCreate.setSubject("This is the summary line 123");
-//	    try {
-//			Issue newIssue = mgr.createIssue("SIRH-JOBS", issueToCreate);
-//		} catch (RedmineException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	    
+		if (jobName == null || jobName == "") {
+			logger.info("JobName parameter is not properly set: SIRH-JOBS will not create the redmine issue.");
+			return;
+		}
+
+		RedmineManager mgr = new RedmineManager(redmineHost, apiAccessKey);
+
+		try {
+			Tracker incidentTracker = mgr.getProjectByKey(projectKey).getTrackerByName(incidentTrackerName);
+			CustomField envField = new CustomField(customFieldEnvironmentId, customFieldEnvironmentName, environnment);
+			CustomField jobNameField = new CustomField(customFieldJobNameId, customFieldJobNameName, jobName);
+
+			Issue issueToCreate = new Issue();
+			issueToCreate.setTracker(incidentTracker);
+			issueToCreate.setSubject(message);
+			
+			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", ex.getMessage(), ExceptionUtils.getStackTrace(ex)));
+//			issueToCreate.getCustomFields().add(envField);
+//			issueToCreate.getCustomFields().add(jobNameField);
+			
+			Issue createdIssue = mgr.createIssue(projectKey, issueToCreate);
+			
+			logger.info("Succesfully created issue #{}", createdIssue.getId());
+
+		} catch (RedmineException e) {
+			logger.error(String.format("An error occured while trying to save the exception and message for job name [%s]", jobName), e);
+		}
+
 	}
-	
+
 }

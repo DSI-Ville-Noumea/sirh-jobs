@@ -222,17 +222,36 @@
 
 	<jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl"
 		jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL" expected-type="java.lang.String" />
-		
+	
 	<!-- Pour les absences -->
 	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL"
 		jndi-name="SIRH_ABS_WS_BASE_URL" expected-type="java.lang.String" />
-
 	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
-
 	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_SUPP_ABSENCE_URL" expected-type="java.lang.String" />
-
+	
+	<!-- Redmine Logger properties -->
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_KEY" jndi-name="SIRH_JOBS_REDMINE_API_KEY"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_URL" jndi-name="SIRH_JOBS_REDMINE_API_URL"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_PROJECT_KEY" jndi-name="SIRH_JOBS_REDMINE_PROJECT_KEY"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_ENV" jndi-name="SIRH_JOBS_REDMINE_ENV"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME" jndi-name="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID" jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID"
+		expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME" jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID" jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID"
+		expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME" jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
+		expected-type="java.lang.String" />
+	
+	
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
@@ -241,5 +260,5 @@
 		<property name="configLocation" value="classpath:quartz.properties" />
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 	</bean>
-
+	
 </beans>

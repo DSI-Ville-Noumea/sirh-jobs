@@ -188,5 +188,42 @@
 	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an absence suppression Task"
 		value="demandes/supprimerDemandeProvisoire" override="false" />
+		
+	<!-- Redmine Logger info -->
+	<Environment name="SIRH_JOBS_REDMINE_API_KEY" type="java.lang.String"
+		description="Redmine authentication api key"
+		value="api-key" override="false" />
 
+	<Environment name="SIRH_JOBS_REDMINE_API_URL" type="java.lang.String"
+		description="Redmine base URL"
+		value="https://redmine.ville-noumea.nc" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_PROJECT_KEY" type="java.lang.String"
+		description="Redmine SIRH-JOBS project key"
+		value="sirh-job" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_ENV" type="java.lang.String"
+		description="SIRH-JOBS environment description for Incidents creation in Redmine"
+		value="DEV" override="false" />
+		
+	<Environment name="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME"
+		type="java.lang.String" description="Redmine SIRH-JOBS project tracker name for Incidents"
+		value="Incident" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID" type="java.lang.Integer"
+		description="Redmine SIRH-JOBS project custom field id for environment"
+		value="12" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME"
+		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for environment"
+		value="environnement" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID"
+		type="java.lang.Integer" description="Redmine SIRH-JOBS project custom field id for jobName"
+		value="13" override="false" />
+
+	<Environment name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
+		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for jobName"
+		value="jobname" override="false" />
+		
 </Context>
