@@ -16,7 +16,7 @@ import com.taskadapter.redmineapi.bean.Tracker;
 @Service
 public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
-	private Logger logger = LoggerFactory.getLogger(RedmineIncidentLoggerServiceTest.class);
+	private Logger logger = LoggerFactory.getLogger(RedmineIncidentLoggerService.class);
 
 	@Autowired
 	@Qualifier("SIRH_JOBS_REDMINE_API_URL")
