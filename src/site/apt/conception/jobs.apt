@@ -251,6 +251,7 @@ Liste des Jobs QUARTZ de l'application
  
  Tous les jours à 7h - CRON: [0 0 7 * * ?]
  
+ 
 * AbsenceSupprimerJob
 
  Ce job sert à supprimer les demandes à l'état PROVISOIRE dont la date est passée.
@@ -272,3 +273,29 @@ Liste des Jobs QUARTZ de l'application
 ** Périodicité
  
  Tous les jours à 7h15 - CRON: [0 15 7 * * ?]
+ 
+ 
+* EmailsInformationDemandeRecupJob 
+
+ Ce job sert à envoyer les emails d'informations aux viseurs et approbateurs pour signaler les demandes d'absences de la veille à traiter.
+ 
+** Input
+ 
+ - 
+ 
+** Process
+ 
+ - Envoie un email d'information pour chaque viseur qui aurait au moins une demande à l'état SAISIE, saisie la veille à valider.
+ 
+ - Envoie un email d'information pour chaque approbateur qui aurait au moins une demande à l'état SAISIE, VISSE_F ou VISEE_D, saisie la veille à valider.
+ 
+** Paramètres context
+ 
+ - <<SIRH_ABS_WS_BASE_URL>> : URL de l'application SIRH-ABS-WS.
+ 
+ - <<SIRH_ABS_WS_EMAIL_INFO_URL>> : URL du webservice retournant la liste des viseurs et approbateurs à avertir.
+ 
+** Périodicité
+ 
+ Tous les jours à 7h - CRON: [0 0 7 * * ?]
+ 

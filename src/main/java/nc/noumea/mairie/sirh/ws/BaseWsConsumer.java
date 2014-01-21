@@ -10,8 +10,13 @@ import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+import flexjson.JSONDeserializer;
+
 public abstract class BaseWsConsumer {
 	
+	public ClientResponse createAndFireGetRequest(Map<String, String> parameters, String url) {
+		return createAndFireRequest(parameters, url, false, null);
+	}
 	
 	public ClientResponse createAndFirePostRequest(Map<String, String> parameters, String url) {
 		return createAndFireRequest(parameters, url, true, null);
@@ -50,5 +55,35 @@ public abstract class BaseWsConsumer {
 		
 		throw new WSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s, content is %s", 
 				url, response.getStatus(), response.getEntity(String.class)));
+	}
+	
+	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
+
+		T result = null;
+
+		try {
+
+			result = targetClass.newInstance();
+
+		} catch (Exception ex) {
+			throw new WSConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from WS request.", ex);
+		}
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new WSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s, content is %s", url,
+					response.getStatus(), response.getEntity(String.class)));
+		}
+
+		String output = response.getEntity(String.class);
+
+		result = new JSONDeserializer<T>().deserializeInto(output, result);
+
+		return result;
 	}
 }

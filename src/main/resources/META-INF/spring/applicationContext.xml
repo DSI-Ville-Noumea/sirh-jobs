@@ -230,6 +230,12 @@
 		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_SUPP_ABSENCE_URL" expected-type="java.lang.String" />
+		<!-- pour les emails d information des absences -->
+	<jee:jndi-lookup id="SIRH_ABS_WS_emailInformationUrl"
+		jndi-name="SIRH_ABS_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="numberOfTriesEmailInformation"
+		jndi-name="emailInformationJob.numberOfTentatives"
+		expected-type="java.lang.Integer" />
 	
 	<!-- Redmine Logger properties -->
 	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_KEY" jndi-name="SIRH_JOBS_REDMINE_API_KEY"
