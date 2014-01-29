@@ -56,7 +56,7 @@ public class EmailsInformationDemandeRecupJobTest {
 			}
 		}).when(mailSender).send(Mockito.isA(MimeMessagePreparator.class));
 		 
-		EmailsInformationDemandeRecupJob service = new EmailsInformationDemandeRecupJob();
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "mailSender", mailSender);
@@ -96,7 +96,7 @@ public class EmailsInformationDemandeRecupJobTest {
 				}
 			}).when(agentLdapDao).retrieveAgentFromLdapFromMatricule("90");
 		
-		EmailsInformationDemandeRecupJob service = new EmailsInformationDemandeRecupJob();
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "agentLdapDao", agentLdapDao);
@@ -133,7 +133,7 @@ public class EmailsInformationDemandeRecupJobTest {
 		IAgentLdapDao agentLdapDao = Mockito.mock(IAgentLdapDao.class);
 			when(agentLdapDao.retrieveAgentFromLdapFromMatricule("90")).thenReturn(new AgentLdap());
 			
-		EmailsInformationDemandeRecupJob service = new EmailsInformationDemandeRecupJob();
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "agentLdapDao", agentLdapDao);
@@ -170,7 +170,7 @@ public class EmailsInformationDemandeRecupJobTest {
 		IAgentLdapDao agentLdapDao = Mockito.mock(IAgentLdapDao.class);
 			when(agentLdapDao.retrieveAgentFromLdapFromMatricule("90")).thenReturn(new AgentLdap());
 			
-		EmailsInformationDemandeRecupJob service = new EmailsInformationDemandeRecupJob();
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "agentLdapDao", agentLdapDao);
@@ -209,7 +209,7 @@ public class EmailsInformationDemandeRecupJobTest {
 		IAgentLdapDao agentLdapDao = Mockito.mock(IAgentLdapDao.class);
 			when(agentLdapDao.retrieveAgentFromLdapFromMatricule("90")).thenReturn(new AgentLdap());
 			
-		EmailsInformationDemandeRecupJob service = new EmailsInformationDemandeRecupJob();
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "agentLdapDao", agentLdapDao);

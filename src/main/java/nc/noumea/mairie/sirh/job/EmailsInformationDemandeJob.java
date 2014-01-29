@@ -28,9 +28,9 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
 @DisallowConcurrentExecution
-public class EmailsInformationDemandeRecupJob extends QuartzJobBean {
+public class EmailsInformationDemandeJob extends QuartzJobBean {
 
-	private Logger logger = LoggerFactory.getLogger(EmailsInformationDemandeRecupJob.class);
+	private Logger logger = LoggerFactory.getLogger(EmailsInformationDemandeJob.class);
 	
 	@Autowired
 	private Helper helper;
@@ -115,7 +115,7 @@ public class EmailsInformationDemandeRecupJob extends QuartzJobBean {
 		// Get the assignee email address for To
 		String idAgentConverted = helper.convertIdAgentToADId(idAgent);
 		AgentLdap agentTo = agentLdapDao.retrieveAgentFromLdapFromMatricule(idAgentConverted);
-		
+		agentTo.setMail("johann.REBOULLEAU@ville-noumea.nc");
 		// Send the email
 		sendEmail(agentTo, theDate, stringSubject);
 	}
@@ -132,7 +132,7 @@ public class EmailsInformationDemandeRecupJob extends QuartzJobBean {
 	            
 	            // Set the body with velocity
 	            String text = VelocityEngineUtils.mergeTemplateIntoString(
-	               velocityEngine, "templates/sirhEmailInformationRecupTemplate.vm", "UTF-8", null);
+	               velocityEngine, "templates/sirhEmailInformationTemplate.vm", "UTF-8", null);
 	            message.setText(text, true);
 	            
 	            // Set the subject
