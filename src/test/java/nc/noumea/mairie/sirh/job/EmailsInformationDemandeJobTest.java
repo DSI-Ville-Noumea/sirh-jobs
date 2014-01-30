@@ -25,7 +25,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class EmailsInformationDemandeRecupJobTest {
+public class EmailsInformationDemandeJobTest {
 
 	private static Helper helperMock;
 	private static Date theDate;
@@ -39,7 +39,7 @@ public class EmailsInformationDemandeRecupJobTest {
 	}
 	
 	@Test
-	public void EmailsInformationDemandeRecupJob_NoEmailToSend_noDestinataire() throws AbsEmailsInformationException {
+	public void EmailsInformationDemandeJob_NoEmailToSend_noDestinataire() throws AbsEmailsInformationException {
 		
 		EmailInfoDto dto = new EmailInfoDto();
 			dto.setListApprobateurs(new ArrayList<Integer>());
@@ -69,7 +69,7 @@ public class EmailsInformationDemandeRecupJobTest {
 	}
 	
 	@Test
-	public void EmailsInformationDemandeRecupJob_NoEmailToSend_oneApprobateur_noExistintLDAP() throws AbsEmailsInformationException, AgentLdapDaoException {
+	public void EmailsInformationDemandeJob_NoEmailToSend_oneApprobateur_noExistintLDAP() throws AbsEmailsInformationException, AgentLdapDaoException {
 		
 		List<Integer> listApprobateur = new ArrayList<Integer>();
 			listApprobateur.add(9);
@@ -110,7 +110,7 @@ public class EmailsInformationDemandeRecupJobTest {
 	}
 	
 	@Test
-	public void EmailsInformationDemandeRecupJob_OneEmailToSend_OneApprobateur() throws AbsEmailsInformationException, AgentLdapDaoException {
+	public void EmailsInformationDemandeJob_OneEmailToSend_OneApprobateur() throws AbsEmailsInformationException, AgentLdapDaoException {
 		
 		List<Integer> listApprobateur = new ArrayList<Integer>();
 			listApprobateur.add(9);
@@ -147,7 +147,7 @@ public class EmailsInformationDemandeRecupJobTest {
 	}
 	
 	@Test
-	public void EmailsInformationDemandeRecupJob_OneEmailToSend_OneViseur() throws AbsEmailsInformationException, AgentLdapDaoException {
+	public void EmailsInformationDemandeJob_OneEmailToSend_OneViseur() throws AbsEmailsInformationException, AgentLdapDaoException {
 		
 		List<Integer> listViseur = new ArrayList<Integer>();
 			listViseur.add(9);
@@ -184,7 +184,7 @@ public class EmailsInformationDemandeRecupJobTest {
 	}
 	
 	@Test
-	public void EmailsInformationDemandeRecupJob_TwoEmailToSend() throws AbsEmailsInformationException, AgentLdapDaoException {
+	public void EmailsInformationDemandeJob_TwoEmailToSend() throws AbsEmailsInformationException, AgentLdapDaoException {
 		
 		List<Integer> listApprobateur = new ArrayList<Integer>();
 			listApprobateur.add(9);

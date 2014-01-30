@@ -275,7 +275,7 @@ Liste des Jobs QUARTZ de l'application
  Tous les jours à 7h15 - CRON: [0 15 7 * * ?]
  
  
-* EmailsInformationDemandeRecupJob 
+* EmailsInformationDemandeJob 
 
  Ce job sert à envoyer les emails d'informations aux viseurs et approbateurs pour signaler les demandes d'absences de la veille à traiter.
  
