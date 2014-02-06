@@ -8,6 +8,7 @@ import javax.mail.internet.MimeMessage;
 import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
 import nc.noumea.mairie.ldap.domain.AgentLdap;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
@@ -50,6 +51,9 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
 	private Integer numberOfTries;
+	
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
 	
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
@@ -97,6 +101,7 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 				} catch(Exception ex) {
 					logger.warn("An error occured while trying to send AbsEmailInformation with idAgent {}.", new Object[] {idAgent});
 					logger.warn("Here follows the exception : ", ex);
+					incidentLoggerService.logIncident("EmailsInformationDemandeJob", ex.getMessage(), ex);
 					nbErrors++;
 				}
 				
