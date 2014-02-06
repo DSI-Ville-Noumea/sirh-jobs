@@ -192,6 +192,20 @@
 		type="java.lang.Integer"
 		description="Maximum number of tentatives of retry on errors before giving up sending email information"
 		value="3" override="false" />
+	
+	<!-- Job Remise A Zero Compteur Repos Comp. -->
+	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL" type="java.lang.String" 
+		description="sirh-abs-ws Url endpoint for previous year counter list" value="reposcomps/getListeCompteurAnneePrecedente" 
+		override="false" />
+	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL" type="java.lang.String" 
+		description="sirh-abs-ws Url endpoint for reset previous year counter" value="reposcomps/resetCompteurAnneePrecedente" 
+		override="false" />
+	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" type="java.lang.String" 
+		description="sirh-abs-ws Url endpoint for current year counter list" value="reposcomps/getListeCompteurAnneeEnCours" 
+		override="false" />
+	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" type="java.lang.String" 
+		description="sirh-abs-ws Url endpoint for reset current year counter" value="reposcomps/resetCompteurAnneenCours" 
+		override="false" />
 		
 	<!--Job suppression demandes provisoires -->
 	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
@@ -209,7 +223,7 @@
 
 	<Environment name="SIRH_JOBS_REDMINE_PROJECT_KEY" type="java.lang.String"
 		description="Redmine SIRH-JOBS project key"
-		value="sirh-job" override="false" />
+		value="sirh-jobs" override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_ENV" type="java.lang.String"
 		description="SIRH-JOBS environment description for Incidents creation in Redmine"
