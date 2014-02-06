@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -84,6 +86,28 @@ public abstract class BaseWsConsumer {
 
 		result = new JSONDeserializer<T>().deserializeInto(output, result);
 
+		return result;
+	}
+	
+	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
+		List<T> result = null;
+		result = new ArrayList<T>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new WSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s, content is %s", url,
+					response.getStatus(), response.getEntity(String.class)));
+		}
+
+		String output = response.getEntity(String.class);
+		
+		result = new JSONDeserializer<List<T>>().use(null, ArrayList.class)
+				.use("values", targetClass).deserialize(output);
+		
 		return result;
 	}
 }

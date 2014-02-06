@@ -236,6 +236,16 @@
 	<jee:jndi-lookup id="numberOfTriesEmailInformation"
 		jndi-name="emailInformationJob.numberOfTentatives"
 		expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneePrecedenteUrl"
+		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneePrecedenteUrl"
+		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneeEnCoursUrl"
+		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl"
+		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+	
+	
 	
 	<!-- Redmine Logger properties -->
 	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_KEY" jndi-name="SIRH_JOBS_REDMINE_API_KEY"
