@@ -12,6 +12,7 @@ import nc.noumea.mairie.ldap.dao.AgentLdapDaoException;
 import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
 import nc.noumea.mairie.ldap.domain.AgentLdap;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
@@ -96,14 +97,22 @@ public class EmailsInformationDemandeJobTest {
 				}
 			}).when(agentLdapDao).retrieveAgentFromLdapFromMatricule("90");
 		
+		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
+			Mockito.doAnswer(new Answer<Object>() {
+				public Object answer(InvocationOnMock invocation) { 
+					return true;
+				}
+			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+			
 		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 			ReflectionTestUtils.setField(service, "helper", helperMock);
 			ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
 			ReflectionTestUtils.setField(service, "agentLdapDao", agentLdapDao);
 			ReflectionTestUtils.setField(service, "numberOfTries", 2);
 			ReflectionTestUtils.setField(service, "mailSender", mailSender);
+			ReflectionTestUtils.setField(service, "incidentLoggerService", incidentLoggerService);
 		
-		service.sendEmailsInformation();		
+		service.sendEmailsInformation();
 		
 		// Then
 		verify(mailSender, times(0)).send(Mockito.isA(MimeMessagePreparator.class));
