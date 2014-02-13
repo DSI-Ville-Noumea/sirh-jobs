@@ -318,7 +318,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 		// GET url from sharepoint
 		String url = sharepointEaeDocBaseUrl.concat(eaeId);
-		String webDavUri = downloadDocumentService.downloadDocumentAs(String.class, url, null);
+		String webDavUri = downloadDocumentService.downloadDocumentAccesNTLMAs(String.class, url);
 		logger.debug("Sharepoint WS query: URL [{}] Response [{}]", url, webDavUri);
 
 		// format result

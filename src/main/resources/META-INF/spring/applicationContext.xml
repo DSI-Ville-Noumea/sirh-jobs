@@ -190,6 +190,16 @@
 	<jee:jndi-lookup id="gedWebdavUser" jndi-name="AVCT_GED_WEBDAV_USER"
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="AVCT_GED_WEBDAV_PWD"
+		expected-type="java.lang.String" />		
+	<jee:jndi-lookup id="kiosqueUserWebdav" jndi-name="USER_SHAREPOINT_WEBDAV_EAE"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="kiosqueUserPwsWebdav" jndi-name="USER_PWD_SHAREPOINT_WEBDAV_EAE"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="kiosqueDomainWebdav" jndi-name="DOMAIN_SHAREPOINT_WEBDAV_EAE"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="kiosqueUrlWebdav" jndi-name="URL_SHAREPOINT_WEBDAV_EAE"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="kiosquePortWebdav" jndi-name="PORT_SHAREPOINT_WEBDAV_EAE"
 		expected-type="java.lang.String" />
 
 	<!-- EraseAvancementsWithEaesMassPrintDocumentsJob parameters -->

@@ -125,12 +125,31 @@
 		description="CUPS SIRH printer name" value="Printer_SED" override="false" />
 	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
 		description="URL GED Sharepoint"
-		value="***REMOVED***"
+		value="http://***REMOVED***/kiosque-rh/_layouts/Noumea.RH.Eae/GetWebDavUrl.aspx?ID="
 		override="false" />
 	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
 		description="GED Sharepoint app user" value="admin" override="false" />
 	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
 		description="GED Sharepoint app pwd" value="admin" override="false" />
+		
+	<Environment description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false"
+		value="***REMOVED***" />
+	<Environment description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false"
+		value="fum2ndo5" />
+	<Environment description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false"
+		value="SITE-MAIRIE" />
+	<Environment description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false"
+		value="***REMOVED***" />
+	<Environment description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false"
+		value="80" />
+		
+		
+		
 
 	<!-- SIRH AVCT DELETE DOCS JOB -->
 	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
