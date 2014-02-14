@@ -1,17 +1,10 @@
 package nc.noumea.mairie.sirh.tools;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import com.taskadapter.redmineapi.RedmineException;
-import com.taskadapter.redmineapi.RedmineManager;
-import com.taskadapter.redmineapi.bean.CustomField;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.Tracker;
 
 @Service
 public class RedmineIncidentLoggerService implements IIncidentLoggerService {
@@ -59,7 +52,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
 		logger.info("Logging into redmine {}, {}, {}...", jobName, message, ex);
 
-		if (environnment == null || environnment == "") {
+		/*if (environnment == null || environnment == "") {
 			logger.info("Environment variable is not properly set: SIRH-JOBS will not create the redmine issue.");
 			return;
 		}
@@ -90,7 +83,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
 		} catch (RedmineException e) {
 			logger.error(String.format("An error occured while trying to save the exception and message for job name [%s]", jobName), e);
-		}
+		}*/
 
 	}
 
