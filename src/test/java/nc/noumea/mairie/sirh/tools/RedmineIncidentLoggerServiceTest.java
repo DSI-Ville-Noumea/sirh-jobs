@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.tools;
 
+import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class RedmineIncidentLoggerServiceTest {
@@ -21,10 +22,10 @@ public class RedmineIncidentLoggerServiceTest {
 		ReflectionTestUtils.setField(logger, "projectKey", "sirh-jobs");
 		ReflectionTestUtils.setField(logger, "environnment", "TEST");
 		ReflectionTestUtils.setField(logger, "incidentTrackerName", "Incident");
-		ReflectionTestUtils.setField(logger, "customFieldEnvironmentId", 0);
-		ReflectionTestUtils.setField(logger, "customFieldEnvironmentName", "");
-		ReflectionTestUtils.setField(logger, "customFieldJobNameId", 0);
-		ReflectionTestUtils.setField(logger, "customFieldJobNameName", "");
+		ReflectionTestUtils.setField(logger, "customFieldEnvironmentId", 38);
+		ReflectionTestUtils.setField(logger, "customFieldEnvironmentName", "Env");
+		ReflectionTestUtils.setField(logger, "customFieldJobNameId", 37);
+		ReflectionTestUtils.setField(logger, "customFieldJobNameName", "Job");
 		
 		// When
 		logger.logIncident(jobName, message, new Exception("this is the fake exception that needs to be logged in Redmine under Incident."));

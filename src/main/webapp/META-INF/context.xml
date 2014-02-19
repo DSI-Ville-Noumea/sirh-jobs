@@ -254,18 +254,18 @@
 
 	<Environment name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID" type="java.lang.Integer"
 		description="Redmine SIRH-JOBS project custom field id for environment"
-		value="12" override="false" />
+		value="38" override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME"
 		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for environment"
-		value="environnement" override="false" />
+		value="Env" override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID"
 		type="java.lang.Integer" description="Redmine SIRH-JOBS project custom field id for jobName"
-		value="13" override="false" />
+		value="37" override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
 		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for jobName"
-		value="jobname" override="false" />
+		value="Job" override="false" />
 		
 </Context>

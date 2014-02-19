@@ -1,5 +1,12 @@
 package nc.noumea.mairie.sirh.tools;
 
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.CustomField;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +59,12 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
 		logger.info("Logging into redmine {}, {}, {}...", jobName, message, ex);
 
-		/*if (environnment == null || environnment == "") {
+		if (StringUtils.isBlank(environnment)) {
 			logger.info("Environment variable is not properly set: SIRH-JOBS will not create the redmine issue.");
 			return;
 		}
 		
-		if (jobName == null || jobName == "") {
+		if (StringUtils.isBlank(jobName)) {
 			logger.info("JobName parameter is not properly set: SIRH-JOBS will not create the redmine issue.");
 			return;
 		}
@@ -74,8 +81,8 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 			issueToCreate.setSubject(message);
 			
 			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", ex.getMessage(), ExceptionUtils.getStackTrace(ex)));
-//			issueToCreate.getCustomFields().add(envField);
-//			issueToCreate.getCustomFields().add(jobNameField);
+			issueToCreate.getCustomFields().add(envField);
+			issueToCreate.getCustomFields().add(jobNameField);
 			
 			Issue createdIssue = mgr.createIssue(projectKey, issueToCreate);
 			
@@ -83,7 +90,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 
 		} catch (RedmineException e) {
 			logger.error(String.format("An error occured while trying to save the exception and message for job name [%s]", jobName), e);
-		}*/
+		}
 
 	}
 
