@@ -128,9 +128,9 @@
 		value="http://***REMOVED***/kiosque-rh/_layouts/Noumea.RH.Eae/GetWebDavUrl.aspx?ID="
 		override="false" />
 	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
-		description="GED Sharepoint app user" value="admin" override="false" />
+		description="GED Sharepoint app user" value="***REMOVED***" override="false" />
 	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
-		description="GED Sharepoint app pwd" value="admin" override="false" />
+		description="GED Sharepoint app pwd" value="w9qgb340" override="false" />
 		
 	<Environment description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
 		override="false"
