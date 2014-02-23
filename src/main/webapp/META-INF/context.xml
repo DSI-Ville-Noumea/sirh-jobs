@@ -75,6 +75,10 @@
 		type="java.lang.String"
 		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
 		value="file:///home/nicolas/docs_sirh/" override="false" />
+	<!-- <Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
+		type="java.lang.String"
+		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
+		value="file:///cristal/drh$/DRH/SIRH-document/DEV/temp/" override="false" /> -->
 
 	<!-- AD connection information -->
 	<Environment name="ad/connectionURL" type="java.lang.String"
@@ -112,6 +116,9 @@
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
 		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/temp/"
 		override="false" />
+	<!-- <Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
+		description="Temp directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/"
+		override="false" /> -->
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs"
 		value="http://172.16.24.19:8085/sirhws/avancements/getEaesGedIds"
