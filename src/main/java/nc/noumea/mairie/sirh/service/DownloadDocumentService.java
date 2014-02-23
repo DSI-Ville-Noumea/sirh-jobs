@@ -190,20 +190,21 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 	}
 
 	@Override
-	public String downloadDocumentAccesNTLMAs(Class<String> resultClass, String url) throws Exception {
+	public String downloadDocumentAccesNTLMAs(String url) throws Exception {
 
 		HttpResponse response = createAndFireRequestNTLM(url);
-		return readResponseNTLM(resultClass, response, url);
+		return readResponseNTLM(response);
 	}
 
-	private HttpResponse createAndFireRequestNTLM(String url) throws ClientProtocolException, IOException {
+	@Override
+	public HttpResponse createAndFireRequestNTLM(String url) throws ClientProtocolException, IOException {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
 
 		httpclient.getCredentialsProvider().setCredentials(
 				new AuthScope(kiosqueUrlWebdav, Integer.valueOf(kiosquePortWebdav)),
-				new NTCredentials(kiosqueUserWebdav, kiosqueUserPwsWebdav, "", kiosqueDomainWebdav));
+				new NTCredentials(kiosqueUserWebdav, kiosqueUserPwsWebdav, null, kiosqueDomainWebdav));
 
 		HttpHost target = new HttpHost(kiosqueUrlWebdav, Integer.valueOf(kiosquePortWebdav), "http");
 
@@ -220,7 +221,7 @@ public class DownloadDocumentService implements IDownloadDocumentService {
 		return response1;
 	}
 
-	public String readResponseNTLM(Class<String> targetClass, HttpResponse response, String url) {
+	public String readResponseNTLM(HttpResponse response) {
 
 		if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
 			return null;

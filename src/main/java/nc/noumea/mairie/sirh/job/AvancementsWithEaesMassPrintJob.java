@@ -1,8 +1,9 @@
 package nc.noumea.mairie.sirh.job;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.apache.http.HttpResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -99,6 +101,10 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	@Autowired
 	@Qualifier("gedWebdavPwd")
 	private String gedWebdavPwd;
+
+	@Autowired
+	@Qualifier("kiosqueUrlWebdav")
+	private String kiosqueUrlWebdav;
 
 	private FileSystemManager vfsManager;
 
@@ -318,20 +324,25 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 		// GET url from sharepoint
 		String url = sharepointEaeDocBaseUrl.concat(eaeId);
-		String webDavUri = downloadDocumentService.downloadDocumentAccesNTLMAs(String.class, url);
+		String webDavUri = downloadDocumentService.downloadDocumentAccesNTLMAs(url);
 		logger.debug("Sharepoint WS query: URL [{}] Response [{}]", url, webDavUri);
 
 		// format result
 		eaeRemoteFileUri = String.format(webDavUri, gedWebdavUser, gedWebdavPwd);
 
+		String nomEAE = eaeRemoteFileUri.substring(eaeRemoteFileUri.indexOf("EAE_"), eaeRemoteFileUri.length());
+		String urlDocument = "http://" + kiosqueUrlWebdav + "/kiosque-rh/EAE/" + nomEAE;
+
+		HttpResponse response = downloadDocumentService.createAndFireRequestNTLM(urlDocument);
+
 		// Copy doc using downloadDocument
 		logger.debug("Copying [{}] into [{}]", eaeRemoteFileUri, eaeLocalFilePath);
 
-		BufferedInputStream in = null;
+		InputStream in = null;
 		BufferedOutputStream out = null;
 
 		try {
-			in = new BufferedInputStream(getVfsManager().resolveFile(eaeRemoteFileUri).getContent().getInputStream());
+			in = response.getEntity().getContent();
 			out = new BufferedOutputStream(getVfsManager().resolveFile(eaeLocalFilePath).getContent()
 					.getOutputStream(false));
 			IOUtils.copy(in, out);
@@ -341,9 +352,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			IOUtils.closeQuietly(out);
 			IOUtils.closeQuietly(in);
 		}
-
-		// downloadDocumentService.downloadDocumentToLocalPathUsingVfs(eaeRemoteFileUri,
-		// eaeLocalFilePath);
 
 		return eaeLocalFilePath;
 	}
