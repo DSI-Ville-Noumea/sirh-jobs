@@ -120,7 +120,7 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 		// Get the assignee email address for To
 		String idAgentConverted = helper.convertIdAgentToADId(idAgent);
 		AgentLdap agentTo = agentLdapDao.retrieveAgentFromLdapFromMatricule(idAgentConverted);
-		agentTo.setMail("johann.REBOULLEAU@ville-noumea.nc");
+		agentTo.setMail(agentTo.getMail());
 		// Send the email
 		sendEmail(agentTo, theDate, stringSubject);
 	}

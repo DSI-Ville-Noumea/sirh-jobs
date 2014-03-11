@@ -9,8 +9,8 @@ public class MockAgentLdapDao implements IAgentLdapDao {
 	public AgentLdap retrieveAgentFromLdapFromMatricule(String agentId)
 			throws AgentLdapDaoException {
 		AgentLdap a  = new AgentLdap();
-		a.setMail("nicolas.raynaud@ville-noumea.nc");
-		a.setDisplayName("Nicolas Raynaud");
+		a.setMail("noemie.nicolas@ville-noumea.nc");
+		a.setDisplayName("Noémie NICOLAS");
 		
 		return a;
 	}
