@@ -1,6 +1,5 @@
 package nc.noumea.mairie.sirh.tools;
 
-import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class RedmineIncidentLoggerServiceTest {

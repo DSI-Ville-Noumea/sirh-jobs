@@ -3,7 +3,6 @@ package nc.noumea.mairie.sirh.job;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
