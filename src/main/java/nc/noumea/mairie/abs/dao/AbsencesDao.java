@@ -44,4 +44,23 @@ public class AbsencesDao implements IAbsencesDao {
 
 		return result;
 	}
+
+	@Override
+	public List<Integer> getListeAbsWithEtatAndTypeAbsence(List<Integer> listTypeAbs, EtatAbsenceEnum etat) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT abs.ID_DEMANDE AS idEtatDemande FROM ABS_ETAT_DEMANDE abs ");
+		sb.append("INNER JOIN ABS_DEMANDE dem ON dem.ID_DEMANDE = abs.ID_DEMANDE ");
+		sb.append("WHERE (abs.ID_DEMANDE, abs.ID_ETAT_DEMANDE) in ");
+		sb.append("(SELECT e.ID_DEMANDE, max(e.ID_ETAT_DEMANDE) AS id_abs_etat FROM ABS_ETAT_DEMANDE e GROUP BY e.ID_DEMANDE ) ");
+		sb.append("AND dem.DATE_DEBUT <= current_date ");
+		sb.append("AND abs.ID_REF_ETAT = :etat ");
+		sb.append("AND dem.ID_TYPE_DEMANDE in (:listeTypeAbs) ");
+
+		@SuppressWarnings("unchecked")
+		List<Integer> result = absSessionFactory.getCurrentSession().createSQLQuery(sb.toString())
+				.addScalar("idEtatDemande", StandardBasicTypes.INTEGER).setParameter("etat", etat.getCodeEtat())
+				.setParameterList("listeTypeAbs", listTypeAbs).list();
+
+		return result;
+	}
 }
