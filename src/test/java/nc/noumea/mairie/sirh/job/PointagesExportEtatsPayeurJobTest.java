@@ -5,9 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.quartz.JobExecutionException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -76,12 +79,20 @@ public class PointagesExportEtatsPayeurJobTest {
 		IDownloadDocumentService dd = Mockito.mock(IDownloadDocumentService.class);
 		Mockito.doThrow(new Exception("MSG")).when(dd).downloadDocumentAs(String.class, "baseURL199", null);
 		
+		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
+			Mockito.doAnswer(new Answer<Object>() {
+				public Object answer(InvocationOnMock invocation) { 
+					return true;
+				}
+			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+		
 		PointagesExportEtatsPayeurJob job = new PointagesExportEtatsPayeurJob();
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "base");
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurTaskUrl", "URL1");
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurDoneUrl", "URL2");
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
+		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
 		
 		// When
 		job.executeInternal(null);

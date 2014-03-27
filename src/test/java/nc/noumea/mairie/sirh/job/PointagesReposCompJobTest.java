@@ -8,9 +8,12 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.ReposCompTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class PointagesReposCompJobTest {
@@ -92,12 +95,20 @@ public class PointagesReposCompJobTest {
 		Helper h = Mockito.mock(Helper.class);
 		Mockito.when(h.getCurrentDate()).thenReturn(curDate);
 		
+		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
+			Mockito.doAnswer(new Answer<Object>() {
+				public Object answer(InvocationOnMock invocation) { 
+					return true;
+				}
+			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+		
 		PointagesReposCompJob job = new PointagesReposCompJob();
 		ReflectionTestUtils.setField(job, "pointagesDao", pDao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dS);
 		ReflectionTestUtils.setField(job, "helper", h);
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "U-");
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ReposCompTaskUrlPart", "R?");
+		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
 		
 		// When
 		job.executeInternal(null);
