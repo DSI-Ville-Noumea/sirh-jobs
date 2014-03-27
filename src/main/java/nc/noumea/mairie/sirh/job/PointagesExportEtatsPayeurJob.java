@@ -82,7 +82,8 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 		} catch (Exception ex) {
 			logger.error("An error occured trying to process ExportEtatsPayeurTask :", ex);
 			eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
-			incidentLoggerService.logIncident("PointagesExportEtatsPayeurJob", ex.getCause().getMessage(), ex);
+			incidentLoggerService.logIncident("PointagesExportEtatsPayeurJob", ex.getCause() == null ? ex.getMessage()
+					: ex.getCause().getMessage(), ex);
 		}
 
 		// At last we call to stop the process and move the workflow status
