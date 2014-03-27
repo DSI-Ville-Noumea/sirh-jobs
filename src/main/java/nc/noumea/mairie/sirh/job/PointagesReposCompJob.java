@@ -3,6 +3,7 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.ReposCompTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -34,6 +35,9 @@ public class PointagesReposCompJob extends QuartzJobBean {
 	@Autowired
 	@Qualifier("SIRH_PTG_WS_ReposCompTaskUrlPart")
 	private String SIRH_PTG_WS_ReposCompTaskUrlPart;
+
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
 	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -58,6 +62,7 @@ public class PointagesReposCompJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ReposCompTask :", ex);
 				rcT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
+				incidentLoggerService.logIncident("PointagesReposCompJob", ex.getCause().getMessage(), ex);
 			}
 			
 			rcT.setDateCalcul(helper.getCurrentDate());

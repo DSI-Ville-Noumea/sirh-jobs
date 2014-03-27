@@ -5,6 +5,7 @@ import java.util.Date;
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -35,6 +36,9 @@ public class PointagesVentilationJob extends QuartzJobBean {
 	
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;
+
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
 	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
@@ -60,6 +64,7 @@ public class PointagesVentilationJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process VentilTask :", ex);
 				vT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
+				incidentLoggerService.logIncident("PointagesVentilationJob", ex.getCause().getMessage(), ex);
 			}
 			
 			vT.setDateVentilation(new Date());
