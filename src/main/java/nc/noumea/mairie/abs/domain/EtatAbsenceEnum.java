@@ -3,7 +3,7 @@ package nc.noumea.mairie.abs.domain;
 public enum EtatAbsenceEnum {
 
 	PROVISOIRE(0), SAISIE(1), VISEE_FAVORABLE(2), VISEE_DEFAVORABLE(3), APPROUVEE(4), REFUSEE(5), PRISE(6), ANNULEE(7), VALIDEE(
-			8);
+			8), REJETEE(9), EN_ATTENTE(10);
 
 	private int codeEtat;
 
@@ -44,6 +44,10 @@ public enum EtatAbsenceEnum {
 				return ANNULEE;
 			case 8:
 				return VALIDEE;
+			case 9:
+				return REJETEE;
+			case 10:
+				return EN_ATTENTE;
 			default:
 				return null;
 		}
