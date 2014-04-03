@@ -24,6 +24,7 @@
 				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeur</value>
 				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</value>
 				<value>nc.noumea.mairie.sirh.eae.domain.EaeDocument</value>
+				<value>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -286,5 +287,11 @@
 		<property name="configLocation" value="classpath:quartz.properties" />
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 	</bean>
+	
+	<!--Job Calcul Eae -->
+	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_BASE_URL"
+		expected-type="java.lang.String" />
 	
 </beans>
