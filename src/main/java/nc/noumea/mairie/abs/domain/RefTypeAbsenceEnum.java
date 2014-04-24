@@ -2,7 +2,7 @@ package nc.noumea.mairie.abs.domain;
 
 public enum RefTypeAbsenceEnum {
 
-	CONGE_ANNUEL(1), REPOS_COMP(2), RECUP(3), AUTRES(5), MALADIES(6), ASA_A48(7), ASA_A54(8);
+	CONGE_ANNUEL(1), REPOS_COMP(2), RECUP(3), AUTRES(5), MALADIES(6), ASA_A48(7), ASA_A54(8), ASA_A55(9);
 
 	private int type;
 

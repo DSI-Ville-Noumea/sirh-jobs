@@ -60,12 +60,12 @@ public class AbsencePriseJob extends QuartzJobBean {
 		List<Integer> listEpRetRC = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceRecupReposComp(),
 				EtatAbsenceEnum.APPROUVEE);
 		// pour les ASA A48 et A54
-		List<Integer> listEpA48A54 = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceASA(),
+		List<Integer> listEpASA = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceASA(),
 				EtatAbsenceEnum.VALIDEE);
 
 		List<Integer> listEp = new ArrayList<>();
 		listEp.addAll(listEpRetRC);
-		listEp.addAll(listEpA48A54);
+		listEp.addAll(listEpASA);
 		logger.info("Found {} demandes to update...", listEp.size());
 
 		absencesDao.rollBackTransaction();
@@ -101,6 +101,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
 		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A48.getValue());
 		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A54.getValue());
+		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A55.getValue());
 		return listTypeAbsASA;
 	}
 
