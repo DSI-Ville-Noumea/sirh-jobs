@@ -59,7 +59,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 		// pour les RECUP et les REPOS COMP
 		List<Integer> listEpRetRC = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceRecupReposComp(),
 				EtatAbsenceEnum.APPROUVEE);
-		// pour les ASA A48 et A54
+		// pour les ASA A48, A54, A55, A53, A52
 		List<Integer> listEpASA = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceASA(),
 				EtatAbsenceEnum.VALIDEE);
 
@@ -102,6 +102,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A48.getValue());
 		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A54.getValue());
 		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A55.getValue());
+		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A53.getValue());
+		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A52.getValue());
 		return listTypeAbsASA;
 	}
 
