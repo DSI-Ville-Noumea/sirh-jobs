@@ -48,6 +48,7 @@
 				<value>nc.noumea.mairie.sirh.domain.Agent</value>
 				<value>nc.noumea.mairie.sirh.domain.DocumentAssocie</value>
 				<value>nc.noumea.mairie.sirh.domain.AvctCapPrintJob</value>
+				<value>nc.noumea.mairie.sirh.domain.SIIDMA_SIRH</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -255,6 +256,12 @@
 		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl"
 		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+		
+	<!-- Pour RADI -->
+	<jee:jndi-lookup id="RADI_WS_Base_URL"
+		jndi-name="RADI_WS_BASE_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="RADI_WS_SearchUser"
+		jndi-name="RADI_WS_SEARCH_USER_URL" expected-type="java.lang.String" />
 	
 	
 	

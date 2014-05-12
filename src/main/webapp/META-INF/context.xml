@@ -75,10 +75,10 @@
 		type="java.lang.String"
 		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
 		value="file:///home/nicolas/docs_sirh/" override="false" />
-	<!-- <Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
-		type="java.lang.String"
-		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
-		value="file:///cristal/drh$/DRH/SIRH-document/DEV/temp/" override="false" /> -->
+	<!-- <Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" 
+		type="java.lang.String" description="The Commons-vfs2 compatible root path 
+		(with the trailing slash) where SIRH documents are being stored" value="file:///cristal/drh$/DRH/SIRH-document/DEV/temp/" 
+		override="false" /> -->
 
 	<!-- AD connection information -->
 	<Environment name="ad/connectionURL" type="java.lang.String"
@@ -116,12 +116,11 @@
 	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
 		description="Temp directory for SIRH avancements printing job" value="/home/nicolas/temp/"
 		override="false" />
-	<!-- <Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/"
+	<!-- <Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String" description="Temp 
+		directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" 
 		override="false" /> -->
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
-		description="SIRH WS endpoint url for EAEs"
-		value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
+		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
 		override="false" />
 	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
 		description="CUPS printing server hostname" value="172.16.24.19"
@@ -138,25 +137,25 @@
 		description="GED Sharepoint app user" value="***REMOVED***" override="false" />
 	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
 		description="GED Sharepoint app pwd" value="w9qgb340" override="false" />
-		
-	<Environment description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
-		override="false"
+
+	<Environment description="User pour connexion NTLM à Sharepoint"
+		name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="***REMOVED***" />
-	<Environment description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
-		override="false"
-		value="fum2ndo5" />
-	<Environment description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
-		override="false"
+	<Environment description="User Pws pour connexion NTLM à Sharepoint"
+		name="USER_PWD_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false" value="fum2ndo5" />
+	<Environment description="Domain pour connexion NTLM à Sharepoint"
+		name="DOMAIN_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="SITE-MAIRIE" />
-	<Environment description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
-		override="false"
+	<Environment description="URL pour connexion NTLM à Sharepoint"
+		name="URL_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="***REMOVED***" />
-	<Environment description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
-		override="false"
+	<Environment description="PORT pour connexion NTLM à Sharepoint"
+		name="PORT_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="80" />
-		
-		
-		
+
+
+
 
 	<!-- SIRH AVCT DELETE DOCS JOB -->
 	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
@@ -209,52 +208,51 @@
 	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an Etat Pris Task" value="demandes/updateToEtatPris"
 		override="false" />
-	
+
 	<!--Job envoie emails infos Absences -->
 	<Environment name="SIRH_ABS_WS_EMAIL_INFO_URL" type="java.lang.String"
-		description="sirh-abs-ws Url endpoint for email information absence" value="email/listDestinatairesEmailInfo"
-		override="false" />
+		description="sirh-abs-ws Url endpoint for email information absence"
+		value="email/listDestinatairesEmailInfo" override="false" />
 	<Environment name="emailInformationJob.numberOfTentatives"
 		type="java.lang.Integer"
 		description="Maximum number of tentatives of retry on errors before giving up sending email information"
 		value="3" override="false" />
-	
+
 	<!-- Job Remise A Zero Compteur Repos Comp. -->
-	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL" type="java.lang.String" 
-		description="sirh-abs-ws Url endpoint for previous year counter list" value="reposcomps/getListeCompteurAnneePrecedente" 
-		override="false" />
-	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL" type="java.lang.String" 
-		description="sirh-abs-ws Url endpoint for reset previous year counter" value="reposcomps/resetCompteurAnneePrecedente" 
-		override="false" />
-	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" type="java.lang.String" 
-		description="sirh-abs-ws Url endpoint for current year counter list" value="reposcomps/getListeCompteurAnneeEnCours" 
-		override="false" />
-	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" type="java.lang.String" 
-		description="sirh-abs-ws Url endpoint for reset current year counter" value="reposcomps/resetCompteurAnneenCours" 
-		override="false" />
-		
+	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for previous year counter list"
+		value="reposcomps/getListeCompteurAnneePrecedente" override="false" />
+	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for reset previous year counter"
+		value="reposcomps/resetCompteurAnneePrecedente" override="false" />
+	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for current year counter list"
+		value="reposcomps/getListeCompteurAnneeEnCours" override="false" />
+	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for reset current year counter"
+		value="reposcomps/resetCompteurAnneenCours" override="false" />
+
 	<!--Job suppression demandes provisoires -->
 	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an absence suppression Task"
 		value="demandes/supprimerDemandeProvisoire" override="false" />
-		
+
 	<!-- Redmine Logger info -->
 	<Environment name="SIRH_JOBS_REDMINE_API_KEY" type="java.lang.String"
-		description="Redmine authentication api key"
-		value="api-key" override="false" />
+		description="Redmine authentication api key" value="api-key" override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_API_URL" type="java.lang.String"
-		description="Redmine base URL"
-		value="https://redmine.ville-noumea.nc" override="false" />
+		description="Redmine base URL" value="https://redmine.ville-noumea.nc"
+		override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_PROJECT_KEY" type="java.lang.String"
-		description="Redmine SIRH-JOBS project key"
-		value="sirh-jobs" override="false" />
+		description="Redmine SIRH-JOBS project key" value="sirh-jobs"
+		override="false" />
 
 	<Environment name="SIRH_JOBS_REDMINE_ENV" type="java.lang.String"
 		description="SIRH-JOBS environment description for Incidents creation in Redmine"
 		value="DEV" override="false" />
-		
+
 	<Environment name="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME"
 		type="java.lang.String" description="Redmine SIRH-JOBS project tracker name for Incidents"
 		value="Incident" override="false" />
@@ -274,7 +272,7 @@
 	<Environment name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
 		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for jobName"
 		value="Job" override="false" />
-	
+
 	<!--Job Calcul Eae -->
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="sirh-ws base Url endpoint" value="http://localhost:8080/sirhws/"
@@ -282,5 +280,12 @@
 	<Environment name="SIRH_EAE_WS_BASE_URL" type="java.lang.String"
 		description="sirh-eae-ws base Url endpoint" value="http://localhost:8080/sirh-eae-ws/"
 		override="false" />
+
+	<!--Job RADI -->
+	<Environment name="RADI_WS_BASE_URL" type="java.lang.String"
+		description="radi-ws base Url endpoint" value="http://***REMOVED***:8085/radi/"
+		override="false" />
+	<Environment name="RADI_WS_SEARCH_USER_URL" type="java.lang.String"
+		description="radi-ws base Url endpoint for searching users" value="users" override="false" />
 
 </Context>
