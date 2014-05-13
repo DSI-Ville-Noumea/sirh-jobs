@@ -110,38 +110,6 @@
 		</property>
 	</bean>
 
-	<!-- Spring ldap -->
-	<jee:jndi-lookup id="adUrl" jndi-name="ad/connectionURL"
-		resource-ref="true" />
-	<jee:jndi-lookup id="adUrl2" jndi-name="ad/connectionURL2"
-		resource-ref="true" />
-	<jee:jndi-lookup id="adUrl3" jndi-name="ad/connectionURL3"
-		resource-ref="true" />
-	<jee:jndi-lookup id="adUserBase" jndi-name="ad/userBase"
-		resource-ref="true" />
-	<jee:jndi-lookup id="adUserPassword" jndi-name="ad/userPassword"
-		resource-ref="true" />
-	<jee:jndi-lookup id="baseDn" jndi-name="ad/baseDn"
-		resource-ref="true" />
-	<jee:jndi-lookup id="userOu" jndi-name="ad/userOu"
-		resource-ref="true" />
-	<bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-		<property name="urls">
-			<list>
-				<ref bean="adUrl" />
-				<ref bean="adUrl2" />
-				<ref bean="adUrl3" />
-			</list>
-		</property>
-		<property name="base" ref="baseDn" />
-		<property name="userDn" ref="adUserBase" />
-		<property name="password" ref="adUserPassword" />
-	</bean>
-
-	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
-		<constructor-arg ref="contextSource" />
-	</bean>
-
 	<!-- Spring mail -->
 	<jee:jndi-lookup id="mailSession" jndi-name="mail/MailServer"
 		resource-ref="true" />

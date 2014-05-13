@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 
-import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
-import nc.noumea.mairie.ldap.domain.AgentLdap;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
@@ -32,29 +32,29 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 	private Logger logger = LoggerFactory.getLogger(EmailsInformationDemandeJob.class);
-	
+
 	@Autowired
 	private Helper helper;
-	
+
 	@Autowired
 	private IAbsWSConsumer absWSConsumer;
-	
+
 	@Autowired
-	private IAgentLdapDao agentLdapDao;
-	
+	private IRadiWSConsumer radiWSConsumer;
+
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
 	private VelocityEngine velocityEngine;
-	
+
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
 	private Integer numberOfTries;
-	
+
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
-	
+
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
 
@@ -65,87 +65,90 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 			throw new JobExecutionException(e);
 		}
 	}
-	
+
 	protected void sendEmailsInformation() throws AbsEmailsInformationException {
 
 		Date today = helper.getCurrentDate();
-		
+
 		EmailInfoDto emailInfoDto = absWSConsumer.getListIdDestinatairesEmailInfo();
 
-		logger.info("There are {} approbateurs for AbsEmailInformation to send...", emailInfoDto.getListApprobateurs().size());
+		logger.info("There are {} approbateurs for AbsEmailInformation to send...", emailInfoDto.getListApprobateurs()
+				.size());
 		logger.info("There are {} viseurs for AbsEmailInformation to send...", emailInfoDto.getListViseurs().size());
-		
-		if (emailInfoDto.getListApprobateurs().isEmpty() 
-				&& emailInfoDto.getListViseurs().isEmpty())
+
+		if (emailInfoDto.getListApprobateurs().isEmpty() && emailInfoDto.getListViseurs().isEmpty())
 			return;
-		
+
 		sendEmailsInformationOneByOne(emailInfoDto.getListApprobateurs(), today, "approuver");
 		sendEmailsInformationOneByOne(emailInfoDto.getListViseurs(), today, "viser");
-		
+
 		logger.info("Finished sending today's AbsEmailInformation...");
 	}
 
-	protected void sendEmailsInformationOneByOne(List<Integer> listAgent, final Date today, String stringSubject) throws AbsEmailsInformationException {
-		
-		for(Integer idAgent : listAgent) {
-			
+	protected void sendEmailsInformationOneByOne(List<Integer> listAgent, final Date today, String stringSubject)
+			throws AbsEmailsInformationException {
+
+		for (Integer idAgent : listAgent) {
+
 			logger.info("Sending AbsEmailInformation a {} with idAgent {}...", stringSubject, idAgent);
 			int nbErrors = 0;
 			boolean succeeded = false;
-			
-			while(nbErrors < numberOfTries && !succeeded) {
-				
+
+			while (nbErrors < numberOfTries && !succeeded) {
+
 				try {
 					sendEmailInformation(idAgent, today, stringSubject);
 					succeeded = true;
-				} catch(Exception ex) {
-					logger.warn("An error occured while trying to send AbsEmailInformation with idAgent {}.", new Object[] {idAgent});
+				} catch (Exception ex) {
+					logger.warn("An error occured while trying to send AbsEmailInformation with idAgent {}.",
+							new Object[] { idAgent });
 					logger.warn("Here follows the exception : ", ex);
 					incidentLoggerService.logIncident("EmailsInformationDemandeJob", ex.getMessage(), ex);
 					nbErrors++;
 				}
-				
+
 				if (nbErrors >= numberOfTries) {
-					logger.error("Stopped sending AbsEmailInformation a {} with idAgent {} because exceeded the maximum authorized number of tries: {}.", 
+					logger.error(
+							"Stopped sending AbsEmailInformation a {} with idAgent {} because exceeded the maximum authorized number of tries: {}.",
 							stringSubject, idAgent, numberOfTries);
 				}
 			}
 		}
 	}
-	
-	protected void sendEmailInformation(final Integer idAgent, final Date theDate, final String stringSubject) throws Exception {
-		
+
+	protected void sendEmailInformation(final Integer idAgent, final Date theDate, final String stringSubject)
+			throws Exception {
+
 		logger.debug("Sending AbsEmailInformation with idAgent {}", new Object[] { idAgent });
-		
+
 		// Get the assignee email address for To
-		String idAgentConverted = helper.convertIdAgentToADId(idAgent);
-		AgentLdap agentTo = agentLdapDao.retrieveAgentFromLdapFromMatricule(idAgentConverted);
-		agentTo.setMail(agentTo.getMail());
+		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+
 		// Send the email
-		sendEmail(agentTo, theDate, stringSubject);
+		sendEmail(user, theDate, stringSubject);
 	}
-	
-	protected void sendEmail(final AgentLdap agentLdap, final Date theDate, final String stringSubject) throws Exception {
-		
-		MimeMessagePreparator preparator = new MimeMessagePreparator() { 
-			
+
+	protected void sendEmail(final LightUser user, final Date theDate, final String stringSubject) throws Exception {
+
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
 			public void prepare(MimeMessage mimeMessage) throws Exception {
-	            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-	            
-	            // Set the To
-	            message.setTo(agentLdap.getMail());
-	            
-	            // Set the body with velocity
-	            String text = VelocityEngineUtils.mergeTemplateIntoString(
-	               velocityEngine, "templates/sirhEmailInformationTemplate.vm", "UTF-8", null);
-	            message.setText(text, true);
-	            
-	            // Set the subject
-	            message.setSubject("[KIOSQUE RH] Demande d'absences à " + stringSubject);
-	         }
-	      };
-	      
-	      // Actually send the email
-	      mailSender.send(preparator);
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				// Set the To
+				message.setTo(user.getMail());
+
+				// Set the body with velocity
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+						"templates/sirhEmailInformationTemplate.vm", "UTF-8", null);
+				message.setText(text, true);
+
+				// Set the subject
+				message.setSubject("[KIOSQUE RH] Demande d'absences à " + stringSubject);
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
 	}
 }

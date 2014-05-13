@@ -10,16 +10,16 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import nc.noumea.mairie.ldap.dao.AgentLdapDaoException;
-import nc.noumea.mairie.ldap.dao.IAgentLdapDao;
-import nc.noumea.mairie.ldap.domain.AgentLdap;
 import nc.noumea.mairie.sirh.dao.IAvctCapPrintJobDao;
 import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.service.IReportingService;
 import nc.noumea.mairie.sirh.service.PrinterHelper;
 import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -61,7 +61,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	private IDownloadDocumentService downloadDocumentService;
 
 	@Autowired
-	private IAgentLdapDao agentLdapDao;
+	private IRadiWSConsumer radiWSConsumer;
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -128,7 +128,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 			// initialize printer helper early so that documents are not
 			// downloaded when no printer is reachable
-			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, String.format("http://%s:%s/printers/%s", cupsServerHostName, cupsServerPort, cupsSirhPrinterName),
+			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, String.format(
+					"http://%s:%s/printers/%s", cupsServerHostName, cupsServerPort, cupsSirhPrinterName),
 					"SIRH - Impression des documents de commissions d'avancements");
 
 			// initialize the print job id and status
@@ -151,7 +152,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 				try {
 					sendErrorEmail(job);
-				} catch (AgentLdapDaoException e1) {
+				} catch (DaoException e1) {
 					logger.error("An error occured while sending the error email", e);
 				}
 
@@ -355,11 +356,12 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		return eaeLocalFilePath;
 	}
 
-	public void sendErrorEmail(final AvctCapPrintJob job) throws AgentLdapDaoException {
+	public void sendErrorEmail(final AvctCapPrintJob job) throws DaoException {
 
 		logger.debug("Sending error email for job id [{}] on status {}", job.getJobId(), job.getStatus().toString());
 
-		final AgentLdap agentTo = agentLdapDao.retrieveAgentFromLdapFromMatricule(String.valueOf(job.getAgentId()));
+		final LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(job
+				.getAgentId()));
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -367,7 +369,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-				message.setTo(agentTo.getMail());
+				message.setTo(user.getMail());
 
 				// Set the body with velocity
 				Map model = new HashMap();

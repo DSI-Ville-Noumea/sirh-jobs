@@ -13,18 +13,37 @@ public class Helper {
 		Calendar c = new GregorianCalendar();
 		return c.getTime();
 	}
-	
+
 	/**
-	 * Converts a 900xxxx agent id into an AD readable one: 90xxxx
-	 * @param idAgent 900xxxx
+	 * Converts a 90xxxx employeeNumber into an Nomatr readable one: xxxx
+	 * 
+	 * @param employeeNumber
+	 *            90xxxx
+	 * @return xxxx
+	 */
+	public String getNomatr(int employeeNumber) {
+		return String.valueOf(employeeNumber).substring(2, String.valueOf(employeeNumber).length());
+	}
+
+	/**
+	 * Converts a 90xxxx employeeNumber into an IdAgent readable one: 900xxxx
+	 * 
+	 * @param employeeNumber
+	 *            90xxxx
+	 * @return 900xxxx
+	 */
+	public String getIdAgent(int employeeNumber) {
+		return "900" + getNomatr(employeeNumber);
+	}
+
+	/**
+	 * Converts a 900xxxx IdAgent into an employeeNumber readable one: 90xxxx
+	 * 
+	 * @param idAgent
+	 *            900xxxx
 	 * @return 90xxxx
 	 */
-	public String convertIdAgentToADId(Integer idAgent) {
-		
-		String adIdAgent = idAgent.toString();
-		if (adIdAgent.length() == 7)
-			adIdAgent = adIdAgent.substring(0, 1).concat(adIdAgent.substring(2));
-		
-		return adIdAgent;
+	public String getEmployeeNumber(Integer idAgent) {
+		return "90" + String.valueOf(idAgent).substring(3, String.valueOf(idAgent).length());
 	}
 }
