@@ -6,7 +6,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-jobs</artifactId>
 	<packaging>war</packaging>
-	<version>5.1</version>
+	<version>5.2-SNAPSHOT</version>
 	<name>sirh-jobs</name>
 	<url>http://maven.apache.org</url>
 
