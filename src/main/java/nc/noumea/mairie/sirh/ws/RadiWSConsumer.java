@@ -30,6 +30,7 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 
 	@Override
 	public List<LightUser> getListeAgentMairie() {
+		logger.info("SIIDMAJob : entrée getListeAgentMairie ");
 
 		String url = String.format(RADI_WS_Base_URL + searchUserUrl);
 
