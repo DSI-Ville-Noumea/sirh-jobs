@@ -51,13 +51,14 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
-		LightUser user = readResponse(LightUser.class, res, url);
-		if (user == null || user.getMail() == null) {
+		List<LightUser> list = readResponseAsList(LightUser.class, res, url);
+		if (list == null || list.size() == 0) {
 			throw new DaoException(String.format(
 					"Expected 1 user corresponding to this employeeNumber '%s' but found null.", employeeNumber));
 		}
 		logger.info("Agent found: employeeNumber={}, mail={}, login={}.",
-				new Object[] { user.getEmployeeNumber(), user.getMail(), user.getsAMAccountName() });
-		return user;
+				new Object[] { list.get(0).getEmployeeNumber(), list.get(0).getMail(), list.get(0).getsAMAccountName() });
+		
+		return list.size() == 0 ? null : list.get(0);
 	}
 }
