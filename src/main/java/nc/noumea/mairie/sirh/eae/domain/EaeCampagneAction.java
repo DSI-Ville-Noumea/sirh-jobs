@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -59,7 +58,7 @@ public class EaeCampagneAction {
 	private String nomAction;
 
 	@Column(name = "DATE_TRANSMISSION")
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateTransmission;
 	
 	@Column(name = "DATE_MAIL_ENVOYE")
@@ -72,7 +71,6 @@ public class EaeCampagneAction {
 	@Column(name = "COMMENTAIRE")
 	private String commentaire;
 	
-	@Lob
 	@Column(name = "MESSAGE")
 	private String message;
 	

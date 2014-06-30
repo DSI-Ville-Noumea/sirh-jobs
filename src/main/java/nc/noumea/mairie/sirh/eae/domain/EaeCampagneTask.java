@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,7 +47,6 @@ public class EaeCampagneTask {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCalculEae;
 	
-	@Lob
 	@Column(name = "TASK_STATUS")
 	private String taskStatus;
 

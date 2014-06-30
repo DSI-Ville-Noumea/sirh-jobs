@@ -81,7 +81,7 @@ public class CalculEaeJob extends QuartzJobBean {
 						succeeded = true;
 					} catch (Exception ex) {
 						logger.error("Une erreur technique est survenue lors du traitement des EAEs SANS affectes : ", ex);
-						if(null != rmDto.getErrors() && !rmDto.getErrors().isEmpty()) {
+						if(null != rmDto && null != rmDto.getErrors() && !rmDto.getErrors().isEmpty()) {
 							taskStatus += " Erreur creerEAESansAffecte sur l'agent " + agent.getIdAgent() + " : " + rmDto.getErrors().get(0).toString() + " ;\n ";
 						}else{
 							taskStatus += " Erreur creerEAESansAffecte sur l'agent " + agent.getIdAgent() + " : " + ex.getMessage() + " ;\n ";

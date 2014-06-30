@@ -189,9 +189,9 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 
 				// Set the attached documents
 				for (EaeDocument doc : eaeCampagneAction.getEaeDocuments()) {
-					DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
+ 					DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
 					FileObject attachedFileVfs = fsManager.resolveFile(Paths.get(baseSirhDocumentsUrl,
-							docA.getLienDocument()).toString());
+					docA.getLienDocument()).toString());
 					logger.debug("Adding file '{}' [Exists {}] as attachment...", attachedFileVfs.getURL(),
 							attachedFileVfs.exists());
 					VfsInputStreamSource res = new VfsInputStreamSource(attachedFileVfs);
