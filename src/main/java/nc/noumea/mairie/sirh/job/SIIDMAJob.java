@@ -40,6 +40,9 @@ public class SIIDMAJob extends QuartzJobBean {
 		try {
 			alimenteSIIDMA();
 		} catch (Exception e) {
+			logger.error("An error occured trying to process SIIDMAJob :", e);
+			incidentLoggerService.logIncident("SIIDMAJob", e.getCause() == null ? e.getMessage() : e.getCause()
+					.getMessage(), e);
 			throw new JobExecutionException(e);
 		}
 		logger.info("Processed SIIDMAJob");

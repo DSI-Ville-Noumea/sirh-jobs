@@ -30,9 +30,9 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 
 	@Override
 	public List<LightUser> getListeAgentMairie() {
-		logger.info("SIIDMAJob : entrée getListeAgentMairie ");
 
 		String url = String.format(RADI_WS_Base_URL + searchUserUrl);
+		logger.info("SIIDMAJob : entrée getListeAgentMairie avec URL : " + url);
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("employeenumber", "90*");
@@ -57,9 +57,9 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 			throw new DaoException(String.format(
 					"Expected 1 user corresponding to this employeeNumber '%s' but found null.", employeeNumber));
 		}
-		logger.info("Agent found: employeeNumber={}, mail={}, login={}.",
-				new Object[] { list.get(0).getEmployeeNumber(), list.get(0).getMail(), list.get(0).getsAMAccountName() });
-		
+		logger.info("Agent found: employeeNumber={}, mail={}, login={}.", new Object[] {
+				list.get(0).getEmployeeNumber(), list.get(0).getMail(), list.get(0).getsAMAccountName() });
+
 		return list.size() == 0 ? null : list.get(0);
 	}
 }
