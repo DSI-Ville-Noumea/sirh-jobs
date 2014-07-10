@@ -65,7 +65,7 @@ public class CalculEaeJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement des EAEs SANS affectes : ", ex);
 				taskStatus += " Erreur récupération listeAgentEaeSansAffectes : " + ex.getMessage() + " ;\n ";
-		//		incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
 			}
 			
 			logger.info("Found {} agents to calculate EAE SANS affectes ...", listeAgentEaeSansAffectes.size());
@@ -86,7 +86,7 @@ public class CalculEaeJob extends QuartzJobBean {
 						}else{
 							taskStatus += " Erreur creerEAESansAffecte sur l'agent " + agent.getIdAgent() + " : " + ex.getMessage() + " ;\n ";
 						}
-			//			incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+						incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
 						nbErrors++;
 					}
 				}
@@ -99,7 +99,7 @@ public class CalculEaeJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement des EAEs affectes : ", ex);
 				taskStatus += " Erreur récupération listeAgentEaeAffectes : " + ex.getMessage() + " ;\n ";
-//				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
 			}
 			
 			logger.info("Found {} agents to calculate EAE affectes ...", listeAgentEaeAffectes.size());
@@ -120,7 +120,7 @@ public class CalculEaeJob extends QuartzJobBean {
 						}else{
 							taskStatus += " Erreur creerEaeAffecte sur l'agent " + agent.getIdAgent() + " : " + ex.getMessage() + " ;\n ";
 						}
-	//					incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+						incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
 						nbErrors++;
 					}
 				}
