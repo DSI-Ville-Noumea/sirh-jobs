@@ -7,7 +7,7 @@ import java.util.Map;
 
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
-import nc.noumea.mairie.abs.domain.RefTypeAbsenceEnum;
+import nc.noumea.mairie.abs.domain.RefTypeGroupeAbsenceEnum;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
@@ -57,15 +57,15 @@ public class AbsencePriseJob extends QuartzJobBean {
 		absencesDao.beginTransaction();
 
 		// pour les RECUP et les REPOS COMP
-		List<Integer> listEpRetRC = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceRecupReposComp(),
+		List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeAbsenceFromApprouveToPrise(),
 				EtatAbsenceEnum.APPROUVEE);
-		// pour les ASA A48, A54, A55, A53, A52, A49, A50
-		List<Integer> listEpASA = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeAbsenceASA(),
+		// pour les ASA, CONGES_EXCEP
+		List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeAbsenceFromValideToPrise(),
 				EtatAbsenceEnum.VALIDEE);
 
 		List<Integer> listEp = new ArrayList<>();
-		listEp.addAll(listEpRetRC);
-		listEp.addAll(listEpASA);
+			listEp.addAll(listEpAApprouver);
+			listEp.addAll(listEpAValider);
 		logger.info("Found {} demandes to update...", listEp.size());
 
 		absencesDao.rollBackTransaction();
@@ -97,22 +97,25 @@ public class AbsencePriseJob extends QuartzJobBean {
 		logger.info("Processed AbsencePriseJob");
 	}
 
-	private List<Integer> getTypeAbsenceASA() {
+	/**
+	 * 
+	 * @return la liste des groupes qui sont a valider par SIRH pour passer a l etat PRIS
+	 */
+	private List<Integer> getTypeGroupeAbsenceFromValideToPrise() {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A48.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A54.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A55.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A53.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A52.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A49.getValue());
-		listTypeAbsASA.add(RefTypeAbsenceEnum.ASA_A50.getValue());
+			listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.ASA.getValue());
+			listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
 		return listTypeAbsASA;
 	}
 
-	private List<Integer> getTypeAbsenceRecupReposComp() {
+	/**
+	 * 
+	 * @return la liste des groupes qui sont a approuver par SIRH pour passer a l etat PRIS
+	 */
+	private List<Integer> getTypeGroupeAbsenceFromApprouveToPrise() {
 		List<Integer> listTypeAbsRetRC = new ArrayList<>();
-		listTypeAbsRetRC.add(RefTypeAbsenceEnum.RECUP.getValue());
-		listTypeAbsRetRC.add(RefTypeAbsenceEnum.REPOS_COMP.getValue());
+			listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.RECUP.getValue());
+			listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.REPOS_COMP.getValue());
 		return listTypeAbsRetRC;
 	}
 }
