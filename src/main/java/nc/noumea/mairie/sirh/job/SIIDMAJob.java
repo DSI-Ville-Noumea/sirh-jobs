@@ -38,7 +38,9 @@ public class SIIDMAJob extends QuartzJobBean {
 
 		// Run the job
 		try {
-			alimenteSIIDMA();
+			if (!alimenteSIIDMA()) {
+				logger.error("An error occured while trying to delete SIIDMA entries.");
+			}
 		} catch (Exception e) {
 			logger.error("An error occured trying to process SIIDMAJob :", e);
 			incidentLoggerService.logIncident("SIIDMAJob", e.getCause() == null ? e.getMessage() : e.getCause()
@@ -48,17 +50,20 @@ public class SIIDMAJob extends QuartzJobBean {
 		logger.info("Processed SIIDMAJob");
 	}
 
-	protected void alimenteSIIDMA() {
+	protected boolean alimenteSIIDMA() {
 
 		List<LightUser> listUser = radiWSConsumer.getListeAgentMairie();
 
 		logger.info("There are {} user for SIIDMA...", listUser.size());
 
-		videSIIDMA();
+		if (!videSIIDMA()) {
+			return false;
+		}
 
 		rempliSIIDMA(listUser);
 
 		logger.info("Finished updating SIIDMA...");
+		return true;
 	}
 
 	private void rempliSIIDMA(List<LightUser> listUser) {
@@ -78,14 +83,15 @@ public class SIIDMAJob extends QuartzJobBean {
 
 	}
 
-	protected void videSIIDMA() {
+	protected boolean videSIIDMA() {
 		try {
 			sirhDocumentDao.deleteSIIDMAEntries();
 		} catch (Exception ex) {
 			logger.warn("An error occured while trying to delete SIIDMA entries.");
 			logger.warn("Here follows the exception : ", ex);
 			incidentLoggerService.logIncident("SIIDMAJob", ex.getMessage(), ex);
+			return false;
 		}
-
+		return true;
 	}
 }

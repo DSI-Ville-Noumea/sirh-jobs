@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.dao;
 
 import nc.noumea.mairie.sirh.domain.DocumentAssocie;
+import nc.noumea.mairie.sirh.domain.SIIDMA_SIRH;
 import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -8,8 +9,9 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
-//@Repository
+@Repository
 public class SirhDocumentDao implements ISirhDocumentDao {
 
 	@Autowired
@@ -18,14 +20,21 @@ public class SirhDocumentDao implements ISirhDocumentDao {
 
 	@Override
 	public DocumentAssocie getDocumentAssocie(int id) {
-		return (DocumentAssocie) sirhSessionFactory.getCurrentSession().get(DocumentAssocie.class, id);
+
+		sirhSessionFactory.getCurrentSession().beginTransaction();
+
+		DocumentAssocie result = (DocumentAssocie) sirhSessionFactory.getCurrentSession()
+				.get(DocumentAssocie.class, id);
+
+		sirhSessionFactory.getCurrentSession().getTransaction().rollback();
+
+		return result;
 	}
 
 	@Override
 	public void deleteSIIDMAEntries() {
 
-		if (!sirhSessionFactory.getCurrentSession().getTransaction().isActive())
-			sirhSessionFactory.getCurrentSession().beginTransaction();
+		sirhSessionFactory.getCurrentSession().beginTransaction();
 
 		Query jobQuery = sirhSessionFactory.getCurrentSession().createQuery("delete from SIIDMA_SIRH");
 
@@ -37,19 +46,16 @@ public class SirhDocumentDao implements ISirhDocumentDao {
 
 	@Override
 	public void addSIISDMA(LightUser user) throws DaoException {
+		sirhSessionFactory.getCurrentSession().beginTransaction();
 
-		if (!sirhSessionFactory.getCurrentSession().getTransaction().isActive())
-			sirhSessionFactory.getCurrentSession().beginTransaction();
-
-		Query q = sirhSessionFactory.getCurrentSession().createQuery(
-				"INSERT INTO SIIDMA_SIRH(ID_AGENT,LOGIN,MAIL,NOMATR) values ( :idAgent , :login , :mail , :nomatr )");
-		q.setParameter("idAgent", getIdAgent(user.getEmployeeNumber()));
-		q.setParameter("login", user.getsAMAccountName());
-		q.setParameter("mail", user.getMail());
-		q.setParameter("nomatr", getNomatr(user.getEmployeeNumber()));
+		SIIDMA_SIRH siidma = new SIIDMA_SIRH();
+		siidma.setIdAgent(Integer.valueOf(getIdAgent(user.getEmployeeNumber())));
+		siidma.setLogin(user.getsAMAccountName());
+		siidma.setMail(user.getMail());
+		siidma.setNomatr(Integer.valueOf(getNomatr(user.getEmployeeNumber())));
 
 		try {
-			q.executeUpdate();
+			sirhSessionFactory.getCurrentSession().save(siidma);
 			sirhSessionFactory.getCurrentSession().getTransaction().commit();
 		} catch (Exception ex) {
 			throw new DaoException("An error occured while inserting SIIDMA: ", ex);
