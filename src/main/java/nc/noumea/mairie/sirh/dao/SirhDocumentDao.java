@@ -7,12 +7,16 @@ import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class SirhDocumentDao implements ISirhDocumentDao {
+
+	private Logger logger = LoggerFactory.getLogger(SirhDocumentDao.class);
 
 	@Autowired
 	@Qualifier("sirhSessionFactory")
@@ -33,6 +37,7 @@ public class SirhDocumentDao implements ISirhDocumentDao {
 
 	@Override
 	public void deleteSIIDMAEntries() {
+		logger.debug(" entrée deleteSIIDMAEntries with sirhSessionFactory " + sirhSessionFactory);
 
 		sirhSessionFactory.getCurrentSession().beginTransaction();
 
