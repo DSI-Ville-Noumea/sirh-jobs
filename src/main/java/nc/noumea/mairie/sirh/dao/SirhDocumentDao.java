@@ -6,6 +6,7 @@ import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +40,18 @@ public class SirhDocumentDao implements ISirhDocumentDao {
 	public void deleteSIIDMAEntries() {
 		logger.debug(" entrée deleteSIIDMAEntries with sirhSessionFactory " + sirhSessionFactory);
 
-		sirhSessionFactory.getCurrentSession().beginTransaction();
+		Session session = sirhSessionFactory.getCurrentSession();
 
-		Query jobQuery = sirhSessionFactory.getCurrentSession().createQuery("delete from SIIDMA_SIRH");
+		if (!session.getTransaction().isActive()) {
+			session.beginTransaction();
+			logger.debug("deleteSIIDMAEntries : la session n'est pas active");
+		}
+
+		Query jobQuery = session.createQuery("delete from SIIDMA_SIRH");
 
 		jobQuery.executeUpdate();
 
-		sirhSessionFactory.getCurrentSession().getTransaction().commit();
+		session.getTransaction().commit();
 
 	}
 
