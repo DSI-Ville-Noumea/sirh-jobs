@@ -145,7 +145,7 @@
 		value="etatPointage/majEtatPointagesByListId" override="false" />
 	<!-- ReposComp Job service parameters -->
 	<Environment name="SIRH_PTG_WS_BASE_URL" type="java.lang.String" description="sirh-ptg-ws base Url endpoint" 
-		value="http://localhost:8080/sirh-ptg-ws/" override="false" />
+		value="http://***REMOVED***:8085/sirh-ptg-ws/" override="false" />
 	<Environment name="SIRH_PTG_WS_RC_TASK_URL_PART" type="java.lang.String" description="sirh-ptg-ws base Url endpoint" 
 		value="reposcomp/startReposCompTask?idReposCompTask=" override="false" />
 		
@@ -155,7 +155,7 @@
 	<!--  -->
 	<!--Job Absences -->
 	<Environment name="SIRH_ABS_WS_BASE_URL" type="java.lang.String" description="sirh-abs-ws base Url endpoint" 
-		value="http://localhost:8080/sirh-abs-ws/" override="false" />
+		value="http://***REMOVED***:8085/sirh-abs-ws/" override="false" />
 	<!--Job maj des demandes à l'état PRIS -->
 	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String" description="sirh-abs-ws Url endpoint for an Etat Pris Task" 
 		value="demandes/updateToEtatPris" override="false" />
