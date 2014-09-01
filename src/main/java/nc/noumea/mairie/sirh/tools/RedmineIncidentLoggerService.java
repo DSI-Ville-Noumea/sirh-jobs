@@ -5,6 +5,8 @@ import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.CustomField;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Tracker;
+import com.taskadapter.redmineapi.bean.Version;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -54,6 +56,10 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 	@Qualifier("SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME")
 	private String customFieldJobNameName;
 	
+	@Autowired
+	@Qualifier("SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID")
+	private Integer backlogVersionId;
+	
 	@Override
 	public void logIncident(String jobName, String message, Throwable ex) {
 
@@ -75,10 +81,12 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 			Tracker incidentTracker = mgr.getProjectByKey(projectKey).getTrackerByName(incidentTrackerName);
 			CustomField envField = new CustomField(customFieldEnvironmentId, customFieldEnvironmentName, environnment);
 			CustomField jobNameField = new CustomField(customFieldJobNameId, customFieldJobNameName, jobName);
+			Version version = mgr.getVersionById(backlogVersionId) ;
 
 			Issue issueToCreate = new Issue();
 			issueToCreate.setTracker(incidentTracker);
 			issueToCreate.setSubject(message);
+			issueToCreate.setTargetVersion(version);
 			
 			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", ex.getMessage(), ExceptionUtils.getStackTrace(ex)));
 			issueToCreate.getCustomFields().add(envField);

@@ -252,6 +252,8 @@
 		expected-type="java.lang.Integer" />
 	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME" jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
 		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID" jndi-name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
+		expected-type="java.lang.Integer" />
 	
 	
 	<!-- Quartz Jobs Scheduler -->

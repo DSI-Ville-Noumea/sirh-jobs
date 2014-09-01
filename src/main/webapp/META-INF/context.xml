@@ -238,4 +238,8 @@
 		type="java.lang.String" description="Redmine SIRH-JOBS project custom field name for jobName"
 		value="Job" override="false" />
 
+	<Environment name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
+		type="java.lang.Integer" description="Redmine SIRH-JOBS project custom field id for version"
+		value="56" override="false" />
+
 </Context>
