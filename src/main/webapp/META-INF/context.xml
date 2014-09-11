@@ -19,7 +19,9 @@
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
 		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
 		password="***REMOVED***" driverClassName="org.postgresql.Driver"
-		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
+		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true"
+		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+		removeAbandoned="true" logAbandoned="true" />
 
 	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
