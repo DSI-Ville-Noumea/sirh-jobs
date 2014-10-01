@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Nous vous informons que vous avez des pointages à valider sur le Kiosque RH. <br />
+			Merci de votre action.<br />
+			<a href="http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Pointage/VisualisationApprobation.aspx">http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Pointage/VisualisationApprobation.aspx</a> 
+		</p>
+		<p>
+			Cordialement,
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>

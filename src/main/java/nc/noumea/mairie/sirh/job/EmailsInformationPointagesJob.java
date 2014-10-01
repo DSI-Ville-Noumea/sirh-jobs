@@ -138,7 +138,7 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 
 				// Set the body with velocity
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-						"templates/sirhEmailInformationTemplate.vm", "UTF-8", null);
+						"templates/sirhEmailInformationPointagesTemplate.vm", "UTF-8", null);
 				message.setText(text, true);
 
 				// Set the subject
