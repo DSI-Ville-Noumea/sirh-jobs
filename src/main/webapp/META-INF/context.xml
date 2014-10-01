@@ -150,6 +150,9 @@
 		value="http://***REMOVED***:8085/sirh-ptg-ws/" override="false" />
 	<Environment name="SIRH_PTG_WS_RC_TASK_URL_PART" type="java.lang.String" description="sirh-ptg-ws base Url endpoint" 
 		value="reposcomp/startReposCompTask?idReposCompTask=" override="false" />
+	<!--Job envoie emails infos Pointages -->
+	<Environment name="SIRH_PTG_WS_EMAIL_INFO_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for email information pointages"
+		value="email/listDestinatairesEmailInfo" override="false" />
 		
 
 	<!--  -->
