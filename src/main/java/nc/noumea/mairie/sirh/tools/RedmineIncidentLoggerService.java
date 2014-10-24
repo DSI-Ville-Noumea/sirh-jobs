@@ -81,8 +81,10 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 			Tracker incidentTracker = mgr.getProjectByKey(projectKey).getTrackerByName(incidentTrackerName);
 			CustomField envField = new CustomField(customFieldEnvironmentId, customFieldEnvironmentName, environnment);
 			CustomField jobNameField = new CustomField(customFieldJobNameId, customFieldJobNameName, jobName);
-			Version version = mgr.getVersionById(backlogVersionId) ;
 
+			Version version = new Version(); 
+			version.setId(backlogVersionId);
+			
 			Issue issueToCreate = new Issue();
 			issueToCreate.setTracker(incidentTracker);
 			issueToCreate.setSubject(message);
