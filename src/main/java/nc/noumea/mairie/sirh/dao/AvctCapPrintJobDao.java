@@ -42,9 +42,11 @@ public class AvctCapPrintJobDao implements IAvctCapPrintJobDao {
 		List result = jobQuery.list();
 		logger.debug("AvctCapPrintJobDao : taille de la liste result = " + result.size());
 
-		if (result.size() != 1)
+		if (result.size() != 1) {
+			session.close();
 			return null;
-
+		}
+		
 		AvctCapPrintJob pj = (AvctCapPrintJob) result.get(0);
 
 		session.getTransaction().rollback();
