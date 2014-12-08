@@ -228,6 +228,11 @@
 		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl"
 		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurCongeAnnuelUrl"
+		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
+	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl"
+		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
+		
 		
 	<!-- Pour RADI -->
 	<jee:jndi-lookup id="RADI_WS_Base_URL"

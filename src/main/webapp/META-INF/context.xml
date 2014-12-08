@@ -186,6 +186,16 @@
 	<Environment name="SIRH_ABS_WS_SUPP_ABSENCE_URL" type="java.lang.String"
 		description="sirh-abs-ws Url endpoint for an absence suppression Task"
 		value="demandes/supprimerDemandeProvisoire" override="false" />
+	<!-- Job Remise A Zero Compteur CongeAnnuel. -->
+	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for conge annuel counter list"
+		value="congeannuel/getListeCompteurCongeAnnuel" override="false" />
+	<Environment name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint for reset conge annuel counter"
+		value="congeannuel/resetCompteurCongeAnnuel" override="false" />
+		
+		
+		
 
 	<!--  -->
 	<!-- WS EAE -->
