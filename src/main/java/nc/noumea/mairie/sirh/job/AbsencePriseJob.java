@@ -64,7 +64,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 				getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
 		// pour les CONGES ANNUELS
 		List<Integer> listTypeGroupeAbs = new ArrayList<>();
-		listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
+		listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue());
 		List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
 				EtatAbsenceEnum.APPROUVEE);
 		List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
