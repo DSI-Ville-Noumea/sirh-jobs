@@ -57,15 +57,24 @@ public class AbsencePriseJob extends QuartzJobBean {
 		absencesDao.beginTransaction();
 
 		// pour les RECUP et les REPOS COMP
-		List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeAbsenceFromApprouveToPrise(),
-				EtatAbsenceEnum.APPROUVEE);
+		List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(
+				getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
 		// pour les ASA, CONGES_EXCEP
-		List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeAbsenceFromValideToPrise(),
+		List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
+				getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
+		// pour les CONGES ANNUELS
+		List<Integer> listTypeGroupeAbs = new ArrayList<>();
+		listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
+		List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
+				EtatAbsenceEnum.APPROUVEE);
+		List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
 				EtatAbsenceEnum.VALIDEE);
 
 		List<Integer> listEp = new ArrayList<>();
-			listEp.addAll(listEpAApprouver);
-			listEp.addAll(listEpAValider);
+		listEp.addAll(listEpAApprouver);
+		listEp.addAll(listEpAValider);
+		listEp.addAll(listCongeAApprouver);
+		listEp.addAll(listCongeAValider);
 		logger.info("Found {} demandes to update...", listEp.size());
 
 		absencesDao.rollBackTransaction();
@@ -99,23 +108,25 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 	/**
 	 * 
-	 * @return la liste des groupes qui sont a valider par SIRH pour passer a l etat PRIS
+	 * @return la liste des groupes qui sont a valider par SIRH pour passer a l
+	 *         etat PRIS
 	 */
 	private List<Integer> getTypeGroupeAbsenceFromValideToPrise() {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
-			listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.ASA.getValue());
-			listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
+		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.ASA.getValue());
+		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
 		return listTypeAbsASA;
 	}
 
 	/**
 	 * 
-	 * @return la liste des groupes qui sont a approuver par SIRH pour passer a l etat PRIS
+	 * @return la liste des groupes qui sont a approuver par SIRH pour passer a
+	 *         l etat PRIS
 	 */
 	private List<Integer> getTypeGroupeAbsenceFromApprouveToPrise() {
 		List<Integer> listTypeAbsRetRC = new ArrayList<>();
-			listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.RECUP.getValue());
-			listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.REPOS_COMP.getValue());
+		listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.RECUP.getValue());
+		listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.REPOS_COMP.getValue());
 		return listTypeAbsRetRC;
 	}
 }
