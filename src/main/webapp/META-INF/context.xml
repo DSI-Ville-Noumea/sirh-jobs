@@ -256,5 +256,12 @@
 	<Environment name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
 		type="java.lang.Integer" description="Redmine SIRH-JOBS project custom field id for version"
 		value="56" override="false" />
+		
+	<!-- -->
+	<!-- URL Kiosque -->
+	<!-- -->
+	<Environment name="KIOSQUE_URL" type="java.lang.String"
+		description="Url du kiosque pour envoi des mails" value="http://kiosque-rh-qual/"
+		override="false" />
 
 </Context>

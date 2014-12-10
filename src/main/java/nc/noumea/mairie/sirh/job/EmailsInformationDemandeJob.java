@@ -1,7 +1,9 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
@@ -51,6 +53,10 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
 	private Integer numberOfTries;
+
+	@Autowired
+	@Qualifier("adresseKiosqueRH")
+	private String adresseKiosque;
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
@@ -132,6 +138,7 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
@@ -139,8 +146,12 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 				message.setTo(user.getMail());
 
 				// Set the body with velocity
+				Map model = new HashMap();
+				model.put("adresseKiosque", adresseKiosque);
+
+				// Set the body with velocity
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-						"templates/sirhEmailInformationTemplate.vm", "UTF-8", null);
+						"templates/sirhEmailInformationTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject

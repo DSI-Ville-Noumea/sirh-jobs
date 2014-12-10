@@ -11,7 +11,7 @@
 		<p>
 			Nous vous informons que vous avez des pointages à valider sur le Kiosque RH. <br />
 			Merci de votre action.<br />
-			<a href="http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Pointage/VisualisationApprobation.aspx">http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Pointage/VisualisationApprobation.aspx</a> 
+			<a href="${adresseKiosque}">${adresseKiosque}</a> 
 		</p>
 		<p>
 			Cordialement,
