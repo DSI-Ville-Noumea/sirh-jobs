@@ -113,7 +113,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 	 */
 	private List<Integer> getTypeGroupeAbsenceFromValideToPrise() {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
-		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.ASA.getValue());
+		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.AS.getValue());
 		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
 		return listTypeAbsASA;
 	}
