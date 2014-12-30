@@ -209,7 +209,7 @@
 	
 	<!-- Pour les absences -->
 	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL"
-		jndi-name="SIRH_ABS_WS_BASE_URL" expected-type="java.lang.String" />
+		jndi-name="SIRH_ABS_WS_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
