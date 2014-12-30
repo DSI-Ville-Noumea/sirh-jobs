@@ -275,7 +275,7 @@
 	</bean>
 	
 	<!--Job Calcul Eae -->
-	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL"
+	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL"
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_URL"
 		expected-type="java.lang.String" />

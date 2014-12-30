@@ -200,10 +200,10 @@
 	<!--  -->
 	<!-- WS EAE -->
 	<!--  -->
-	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String" description="sirh-ws base Url endpoint" 
-		value="http://localhost:8080/sirhws/" override="false" />
+	<Environment name="SIRH_WS_URL" type="java.lang.String" description="sirh-ws base Url endpoint" 
+		value="http://***REMOVED***:8085/sirhws/" override="false" />
 	<Environment name="SIRH_EAE_WS_URL" type="java.lang.String" description="sirh-eae-ws base Url endpoint" 
-		value="http://localhost:8080/sirh-eae-ws/" override="false" />
+		value="http://***REMOVED***:8085/sirh-eae-ws/" override="false" />
 
 
 	<!--  -->
