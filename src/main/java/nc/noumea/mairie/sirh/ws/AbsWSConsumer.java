@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl")
 	private String resetCompteurCongeAnnuelUrl;
+
+	@Autowired
+	@Qualifier("SIRH_ABS_WS_GetDemandeUrl")
+	private String getDemande;
 
 	@Override
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {
@@ -132,5 +137,19 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public DemandeDto getDemandeAbsence(Integer idDemande) {
+
+		String url = String.format(SIRH_ABS_WS_Base_URL + getDemande);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", "90");
+		parameters.put("idDemande", String.valueOf(idDemande));
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponse(DemandeDto.class, res, url);
 	}
 }

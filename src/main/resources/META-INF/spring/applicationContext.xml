@@ -232,6 +232,8 @@
 		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl"
 		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
+	<jee:jndi-lookup id="SIRH_ABS_WS_GetDemandeUrl"
+		jndi-name="SIRH_ABS_WS_DEMANDE_URL" expected-type="java.lang.String" />	
 		
 		
 	<!-- Pour RADI -->

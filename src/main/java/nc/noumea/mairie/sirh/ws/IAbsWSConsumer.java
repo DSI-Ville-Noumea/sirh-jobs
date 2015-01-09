@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.ws;
 
 import java.util.List;
 
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
 public interface IAbsWSConsumer {
@@ -19,4 +20,6 @@ public interface IAbsWSConsumer {
 	List<Integer> getListCompteurCongeAnnuel();
 
 	ReturnMessageDto resetCompteurCongeAnnuel(Integer idAgentCongeAnnuelCount);
+
+	DemandeDto getDemandeAbsence(Integer idDemande);
 }

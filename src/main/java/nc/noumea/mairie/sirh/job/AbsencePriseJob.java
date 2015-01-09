@@ -1,18 +1,27 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.MimeMessage;
+
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
 import nc.noumea.mairie.abs.domain.RefTypeGroupeAbsenceEnum;
+import nc.noumea.mairie.sirh.dao.ISirhDao;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -20,8 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
 @DisallowConcurrentExecution
@@ -47,7 +60,26 @@ public class AbsencePriseJob extends QuartzJobBean {
 	private IAbsencesDao absencesDao;
 
 	@Autowired
+	private ISirhDao sirhDao;
+
+	@Autowired
+	private IAbsWSConsumer absWSConsumer;
+
+	@Autowired
+	private IRadiWSConsumer radiWSConsumer;
+
+	@Autowired
 	private Helper helper;
+
+	@Autowired
+	@Qualifier("numberOfTriesEmailInformation")
+	private Integer numberOfTries;
+
+	@Autowired
+	private VelocityEngine velocityEngine;
+
+	@Autowired
+	private JavaMailSender mailSender;
 
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -69,6 +101,11 @@ public class AbsencePriseJob extends QuartzJobBean {
 				EtatAbsenceEnum.APPROUVEE);
 		List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
 				EtatAbsenceEnum.VALIDEE);
+
+		// //////////////////////////////////////////////////////
+		// on traite le cas du CONGE UNIQUE (conges exceptionnels)
+		// //////////////////////////////////////////////////////
+		traiteCongeUnique();
 
 		List<Integer> listEp = new ArrayList<>();
 		listEp.addAll(listEpAApprouver);
@@ -104,6 +141,116 @@ public class AbsencePriseJob extends QuartzJobBean {
 		}
 
 		logger.info("Processed AbsencePriseJob");
+	}
+
+	private void traiteCongeUnique() {
+		List<Integer> listeCongeUnique = absencesDao.getListeCongeUnique();
+		Integer idAgentGestionnaire = null;
+		for (Integer idDemandeCongeUnique : listeCongeUnique) {
+			// on recupere la demande
+			DemandeDto demande = absWSConsumer.getDemandeAbsence(idDemandeCongeUnique);
+			if (demande != null) {
+				if (demande.getAgentWithServiceDto().getCodeService() != null) {
+					// on cherche le gestionnaire de carriere de l'agent
+					List<Integer> listIdAgentGestionnaire = sirhDao.getReferentRHService(demande
+							.getAgentWithServiceDto().getCodeService());
+					// si on ne trouve pas de gestionnaire alors on cherche le
+					// gestionnaire global
+					if (listIdAgentGestionnaire.size() == 0) {
+						idAgentGestionnaire = sirhDao.getReferentRHGlobal();
+					} else {
+						idAgentGestionnaire = listIdAgentGestionnaire.get(0);
+					}
+				} else {
+					// on cherche le gestionnaire global
+					idAgentGestionnaire = sirhDao.getReferentRHGlobal();
+				}
+
+				// on envoi un mail au gestionnaire de carriere
+				if (idAgentGestionnaire != null) {
+					sendEmailInformationCongeUnique(idAgentGestionnaire, helper.getNomatr(Integer.valueOf(helper
+							.getEmployeeNumber(demande.getAgentWithServiceDto().getIdAgent()))));
+
+					logger.info("Finished sending today's CongeUniqueEmailInformation...");
+				} else {
+					logger.error("Aucun gestionnaire trouvé pour l'agent {}", demande.getAgentWithServiceDto()
+							.getIdAgent());
+				}
+			} else {
+				logger.error("Une erreur technique est survenue lors du traitement de cette demande.",
+						idDemandeCongeUnique);
+			}
+		}
+	}
+
+	protected void sendEmailInformationCongeUnique(Integer idAgentGestionnaire, String nomatrAgentCongeUnique) {
+		String stringSubject = "[KIOSQUE RH] Demande de congé unique à l'état pris.";
+		logger.info("Sending CongeUniqueEmailInformation a {} to idAgent {}...", stringSubject, idAgentGestionnaire);
+		int nbErrors = 0;
+		boolean succeeded = false;
+
+		while (nbErrors < numberOfTries && !succeeded) {
+
+			try {
+				sendEmailInformation(idAgentGestionnaire, helper.getCurrentDate(), stringSubject,
+						nomatrAgentCongeUnique);
+				succeeded = true;
+			} catch (Exception ex) {
+				logger.warn("An error occured while trying to send CongeUniqueEmailInformation to idAgent {}.",
+						new Object[] { idAgentGestionnaire });
+				logger.warn("Here follows the exception : ", ex);
+				incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
+				nbErrors++;
+			}
+
+			if (nbErrors >= numberOfTries) {
+				logger.error(
+						"Stopped sending CongeUniqueEmailInformation a {} to idAgent {} because exceeded the maximum authorized number of tries: {}.",
+						stringSubject, idAgentGestionnaire, numberOfTries);
+			}
+		}
+	}
+
+	protected void sendEmailInformation(final Integer idAgent, final Date theDate, final String stringSubject,
+			final String nomatrAgentCongeUnique) throws Exception {
+
+		logger.debug("Sending CongeUniqueEmailInformation to idAgent {}", new Object[] { idAgent });
+
+		// Get the assignee email address for To
+		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+
+		// Send the email
+		sendEmail(user, theDate, stringSubject, nomatrAgentCongeUnique);
+	}
+
+	protected void sendEmail(final LightUser user, final Date theDate, final String stringSubject,
+			final String nomatrAgentCongeUnique) throws Exception {
+
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				// Set the To
+				message.setTo(user.getMail());
+
+				// Set the body with velocity
+				Map model = new HashMap();
+				model.put("nomatr", nomatrAgentCongeUnique);
+
+				// Set the body with velocity
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+						"templates/sirhCongeUniqueEmailInformationTemplate.vm", "UTF-8", model);
+				message.setText(text, true);
+
+				// Set the subject
+				message.setSubject(stringSubject);
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
 	}
 
 	/**
