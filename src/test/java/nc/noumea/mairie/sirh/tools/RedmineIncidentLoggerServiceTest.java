@@ -2,7 +2,6 @@ package nc.noumea.mairie.sirh.tools;
 
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class RedmineIncidentLoggerServiceTest {

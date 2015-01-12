@@ -79,7 +79,7 @@ public class AbsencePriseJobTest {
 		ReflectionTestUtils.setField(service, "mailSender", mailSender);
 		ReflectionTestUtils.setField(service, "incidentLoggerService", incidentLoggerService);
 
-		service.sendEmailInformationCongeUnique(9, "5138");
+		service.sendEmailInformationCongeUnique(9, "5138", "CHARVET", "Tatiana");
 
 		// Then
 		verify(mailSender, times(0)).send(Mockito.isA(MimeMessagePreparator.class));
@@ -112,7 +112,7 @@ public class AbsencePriseJobTest {
 		ReflectionTestUtils.setField(service, "numberOfTries", 2);
 		ReflectionTestUtils.setField(service, "mailSender", mailSender);
 
-		service.sendEmailInformationCongeUnique(9, "5138");
+		service.sendEmailInformationCongeUnique(9, "5138", "CHARVET", "Tatiana");
 
 		// Then
 		verify(mailSender, times(1)).send(Mockito.isA(MimeMessagePreparator.class));
@@ -146,7 +146,7 @@ public class AbsencePriseJobTest {
 		ReflectionTestUtils.setField(service, "numberOfTries", 2);
 		ReflectionTestUtils.setField(service, "mailSender", mailSender);
 
-		service.sendEmailInformationCongeUnique(9, "5138");
+		service.sendEmailInformationCongeUnique(9, "5138", "CHARVET", "Tatiana");
 
 		// Then
 		verify(mailSender, times(1)).send(Mockito.isA(MimeMessagePreparator.class));

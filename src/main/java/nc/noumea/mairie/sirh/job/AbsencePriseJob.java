@@ -169,7 +169,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 				// on envoi un mail au gestionnaire de carriere
 				if (idAgentGestionnaire != null) {
 					sendEmailInformationCongeUnique(idAgentGestionnaire, helper.getNomatr(Integer.valueOf(helper
-							.getEmployeeNumber(demande.getAgentWithServiceDto().getIdAgent()))));
+							.getEmployeeNumber(demande.getAgentWithServiceDto().getIdAgent()))), demande
+							.getAgentWithServiceDto().getNom(), demande.getAgentWithServiceDto().getPrenom());
 
 					logger.info("Finished sending today's CongeUniqueEmailInformation...");
 				} else {
@@ -183,7 +184,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 		}
 	}
 
-	protected void sendEmailInformationCongeUnique(Integer idAgentGestionnaire, String nomatrAgentCongeUnique) {
+	protected void sendEmailInformationCongeUnique(Integer idAgentGestionnaire, String nomatrAgentCongeUnique,
+			String nomAgentCongeUnique, String prenomAgentCongeUnique) {
 		String stringSubject = "[KIOSQUE RH] Demande de congé unique à l'état pris.";
 		logger.info("Sending CongeUniqueEmailInformation a {} to idAgent {}...", stringSubject, idAgentGestionnaire);
 		int nbErrors = 0;
@@ -193,7 +195,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 			try {
 				sendEmailInformation(idAgentGestionnaire, helper.getCurrentDate(), stringSubject,
-						nomatrAgentCongeUnique);
+						nomatrAgentCongeUnique, nomAgentCongeUnique, prenomAgentCongeUnique);
 				succeeded = true;
 			} catch (Exception ex) {
 				logger.warn("An error occured while trying to send CongeUniqueEmailInformation to idAgent {}.",
@@ -212,7 +214,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 	}
 
 	protected void sendEmailInformation(final Integer idAgent, final Date theDate, final String stringSubject,
-			final String nomatrAgentCongeUnique) throws Exception {
+			final String nomatrAgentCongeUnique, final String nomAgentCongeUnique, final String prenomAgentCongeUnique)
+			throws Exception {
 
 		logger.debug("Sending CongeUniqueEmailInformation to idAgent {}", new Object[] { idAgent });
 
@@ -220,11 +223,12 @@ public class AbsencePriseJob extends QuartzJobBean {
 		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
 
 		// Send the email
-		sendEmail(user, theDate, stringSubject, nomatrAgentCongeUnique);
+		sendEmail(user, theDate, stringSubject, nomatrAgentCongeUnique, nomAgentCongeUnique, prenomAgentCongeUnique);
 	}
 
 	protected void sendEmail(final LightUser user, final Date theDate, final String stringSubject,
-			final String nomatrAgentCongeUnique) throws Exception {
+			final String nomatrAgentCongeUnique, final String nomAgentCongeUnique, final String prenomAgentCongeUnique)
+			throws Exception {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
@@ -237,6 +241,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 				// Set the body with velocity
 				Map model = new HashMap();
+				model.put("nom", nomAgentCongeUnique);
+				model.put("prenom", prenomAgentCongeUnique);
 				model.put("nomatr", nomatrAgentCongeUnique);
 
 				// Set the body with velocity

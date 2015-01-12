@@ -9,7 +9,7 @@
 			Bonjour, 
 		</p>
 		<p>
-			Nous vous informons que la demande de cong&eacute; unique de l'agent ${nomatr} vient de d&eacute;buter. <br />
+			Nous vous informons que la demande de cong&eacute; unique de l'agent ${nom} ${prenom} (${nomatr}) vient de d&eacute;buter. <br />
 			Merci de votre action.<br /> 
 		</p>
 		<p>
