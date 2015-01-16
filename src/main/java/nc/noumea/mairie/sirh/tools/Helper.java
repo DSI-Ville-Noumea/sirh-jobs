@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,5 +46,19 @@ public class Helper {
 	 */
 	public String getEmployeeNumber(Integer idAgent) {
 		return "90" + String.valueOf(idAgent).substring(3, String.valueOf(idAgent).length());
+	}
+	
+	public Date getFirstDayOfCurrentMonth() {
+		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+		
+		return date.dayOfMonth()       // Accès à la propriété 'Jour du Mois'
+		 .withMinimumValue().toDate();
+	}
+	
+	public Date getLastDayOfCurrentMonth() {
+		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+		
+		return date.dayOfMonth()       // Accès à la propriété 'Jour du Mois'
+		 .withMaximumValue().toDate();
 	}
 }

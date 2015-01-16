@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,10 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_GetDemandeUrl")
 	private String getDemande;
+	
+	@Autowired
+	@Qualifier("SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl")
+	private String alimentationAutoCongeAnnuelUrl;
 
 	@Override
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {
@@ -151,5 +157,23 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto alimentationAutoCongesAnnuels(Integer idAgent,
+			Date dateDebut, Date dateFin) {
+		
+		String url = String.format(SIRH_ABS_WS_Base_URL + alimentationAutoCongeAnnuelUrl);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+		parameters.put("dateDebut", sdf.format(dateDebut));
+		parameters.put("dateFin", sdf.format(dateFin));
+
+		ClientResponse res = createAndFirePostRequest(parameters, url);
+
+		return readResponse(ReturnMessageDto.class, res, url);
 	}
 }

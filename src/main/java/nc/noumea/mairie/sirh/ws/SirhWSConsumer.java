@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	private static final String listeAgentEligibleEAESansAffectesUrl = "calculEae/listeAgentEligibleEAESansAffectes";
 	private static final String listeAgentEligibleEAEAffectesUrl = "calculEae/listeAgentEligibleEAEAffectes";
+	private static final String listAgentPourAlimAutoCompteursCongesAnnuelsUrl = "absences/listAgentPourAlimAutoCompteursCongesAnnuels";
 	
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -44,6 +47,20 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(listeAgentEligibleEAEAffectesUrl));
 		
 		return readResponseAsList(AgentDto.class, res, getWSUrl(listeAgentEligibleEAEAffectesUrl));
+	}
+	
+	@Override
+	public List<Integer> getListAgentPourAlimAutoCompteursCongesAnnuels(Date dateDebut, Date dateFin) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("dateDebut", sdf.format(dateDebut));
+		parameters.put("dateFin", sdf.format(dateFin));
+		
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(listAgentPourAlimAutoCompteursCongesAnnuelsUrl));
+		
+		return readResponseAsList(Integer.class, res, getWSUrl(listAgentPourAlimAutoCompteursCongesAnnuelsUrl));
 	}
 
 }

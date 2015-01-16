@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
@@ -22,4 +23,6 @@ public interface IAbsWSConsumer {
 	ReturnMessageDto resetCompteurCongeAnnuel(Integer idAgentCongeAnnuelCount);
 
 	DemandeDto getDemandeAbsence(Integer idDemande);
+	
+	ReturnMessageDto alimentationAutoCongesAnnuels(Integer idAgent, Date dateDebut, Date dateFin);
 }
