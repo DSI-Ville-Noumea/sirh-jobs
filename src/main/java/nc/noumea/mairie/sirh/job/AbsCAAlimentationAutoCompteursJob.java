@@ -74,6 +74,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
 				incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
+				createCongeAnnuelAlimAutoHisto(idAgent, ex.getMessage());
 			}
 			
 			if (result != null && result.getErrors().size() != 0) {
@@ -84,12 +85,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 					error += " ; " + err;
 				}
 				
-				CongeAnnuelAlimAutoHisto histo = new CongeAnnuelAlimAutoHisto();
-				histo.setDateMonth(helper.getFirstDayOfCurrentMonth());
-				histo.setDateModification(new Date());
-				histo.setIdAgent(idAgent);
-				histo.setStatus(error);
-				absencesDao.persistEntity(histo);
+				createCongeAnnuelAlimAutoHisto(idAgent, error);
 			}
 		}
 		
@@ -98,5 +94,21 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		}
 		
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");
+	}
+	
+	private void createCongeAnnuelAlimAutoHisto(Integer idAgent, String error) {
+		
+		if(!"".equals(error)) {
+			if(255 < error.length()) {
+				error = error.substring(0, 255);
+			}
+		}
+		
+		CongeAnnuelAlimAutoHisto histo = new CongeAnnuelAlimAutoHisto();
+			histo.setDateMonth(helper.getFirstDayOfCurrentMonth());
+			histo.setDateModification(new Date());
+			histo.setIdAgent(idAgent);
+			histo.setStatus(error);
+		absencesDao.persistEntity(histo);
 	}
 }

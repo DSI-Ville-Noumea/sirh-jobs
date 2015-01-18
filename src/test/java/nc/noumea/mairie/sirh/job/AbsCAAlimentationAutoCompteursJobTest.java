@@ -62,8 +62,6 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 			}
 		}).when(sirhWSConsumer).getListAgentPourAlimAutoCompteursCongesAnnuels(Mockito.any(Date.class), Mockito.any(Date.class));
 		
-		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
-		
 		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -71,11 +69,15 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 			}
 		}).when(absWSConsumer).alimentationAutoCongesAnnuels(Mockito.anyInt(), Mockito.any(Date.class), Mockito.any(Date.class));
 		
+		IAbsencesDao absencesDao = Mockito.mock(IAbsencesDao.class);
+		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
+		
 		AbsCAAlimentationAutoCompteursJob job = new AbsCAAlimentationAutoCompteursJob();
 		ReflectionTestUtils.setField(job, "sirhWSConsumer", sirhWSConsumer);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
 		ReflectionTestUtils.setField(job, "absWSConsumer", absWSConsumer);
 		ReflectionTestUtils.setField(job, "helper", helper);
+		ReflectionTestUtils.setField(job, "absencesDao", absencesDao);
 		
 		job.executeInternal(null);
 		
