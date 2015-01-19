@@ -1,10 +1,11 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
-import nc.noumea.mairie.sirh.service.IAbsenceService;
+import nc.noumea.mairie.abs.domain.CongeAnnuelAlimAutoHisto;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
@@ -32,9 +33,6 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 	private String SIRH_ABS_WS_Base_URL;
 
 	@Autowired
-	private IAbsencesDao absencesDao;
-
-	@Autowired
 	private IAbsWSConsumer absWSConsumer;
 
 	@Autowired
@@ -47,7 +45,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 	private Helper helper;
 
 	@Autowired
-	private IAbsenceService service;
+	private IAbsencesDao absencesDao;
 
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -93,7 +91,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 				error = "OK";
 			}
 
-			service.createCongeAnnuelAlimAutoHisto(idAgent, error);
+			createCongeAnnuelAlimAutoHisto(idAgent, error);
 		}
 
 		if (isError) {
@@ -102,5 +100,24 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		}
 
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");
+	}
+
+	private void createCongeAnnuelAlimAutoHisto(Integer idAgent, String error) {
+
+		absencesDao.beginTransaction();
+
+		if (!"".equals(error)) {
+			if (255 < error.length()) {
+				error = error.substring(0, 255);
+			}
+		}
+
+		CongeAnnuelAlimAutoHisto histo = new CongeAnnuelAlimAutoHisto();
+		histo.setDateMonth(helper.getFirstDayOfPreviousMonth());
+		histo.setDateModification(new Date());
+		histo.setIdAgent(idAgent);
+		histo.setStatus(error);
+
+		absencesDao.commitTransaction();
 	}
 }
