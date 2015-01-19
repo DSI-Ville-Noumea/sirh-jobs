@@ -29,28 +29,17 @@
 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
 		poolPreparedStatements="true" />
 
-<!-- 	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container" -->
-<!-- 		type="javax.sql.DataSource" description="AS400 SIRH Schema" -->
-<!-- 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory" -->
-<!-- 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false" -->
-<!-- 		validationQuery="select 1 from sysdummy1" validationInterval="30000" -->
-<!-- 		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" -->
-<!-- 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500" -->
-<!-- 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" -->
-<!-- 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***" -->
-<!-- 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" poolPreparedStatements="true" -->
-<!-- 		url="***REMOVED***;" /> -->
-	
-	<Resource name="jdbc/SIRH_JOBS_DS2" url="***REMOVED***" 
-		username="***REMOVED***"  password="***REMOVED***" 
-        driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-        auth="Container" type="javax.sql.DataSource"
-        autoReconnect="true" initialSize="1" maxActive="10" maxIdle="4"
-        maxWait="30000" minIdle="0" removeAbandoned="true"
-        removeAbandonedTimeout="500" logAbandoned="true"
-        poolPreparedStatements="true"
-        validationQuery="select 1 from sysdummy1"
-        testWhileIdle="true" testOnBorrow="true" testOnReturn="false" />
+	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container"
+		type="javax.sql.DataSource" description="AS400 SIRH Schema"
+		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
+		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+		validationQuery="select 1 from sysdummy1" validationInterval="30000"
+		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
+		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
+		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" poolPreparedStatements="true"
+		url="***REMOVED***;" />
         
 	<Resource name="jdbc/SIRH_JOBS_DS4" auth="Container"
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
