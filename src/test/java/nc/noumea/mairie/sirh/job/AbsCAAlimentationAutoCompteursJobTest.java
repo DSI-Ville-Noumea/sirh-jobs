@@ -204,7 +204,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		
 		job.executeInternal(null);
 		
-		verify(absencesDao, times(0)).persistEntity(Mockito.isA(CongeAnnuelAlimAutoHisto.class));
+		verify(absencesDao, times(2)).persistEntity(Mockito.isA(CongeAnnuelAlimAutoHisto.class));
 		verify(incidentLoggerService, times(0)).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 	}
 }

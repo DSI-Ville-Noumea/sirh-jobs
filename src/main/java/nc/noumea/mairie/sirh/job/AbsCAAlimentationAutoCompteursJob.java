@@ -67,6 +67,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		for(Integer idAgent : listAgents) {
 			logger.debug("Processing agent counters idAgent {}...", idAgent);
 			
+			String error = "";
 			ReturnMessageDto result = null;
 			try {
 				result = absWSConsumer.alimentationAutoCongesAnnuels(
@@ -74,19 +75,23 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
 				incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
-				createCongeAnnuelAlimAutoHisto(idAgent, ex.getMessage());
+				error = ex.getMessage();
 			}
 			
 			if (result != null && result.getErrors().size() != 0) {
 				isError = true;
-				String error = "";
+				
 				for (String err : result.getErrors()) {
 					logger.info(err);
 					error += " ; " + err;
 				}
-				
-				createCongeAnnuelAlimAutoHisto(idAgent, error);
 			}
+			
+			if("".equals(error)) {
+				error = "OK";
+			}
+			
+			createCongeAnnuelAlimAutoHisto(idAgent, error);
 		}
 		
 		if(isError) {
