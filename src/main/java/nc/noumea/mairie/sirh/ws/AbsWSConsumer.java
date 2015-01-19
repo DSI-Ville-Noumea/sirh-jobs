@@ -168,7 +168,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idAgent", String.valueOf(idAgent));
+		parameters.put("nomatr", String.valueOf(idAgent));
 		parameters.put("dateDebut", sdf.format(dateDebut));
 		parameters.put("dateFin", sdf.format(dateFin));
 
