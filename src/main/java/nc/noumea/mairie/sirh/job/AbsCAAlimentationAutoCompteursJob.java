@@ -53,27 +53,24 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		logger.info("Start AbsCAAlimentationAutoCompteursJob");
 
 		List<Integer> listAgents = new ArrayList<Integer>();
-		// try {
-		// listAgents =
-		// sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
-		// helper.getFirstDayOfCurrentMonth(),
-		// helper.getLastDayOfCurrentMonth());
-		// } catch (Exception ex) {
-		// logger.error("Une erreur technique est survenue lors du traitement : ",
-		// ex);
-		// incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob",
-		// ex.getMessage(), ex);
-		// }
-		listAgents.add(5138);
+		 try {
+		 listAgents =
+		 sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
+			 helper.getFirstDayOfPreviousMonth(),
+			 helper.getLastDayOfPreviousMonth());
+		 } catch (Exception ex) {
+			 logger.error("Une erreur technique est survenue lors du traitement : ",
+			 ex);
+			 incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob",
+			 ex.getMessage(), ex);
+		 }
+//		listAgents.add(5138);
 
 		logger.info("Found {} agents counters to update...", listAgents.size());
 
 		boolean isError = false;
 		for (Integer idAgent : listAgents) {
 			logger.debug("Processing agent counters idAgent {}...", idAgent);
-			if (idAgent == 5138) {
-				System.out.println("ici");
-			}
 
 			String error = "";
 			ReturnMessageDto result = null;

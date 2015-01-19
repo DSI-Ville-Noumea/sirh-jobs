@@ -27,6 +27,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 	public void AbsCAAlimentationAutoCompteursJobTest_erreurListAgents() throws JobExecutionException {
 
 		ISirhWSConsumer sirhWSConsumer = Mockito.mock(ISirhWSConsumer.class);
+		IAbsencesDao absencesDao = Mockito.mock(IAbsencesDao.class);
 
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -40,6 +41,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		AbsCAAlimentationAutoCompteursJob job = new AbsCAAlimentationAutoCompteursJob();
 		ReflectionTestUtils.setField(job, "sirhWSConsumer", sirhWSConsumer);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
+		ReflectionTestUtils.setField(job, "absencesDao", absencesDao);
 
 		job.executeInternal(null);
 
