@@ -129,6 +129,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		job.executeInternal(null);
 
+		Mockito.verify(absencesDao, Mockito.times(1)).beginTransaction();
 		verify(absencesDao, times(1)).commitTransaction();
 		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
@@ -174,6 +175,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		job.executeInternal(null);
 
+		Mockito.verify(absencesDao, Mockito.times(2)).beginTransaction();
 		verify(absencesDao, times(2)).commitTransaction();
 		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
@@ -218,6 +220,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		job.executeInternal(null);
 
+		Mockito.verify(absencesDao, Mockito.times(2)).beginTransaction();
 		verify(absencesDao, times(2)).commitTransaction();
 		verify(incidentLoggerService, times(0)).logIncident(Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
