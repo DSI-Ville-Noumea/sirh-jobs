@@ -25,95 +25,107 @@ import org.springframework.stereotype.Service;
 @Service
 @DisallowConcurrentExecution
 public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
-	
+
 	private Logger logger = LoggerFactory.getLogger(AbsCAAlimentationAutoCompteursJob.class);
-	
+
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_Base_URL")
 	private String SIRH_ABS_WS_Base_URL;
-	
+
 	@Autowired
 	private IAbsencesDao absencesDao;
-	
+
 	@Autowired
 	private IAbsWSConsumer absWSConsumer;
-	
+
 	@Autowired
 	private ISirhWSConsumer sirhWSConsumer;
-	
+
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
-	
+
 	@Autowired
 	private Helper helper;
-	
+
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 
 		logger.info("Start AbsCAAlimentationAutoCompteursJob");
-		
+
 		List<Integer> listAgents = new ArrayList<Integer>();
-		try {
-			listAgents = sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
-					helper.getFirstDayOfCurrentMonth(), helper.getLastDayOfCurrentMonth());
-		} catch (Exception ex) {
-			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
-		}
-		
+		// try {
+		// listAgents =
+		// sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
+		// helper.getFirstDayOfCurrentMonth(),
+		// helper.getLastDayOfCurrentMonth());
+		// } catch (Exception ex) {
+		// logger.error("Une erreur technique est survenue lors du traitement : ",
+		// ex);
+		// incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob",
+		// ex.getMessage(), ex);
+		// }
+		listAgents.add(5138);
+
 		logger.info("Found {} agents counters to update...", listAgents.size());
-		
+
 		boolean isError = false;
-		for(Integer idAgent : listAgents) {
+		for (Integer idAgent : listAgents) {
 			logger.debug("Processing agent counters idAgent {}...", idAgent);
-			
+			if (idAgent == 5138) {
+				System.out.println("ici");
+			}
+
 			String error = "";
 			ReturnMessageDto result = null;
 			try {
-				result = absWSConsumer.alimentationAutoCongesAnnuels(
-						idAgent, helper.getFirstDayOfCurrentMonth(), helper.getLastDayOfCurrentMonth());
+				result = absWSConsumer.alimentationAutoCongesAnnuels(idAgent, helper.getFirstDayOfPreviousMonth(),
+						helper.getLastDayOfPreviousMonth());
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
 				incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
 				error = ex.getMessage();
 			}
-			
+
 			if (result != null && result.getErrors().size() != 0) {
 				isError = true;
-				
+
 				for (String err : result.getErrors()) {
 					logger.info(err);
 					error += " ; " + err;
 				}
 			}
-			
-			if("".equals(error)) {
+
+			if ("".equals(error)) {
 				error = "OK";
 			}
-			
+
 			createCongeAnnuelAlimAutoHisto(idAgent, error);
 		}
-		
-		if(isError) {
-			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", "Erreur de AbsCAAlimentationAutoCompteursJob : voir ABS_CA_ALIM_AUTO_HISTO", null);
+
+		if (isError) {
+			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob",
+					"Erreur de AbsCAAlimentationAutoCompteursJob : voir ABS_CA_ALIM_AUTO_HISTO", null);
 		}
-		
+
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");
 	}
-	
+
 	private void createCongeAnnuelAlimAutoHisto(Integer idAgent, String error) {
-		
-		if(!"".equals(error)) {
-			if(255 < error.length()) {
+
+		absencesDao.beginTransaction();
+
+		if (!"".equals(error)) {
+			if (255 < error.length()) {
 				error = error.substring(0, 255);
 			}
 		}
-		
+
 		CongeAnnuelAlimAutoHisto histo = new CongeAnnuelAlimAutoHisto();
-			histo.setDateMonth(helper.getFirstDayOfCurrentMonth());
-			histo.setDateModification(new Date());
-			histo.setIdAgent(idAgent);
-			histo.setStatus(error);
-		absencesDao.persistEntity(histo);
+		histo.setDateMonth(helper.getFirstDayOfPreviousMonth());
+		histo.setDateModification(new Date());
+		histo.setIdAgent(idAgent);
+		histo.setStatus(error);
+
+		absencesDao.commitTransaction();
 	}
 }

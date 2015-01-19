@@ -48,14 +48,14 @@ public class Helper {
 		return "90" + String.valueOf(idAgent).substring(3, String.valueOf(idAgent).length());
 	}
 	
-	public Date getFirstDayOfCurrentMonth() {
+	public Date getFirstDayOfPreviousMonth() {
 		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
 		
 		return date.dayOfMonth()       // Accès à la propriété 'Jour du Mois'
 		 .withMinimumValue().toDate();
 	}
 	
-	public Date getLastDayOfCurrentMonth() {
+	public Date getLastDayOfPreviousMonth() {
 		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
 		
 		return date.dayOfMonth()       // Accès à la propriété 'Jour du Mois'

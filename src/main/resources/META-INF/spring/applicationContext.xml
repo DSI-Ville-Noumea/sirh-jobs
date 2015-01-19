@@ -97,7 +97,7 @@
 		<property name="dataSource" ref="absPostgreDataSource" />
 		<property name="annotatedClasses">
 			<list>
-				<!-- <value>nc.noumea.mairie.abs.domain.EtatAbsence</value> -->
+				<value>nc.noumea.mairie.abs.domain.CongeAnnuelAlimAutoHisto</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -160,7 +160,7 @@
 	<jee:jndi-lookup id="gedWebdavUser" jndi-name="AVCT_GED_WEBDAV_USER"
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="AVCT_GED_WEBDAV_PWD"
-		expected-type="java.lang.String" />		
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="kiosqueUserWebdav" jndi-name="USER_SHAREPOINT_WEBDAV_EAE"
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="kiosqueUserPwsWebdav" jndi-name="USER_PWD_SHAREPOINT_WEBDAV_EAE"
@@ -187,11 +187,11 @@
 		jndi-name="SIRH_PTG_WS_EXPORT_DONE_URL" expected-type="java.lang.String" />
 
 	<!-- ReposComp Job service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_Base_URL"
-		jndi-name="SIRH_PTG_WS_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_PTG_WS_Base_URL" jndi-name="SIRH_PTG_WS_URL"
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_PTG_WS_ReposCompTaskUrlPart"
 		jndi-name="SIRH_PTG_WS_RC_TASK_URL_PART" expected-type="java.lang.String" />
-		
+
 	<!-- pour les emails d information des absences -->
 	<jee:jndi-lookup id="SIRH_PTG_WS_emailInformationUrl"
 		jndi-name="SIRH_PTG_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
@@ -202,73 +202,75 @@
 	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneUrl"
 		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl"
-		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" expected-type="java.lang.String"/>
+		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" expected-type="java.lang.String" />
 
 	<jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl"
 		jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL" expected-type="java.lang.String" />
-	
+
 	<!-- Pour les absences -->
-	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL"
-		jndi-name="SIRH_ABS_WS_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL" jndi-name="SIRH_ABS_WS_URL"
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
 		jndi-name="SIRH_ABS_WS_SUPP_ABSENCE_URL" expected-type="java.lang.String" />
-		<!-- pour les emails d information des absences -->
+	<!-- pour les emails d information des absences -->
 	<jee:jndi-lookup id="SIRH_ABS_WS_emailInformationUrl"
 		jndi-name="SIRH_ABS_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="numberOfTriesEmailInformation"
-		jndi-name="emailInformationJob.numberOfTentatives"
-		expected-type="java.lang.Integer" />
+		jndi-name="emailInformationJob.numberOfTentatives" expected-type="java.lang.Integer" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneePrecedenteUrl"
 		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneePrecedenteUrl"
 		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneeEnCoursUrl"
-		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL"
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl"
-		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL" expected-type="java.lang.String" />
+		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL"
+		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
+		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
+		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_GetDemandeUrl"
-		jndi-name="SIRH_ABS_WS_DEMANDE_URL" expected-type="java.lang.String" />	
+		jndi-name="SIRH_ABS_WS_DEMANDE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_ALIMENTATION_AUTO_CONGE_ANNUEL_URL" expected-type="java.lang.String" />	
-		
-		
+		jndi-name="SIRH_ABS_WS_ALIMENTATION_AUTO_CONGE_ANNUEL_URL"
+		expected-type="java.lang.String" />
+
+
 	<!-- Pour RADI -->
-	<jee:jndi-lookup id="RADI_WS_Base_URL"
-		jndi-name="RADI_WS_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="RADI_WS_SearchUser"
-		jndi-name="RADI_WS_SEARCH_USER_URL" expected-type="java.lang.String" />
-	
-	
-	
+	<jee:jndi-lookup id="RADI_WS_Base_URL" jndi-name="RADI_WS_URL"
+		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="RADI_WS_SearchUser" jndi-name="RADI_WS_SEARCH_USER_URL"
+		expected-type="java.lang.String" />
+
+
+
 	<!-- Redmine Logger properties -->
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_KEY" jndi-name="SIRH_JOBS_REDMINE_API_KEY"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_URL" jndi-name="SIRH_JOBS_REDMINE_API_URL"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_PROJECT_KEY" jndi-name="SIRH_JOBS_REDMINE_PROJECT_KEY"
-		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_KEY"
+		jndi-name="SIRH_JOBS_REDMINE_API_KEY" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_API_URL"
+		jndi-name="SIRH_JOBS_REDMINE_API_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_PROJECT_KEY"
+		jndi-name="SIRH_JOBS_REDMINE_PROJECT_KEY" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_ENV" jndi-name="SIRH_JOBS_REDMINE_ENV"
 		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME" jndi-name="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID" jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID"
-		expected-type="java.lang.Integer" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME" jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID" jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID"
-		expected-type="java.lang.Integer" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME" jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID" jndi-name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
-		expected-type="java.lang.Integer" />
-	
-	
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME"
+		jndi-name="SIRH_JOBS_REDMINE_INCIDENT_TRACKER_NAME" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID"
+		jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_ID" expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME"
+		jndi-name="SIRH_JOBS_REDMINE_CF_ENV_FIELD_NAME" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID"
+		jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_ID" expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME"
+		jndi-name="SIRH_JOBS_REDMINE_CF_JOBNAME_FIELD_NAME" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
+		jndi-name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID" expected-type="java.lang.Integer" />
+
+
 	<!-- Quartz Jobs Scheduler -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
@@ -277,15 +279,15 @@
 		<property name="configLocation" value="classpath:quartz.properties" />
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 	</bean>
-	
+
 	<!--Job Calcul Eae -->
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL"
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_URL"
 		expected-type="java.lang.String" />
-		
+
 	<!-- Adresse du kiosque -->
-	<jee:jndi-lookup id="adresseKiosqueRH"
-		jndi-name="KIOSQUE_URL" expected-type="java.lang.String" />
-	
+	<jee:jndi-lookup id="adresseKiosqueRH" jndi-name="KIOSQUE_URL"
+		expected-type="java.lang.String" />
+
 </beans>

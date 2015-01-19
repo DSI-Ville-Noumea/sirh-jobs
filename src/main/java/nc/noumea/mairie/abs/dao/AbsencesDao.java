@@ -91,8 +91,4 @@ public class AbsencesDao implements IAbsencesDao {
 
 		return result;
 	}
-	
-	public void persistEntity(Object o){
-		absSessionFactory.getCurrentSession().persist(o);
-	}
 }
