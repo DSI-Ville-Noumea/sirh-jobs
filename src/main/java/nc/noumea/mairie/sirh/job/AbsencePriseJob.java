@@ -17,6 +17,7 @@ import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
@@ -69,6 +70,9 @@ public class AbsencePriseJob extends QuartzJobBean {
 	private IRadiWSConsumer radiWSConsumer;
 
 	@Autowired
+	private ISirhWSConsumer sirhWSConsumer;
+
+	@Autowired
 	private Helper helper;
 
 	@Autowired
@@ -86,58 +90,69 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 		logger.info("Start AbsencePriseJob");
 
-		absencesDao.beginTransaction();
+		// redmine #12994 : bloque ce job si une paye est en cours
+		ReturnMessageDto paieEnCours = sirhWSConsumer.isPaieEnCours();
+		if (paieEnCours.getErrors().size() == 0) {
+			absencesDao.beginTransaction();
 
-		// pour les RECUP et les REPOS COMP
-		List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(
-				getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
-		// pour les ASA, CONGES_EXCEP
-		List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
-				getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
-		// pour les CONGES ANNUELS
-		List<Integer> listTypeGroupeAbs = new ArrayList<>();
-		listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue());
-		List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
-				EtatAbsenceEnum.APPROUVEE);
-		List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
-				EtatAbsenceEnum.VALIDEE);
+			// pour les RECUP et les REPOS COMP
+			List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(
+					getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
+			// pour les ASA, CONGES_EXCEP
+			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
+					getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
+			// pour les CONGES ANNUELS
+			List<Integer> listTypeGroupeAbs = new ArrayList<>();
+			listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue());
+			List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
+					EtatAbsenceEnum.APPROUVEE);
+			List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
+					EtatAbsenceEnum.VALIDEE);
 
-		// //////////////////////////////////////////////////////
-		// on traite le cas du CONGE UNIQUE (conges exceptionnels)
-		// //////////////////////////////////////////////////////
-		traiteCongeUnique();
+			// //////////////////////////////////////////////////////
+			// on traite le cas du CONGE UNIQUE (conges exceptionnels)
+			// //////////////////////////////////////////////////////
+			traiteCongeUnique();
 
-		List<Integer> listEp = new ArrayList<>();
-		listEp.addAll(listEpAApprouver);
-		listEp.addAll(listEpAValider);
-		listEp.addAll(listCongeAApprouver);
-		listEp.addAll(listCongeAValider);
-		logger.info("Found {} demandes to update...", listEp.size());
+			List<Integer> listEp = new ArrayList<>();
+			listEp.addAll(listEpAApprouver);
+			listEp.addAll(listEpAValider);
+			listEp.addAll(listCongeAApprouver);
+			listEp.addAll(listCongeAValider);
+			logger.info("Found {} demandes to update...", listEp.size());
 
-		absencesDao.rollBackTransaction();
+			absencesDao.rollBackTransaction();
 
-		for (Integer idDemande : listEp) {
+			for (Integer idDemande : listEp) {
 
-			logger.debug("Processing demande id {}...", idDemande);
+				logger.debug("Processing demande id {}...", idDemande);
 
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("idDemande", String.valueOf(idDemande));
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("idDemande", String.valueOf(idDemande));
 
-			String url = String.format("%s%s", SIRH_ABS_WS_Base_URL, etatAbsenceUrl);
-			ReturnMessageDto result = null;
+				String url = String.format("%s%s", SIRH_ABS_WS_Base_URL, etatAbsenceUrl);
+				ReturnMessageDto result = null;
 
-			try {
-				result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
-			} catch (Exception ex) {
-				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
-				incidentLoggerService.logIncident("AbsencePriseJob", ex.getCause().getMessage(), ex);
-			}
+				try {
+					result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
+				} catch (Exception ex) {
+					logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
+					incidentLoggerService.logIncident("AbsencePriseJob", ex.getCause().getMessage(), ex);
+				}
 
-			if (result != null && result.getErrors().size() != 0) {
-				for (String err : result.getErrors()) {
-					logger.info(err);
+				if (result != null && result.getErrors().size() != 0) {
+					for (String err : result.getErrors()) {
+						logger.info(err);
+					}
 				}
 			}
+		} else {
+			logger.error("Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé.");
+			incidentLoggerService
+					.logIncident(
+							"AbsencePriseJob",
+							"Erreur de AbsencePriseJob : Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé. Penser à verifier demain que celui-ci a bien de nouveau été lancé.",
+							null);
 		}
 
 		logger.info("Processed AbsencePriseJob");

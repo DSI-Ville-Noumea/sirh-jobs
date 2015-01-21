@@ -24,18 +24,19 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String listeAgentEligibleEAESansAffectesUrl = "calculEae/listeAgentEligibleEAESansAffectes";
 	private static final String listeAgentEligibleEAEAffectesUrl = "calculEae/listeAgentEligibleEAEAffectes";
 	private static final String listAgentPourAlimAutoCompteursCongesAnnuelsUrl = "absences/listAgentPourAlimAutoCompteursCongesAnnuels";
-	
+	private static final String isPaieEnCoursUrl = "utils/isPaieEnCours";
+
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
 	}
-	
+
 	@Override
 	public List<AgentDto> getListeAgentEligibleEAESansAffectes() {
-		
+
 		Map<String, String> parameters = new HashMap<String, String>();
-		
+
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(listeAgentEligibleEAESansAffectesUrl));
-		
+
 		return readResponseAsList(AgentDto.class, res, getWSUrl(listeAgentEligibleEAESansAffectesUrl));
 	}
 
@@ -43,24 +44,34 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	public List<AgentDto> getListeAgentEligibleEAEAffectes() {
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		
+
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(listeAgentEligibleEAEAffectesUrl));
-		
+
 		return readResponseAsList(AgentDto.class, res, getWSUrl(listeAgentEligibleEAEAffectesUrl));
 	}
-	
+
 	@Override
 	public List<Integer> getListAgentPourAlimAutoCompteursCongesAnnuels(Date dateDebut, Date dateFin) {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		
+
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dateDebut", sdf.format(dateDebut));
 		parameters.put("dateFin", sdf.format(dateFin));
-		
-		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(listAgentPourAlimAutoCompteursCongesAnnuelsUrl));
-		
+
+		ClientResponse res = createAndFireGetRequest(parameters,
+				getWSUrl(listAgentPourAlimAutoCompteursCongesAnnuelsUrl));
+
 		return readResponseAsList(Integer.class, res, getWSUrl(listAgentPourAlimAutoCompteursCongesAnnuelsUrl));
+	}
+
+	@Override
+	public ReturnMessageDto isPaieEnCours() {
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(isPaieEnCoursUrl));
+
+		return readResponse(ReturnMessageDto.class, res, getWSUrl(isPaieEnCoursUrl));
 	}
 
 }
