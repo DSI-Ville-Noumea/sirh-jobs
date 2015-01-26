@@ -17,4 +17,6 @@ public interface IAbsencesDao {
 	List<Integer> getListeAbsWithEtatAndTypeAbsence(List<Integer> listTypeGroupeAbs, EtatAbsenceEnum etat);
 
 	List<Integer> getListeCongeUnique();
+
+	void persistObject(Object object);
 }

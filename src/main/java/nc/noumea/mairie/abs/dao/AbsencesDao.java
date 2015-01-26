@@ -29,6 +29,11 @@ public class AbsencesDao implements IAbsencesDao {
 	public void rollBackTransaction() {
 		absSessionFactory.getCurrentSession().getTransaction().rollback();
 	}
+	
+	@Override
+	public void persistObject(Object object) {
+		absSessionFactory.getCurrentSession().persist(object);
+	}
 
 	@Override
 	public List<Integer> getListeAbsWithEtat(EtatAbsenceEnum etat) {

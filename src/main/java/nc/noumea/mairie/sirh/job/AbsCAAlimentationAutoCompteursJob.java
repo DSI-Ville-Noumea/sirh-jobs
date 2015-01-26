@@ -83,7 +83,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 
 				for (String err : result.getErrors()) {
 					logger.info(err);
-					error += " ; " + err;
+					error += err + " ; ";
 				}
 			}
 
@@ -117,6 +117,8 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		histo.setDateModification(new Date());
 		histo.setIdAgent(idAgent);
 		histo.setStatus(error);
+		
+		absencesDao.persistObject(histo);
 
 		absencesDao.commitTransaction();
 	}

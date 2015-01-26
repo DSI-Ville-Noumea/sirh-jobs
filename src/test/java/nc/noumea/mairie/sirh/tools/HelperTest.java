@@ -23,6 +23,7 @@ public class HelperTest {
 		
 		assertEquals(1, new DateTime(firstDayOfPreviousMonth).getDayOfMonth());
 		assertEquals(new DateTime(firstDayOfPreviousMonth).getMonthOfYear(), calLundi.get(Calendar.MONTH)+1); // +1 car janvier commence a zero
+		assertEquals(new DateTime(firstDayOfPreviousMonth).getYear(), calLundi.get(Calendar.YEAR));
 	}
 	
 	@Test
@@ -37,5 +38,6 @@ public class HelperTest {
 		
 		assertTrue(27 < new DateTime(firstDayOfPreviousMonth).getDayOfMonth());
 		assertEquals(new DateTime(firstDayOfPreviousMonth).getMonthOfYear(), calLundi.get(Calendar.MONTH)+1);
+		assertEquals(new DateTime(firstDayOfPreviousMonth).getYear(), calLundi.get(Calendar.YEAR));
 	}
 }
