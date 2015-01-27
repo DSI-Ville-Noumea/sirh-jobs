@@ -33,34 +33,34 @@ public class RAZCompteurCongeAnnuelJob extends QuartzJobBean {
 
 		logger.info("Start RAZCompteurCongeAnnuelJob");
 
-//		List<Integer> listeIdCompteur = new ArrayList<Integer>();
-//		try {
-//			listeIdCompteur = absWSConsumer.getListCompteurCongeAnnuel();
-//		} catch (Exception ex) {
-//			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-//			incidentLoggerService.logIncident("RAZCompteurCongeAnnuelJob", ex.getMessage(), ex);
-//		}
-//
-//		logger.info("Found {} Conge annuel counters to update...", listeIdCompteur.size());
-//
-//		for (Integer idCompteur : listeIdCompteur) {
-//
-//			logger.debug("Processing counter id {}...", idCompteur);
-//
-//			ReturnMessageDto result = null;
-//			try {
-//				result = absWSConsumer.resetCompteurCongeAnnuel(idCompteur);
-//			} catch (Exception ex) {
-//				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-//				incidentLoggerService.logIncident("RAZCompteurCongeAnnuelJob", ex.getMessage(), ex);
-//			}
-//
-//			if (result != null && result.getErrors().size() != 0) {
-//				for (String err : result.getErrors()) {
-//					logger.info(err);
-//				}
-//			}
-//		}
+		List<Integer> listeIdCompteur = new ArrayList<Integer>();
+		try {
+			listeIdCompteur = absWSConsumer.getListCompteurCongeAnnuel();
+		} catch (Exception ex) {
+			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
+			incidentLoggerService.logIncident("RAZCompteurCongeAnnuelJob", ex.getMessage(), ex);
+		}
+
+		logger.info("Found {} Conge annuel counters to update...", listeIdCompteur.size());
+
+		for (Integer idCompteur : listeIdCompteur) {
+
+			logger.debug("Processing counter id {}...", idCompteur);
+
+			ReturnMessageDto result = null;
+			try {
+				result = absWSConsumer.resetCompteurCongeAnnuel(idCompteur);
+			} catch (Exception ex) {
+				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
+				incidentLoggerService.logIncident("RAZCompteurCongeAnnuelJob", ex.getMessage(), ex);
+			}
+
+			if (result != null && result.getErrors().size() != 0) {
+				for (String err : result.getErrors()) {
+					logger.info(err);
+				}
+			}
+		}
 
 		logger.info("Processed RAZCompteurCongeAnnuelJob");
 	}
