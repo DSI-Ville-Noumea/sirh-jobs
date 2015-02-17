@@ -52,25 +52,25 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 
 		logger.info("Start AbsCAAlimentationAutoCompteursJob");
 
-		List<Integer> listAgents = new ArrayList<Integer>();
+		List<Integer> listNomatrAgents = new ArrayList<Integer>();
 		try {
-			listAgents = sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
+			listNomatrAgents = sirhWSConsumer.getListAgentPourAlimAutoCompteursCongesAnnuels(
 					helper.getFirstDayOfPreviousMonth(), helper.getLastDayOfPreviousMonth());
 		} catch (Exception ex) {
 			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
 			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
 		}
 
-		logger.info("Found {} agents counters to update...", listAgents.size());
+		logger.info("Found {} agents counters to update...", listNomatrAgents.size());
 
 		boolean isError = false;
-		for (Integer idAgent : listAgents) {
-			logger.debug("Processing agent counters idAgent {}...", idAgent);
+		for (Integer nomatr : listNomatrAgents) {
+			logger.debug("Processing agent counters idAgent {}...", helper.getIdAgent(nomatr));
 
 			String error = "";
 			ReturnMessageDto result = null;
 			try {
-				result = absWSConsumer.alimentationAutoCongesAnnuels(idAgent, helper.getFirstDayOfPreviousMonth(),
+				result = absWSConsumer.alimentationAutoCongesAnnuels(nomatr, helper.getFirstDayOfPreviousMonth(),
 						helper.getLastDayOfPreviousMonth());
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
@@ -91,7 +91,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 				error = "OK";
 			}
 
-			createCongeAnnuelAlimAutoHisto(idAgent, error);
+			createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgent(nomatr)), error);
 		}
 
 		if (isError) {
@@ -117,7 +117,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		histo.setDateModification(new Date());
 		histo.setIdAgent(idAgent);
 		histo.setStatus(error);
-		
+
 		absencesDao.persistObject(histo);
 
 		absencesDao.commitTransaction();

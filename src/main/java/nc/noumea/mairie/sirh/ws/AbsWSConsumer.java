@@ -160,7 +160,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto alimentationAutoCongesAnnuels(Integer idAgent,
+	public ReturnMessageDto alimentationAutoCongesAnnuels(Integer nomatr,
 			Date dateDebut, Date dateFin) {
 		
 		String url = String.format(SIRH_ABS_WS_Base_URL + alimentationAutoCongeAnnuelUrl);
@@ -168,7 +168,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("nomatr", String.valueOf(idAgent));
+		parameters.put("nomatr", String.valueOf(nomatr));
 		parameters.put("dateDebut", sdf.format(dateDebut));
 		parameters.put("dateFin", sdf.format(dateFin));
 

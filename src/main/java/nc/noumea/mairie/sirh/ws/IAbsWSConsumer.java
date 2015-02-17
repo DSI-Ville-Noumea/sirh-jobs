@@ -24,5 +24,5 @@ public interface IAbsWSConsumer {
 
 	DemandeDto getDemandeAbsence(Integer idDemande);
 	
-	ReturnMessageDto alimentationAutoCongesAnnuels(Integer idAgent, Date dateDebut, Date dateFin);
+	ReturnMessageDto alimentationAutoCongesAnnuels(Integer nomatr, Date dateDebut, Date dateFin);
 }

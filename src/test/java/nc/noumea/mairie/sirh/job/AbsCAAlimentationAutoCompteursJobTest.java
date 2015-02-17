@@ -55,12 +55,13 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		Helper helper = Mockito.mock(Helper.class);
 		Mockito.when(helper.getFirstDayOfPreviousMonth()).thenReturn(new Date());
 		Mockito.when(helper.getLastDayOfPreviousMonth()).thenReturn(new Date());
+		Mockito.when(helper.getIdAgent(5138)).thenReturn("9005138");
 
 		ISirhWSConsumer sirhWSConsumer = Mockito.mock(ISirhWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
 				List<Integer> listAgent = new ArrayList<Integer>();
-				listAgent.add(9005138);
+				listAgent.add(5138);
 				return listAgent;
 			}
 		}).when(sirhWSConsumer)
@@ -96,12 +97,13 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		Helper helper = Mockito.mock(Helper.class);
 		Mockito.when(helper.getFirstDayOfPreviousMonth()).thenReturn(new Date());
 		Mockito.when(helper.getLastDayOfPreviousMonth()).thenReturn(new Date());
+		Mockito.when(helper.getIdAgent(5138)).thenReturn("9005138");
 
 		ISirhWSConsumer sirhWSConsumer = Mockito.mock(ISirhWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
 				List<Integer> listAgent = new ArrayList<Integer>();
-				listAgent.add(9005138);
+				listAgent.add(5138);
 				return listAgent;
 			}
 		}).when(sirhWSConsumer)
@@ -141,13 +143,15 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		Helper helper = Mockito.mock(Helper.class);
 		Mockito.when(helper.getFirstDayOfPreviousMonth()).thenReturn(new Date());
 		Mockito.when(helper.getLastDayOfPreviousMonth()).thenReturn(new Date());
+		Mockito.when(helper.getIdAgent(5138)).thenReturn("9005138");
+		Mockito.when(helper.getIdAgent(2990)).thenReturn("9002990");
 
 		ISirhWSConsumer sirhWSConsumer = Mockito.mock(ISirhWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
 				List<Integer> listAgent = new ArrayList<Integer>();
-				listAgent.add(9005138);
-				listAgent.add(9002990);
+				listAgent.add(5138);
+				listAgent.add(2990);
 				return listAgent;
 			}
 		}).when(sirhWSConsumer)
@@ -187,13 +191,15 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		Helper helper = Mockito.mock(Helper.class);
 		Mockito.when(helper.getFirstDayOfPreviousMonth()).thenReturn(new Date());
 		Mockito.when(helper.getLastDayOfPreviousMonth()).thenReturn(new Date());
+		Mockito.when(helper.getIdAgent(5138)).thenReturn("9005138");
+		Mockito.when(helper.getIdAgent(2990)).thenReturn("9002990");
 
 		ISirhWSConsumer sirhWSConsumer = Mockito.mock(ISirhWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
 				List<Integer> listAgent = new ArrayList<Integer>();
-				listAgent.add(9005138);
-				listAgent.add(9002990);
+				listAgent.add(5138);
+				listAgent.add(2990);
 				return listAgent;
 			}
 		}).when(sirhWSConsumer)
