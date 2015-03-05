@@ -23,6 +23,10 @@ public interface IAbsWSConsumer {
 	ReturnMessageDto resetCompteurCongeAnnuel(Integer idAgentCongeAnnuelCount);
 
 	DemandeDto getDemandeAbsence(Integer idDemande);
-	
+
 	ReturnMessageDto alimentationAutoCongesAnnuels(Integer nomatr, Date dateDebut, Date dateFin);
+
+	public ReturnMessageDto miseAJourSpSoldAgent(String idAgent);
+
+	public ReturnMessageDto miseAJourSpSorcAgent(String idAgent);
 }

@@ -238,6 +238,10 @@
 	<jee:jndi-lookup id="SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl"
 		jndi-name="SIRH_ABS_WS_ALIMENTATION_AUTO_CONGE_ANNUEL_URL"
 		expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_MiseAJourSpsoldUrl"
+		jndi-name="SIRH_ABS_WS_MISE_A_JOUR_SPSOLD_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="SIRH_ABS_WS_MiseAJourSpsorcUrl"
+		jndi-name="SIRH_ABS_WS_MISE_A_JOUR_SPSORC_URL" expected-type="java.lang.String" />
 
 
 	<!-- Pour RADI -->

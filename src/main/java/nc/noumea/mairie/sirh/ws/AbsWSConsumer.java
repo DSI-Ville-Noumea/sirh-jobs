@@ -53,10 +53,18 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_GetDemandeUrl")
 	private String getDemande;
-	
+
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl")
 	private String alimentationAutoCongeAnnuelUrl;
+
+	@Autowired
+	@Qualifier("SIRH_ABS_WS_MiseAJourSpsoldUrl")
+	private String miseAJourSpsoldUrl;
+
+	@Autowired
+	@Qualifier("SIRH_ABS_WS_MiseAJourSpsorcUrl")
+	private String miseAJourSpsorcUrl;
 
 	@Override
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {
@@ -160,17 +168,40 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto alimentationAutoCongesAnnuels(Integer nomatr,
-			Date dateDebut, Date dateFin) {
-		
+	public ReturnMessageDto alimentationAutoCongesAnnuels(Integer nomatr, Date dateDebut, Date dateFin) {
+
 		String url = String.format(SIRH_ABS_WS_Base_URL + alimentationAutoCongeAnnuelUrl);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		
+
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("nomatr", String.valueOf(nomatr));
 		parameters.put("dateDebut", sdf.format(dateDebut));
 		parameters.put("dateFin", sdf.format(dateFin));
+
+		ClientResponse res = createAndFirePostRequest(parameters, url);
+
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto miseAJourSpSoldAgent(String idAgent) {
+		String url = String.format(SIRH_ABS_WS_Base_URL + miseAJourSpsoldUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", idAgent);
+
+		ClientResponse res = createAndFirePostRequest(parameters, url);
+
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto miseAJourSpSorcAgent(String idAgent) {
+		String url = String.format(SIRH_ABS_WS_Base_URL + miseAJourSpsorcUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", idAgent);
 
 		ClientResponse res = createAndFirePostRequest(parameters, url);
 

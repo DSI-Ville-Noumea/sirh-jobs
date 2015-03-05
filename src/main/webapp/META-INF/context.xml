@@ -12,9 +12,9 @@
 <!-- The contents of this file will be loaded for each web application -->
 <Context reloadable="true" cookies="true">
 
-	<!--  -->
+	<!-- -->
 	<!-- DATASOURCES -->
-	<!--  -->	
+	<!-- -->
 	<Resource name="jdbc/SIRH_JOBS_DS1" auth="Container"
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
 		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
@@ -23,11 +23,11 @@
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		removeAbandoned="true" logAbandoned="true" />
 
-	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
-		poolPreparedStatements="true" />
+	<Resource name="jdbc/SIRH_JOBS_DS3" auth="Container"
+		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
+		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
+		password="***REMOVED***" driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
 
 	<Resource name="jdbc/SIRH_JOBS_DS2" auth="Container"
 		type="javax.sql.DataSource" description="AS400 SIRH Schema"
@@ -38,9 +38,10 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" poolPreparedStatements="true"
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+		poolPreparedStatements="true"
 		url="***REMOVED***;" />
-        
+
 	<Resource name="jdbc/SIRH_JOBS_DS4" auth="Container"
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
 		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
@@ -53,121 +54,148 @@
 		password="***REMOVED***" driverClassName="org.postgresql.Driver"
 		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
 
-	<!--  -->
+	<!-- -->
 	<!-- BIRT -->
-	<!--  -->
+	<!-- -->
 	<Environment name="REPORTING_SERVER_SIRH_REPORT_PATH" type="java.lang.String"
 		description="SIRH-EAE reports path on Birt" value="report/sirh-reports/"
 		override="false" />
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
 		description="BIRT report viewer base URL for EAEs reporting" value="http://***REMOVED***:8085/birt/"
 		override="false" />
-		
-		
-	<!--  -->
+
+
+	<!-- -->
 	<!-- Mail Server conf -->
-	<!--  -->
+	<!-- -->
 	<Resource name="mail/MailServer" auth="Container" type="javax.mail.Session"
 		mail.debug="false" mail.user="SIRH EAEs" mail.from="noreply@ville-noumea.nc"
 		mail.transport.protocol="smtp" mail.smtp.host="smtp" mail.smtp.auth="false"
 		mail.smtp.port="25" mail.smtp.starttls.enable="false" description="Global E-Mail Resource" />
 
 
-	<!--  -->
+	<!-- -->
 	<!-- Parameters for eaeCampagneActionNotificationsJob -->
-	<!--  -->
-	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives" type="java.lang.Integer"
+	<!-- -->
+	<Environment name="eaeCampagneActionNotificationsJob.numberOfTentatives"
+		type="java.lang.Integer"
 		description="Maximum number of tentatives of retry on errors before giving up sending notifications"
 		value="3" override="false" />
-	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl" type="java.lang.String"
+	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
+		type="java.lang.String"
 		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
 		value="file:///cristal/drh$/DRH/SIRH-document/DEV/temp/" override="false" />
 
 
-	<!--  -->
+	<!-- -->
 	<!-- SIRH AVCT printing job -->
-	<!--  -->
-	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String" description="Temp directory for SIRH avancements printing job" 
-		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" override="false" />
-	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String" description="SIRH WS endpoint url for EAEs" 
-		value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds" override="false" />
-	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String" description="CUPS printing server hostname" 
-		value="172.16.24.19" override="false" />
-	<Environment name="AVCT_CUPS_SERVER_PORT" type="java.lang.Integer" description="CUPS printing server port" 
-		value="631" override="false" />
-	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String" description="CUPS SIRH printer name" 
-		value="Printer_SED" override="false" />
-	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String" description="URL GED Sharepoint"
+	<!-- -->
+	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
+		description="Temp directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/"
+		override="false" />
+	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
+		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
+		override="false" />
+	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
+		description="CUPS printing server hostname" value="172.16.24.19"
+		override="false" />
+	<Environment name="AVCT_CUPS_SERVER_PORT" type="java.lang.Integer"
+		description="CUPS printing server port" value="631" override="false" />
+	<Environment name="AVCT_CUPS_SIRH_PRINTER_NAME" type="java.lang.String"
+		description="CUPS SIRH printer name" value="Printer_SED" override="false" />
+	<Environment name="AVCT_URL_SHAREPOINT_GED" type="java.lang.String"
+		description="URL GED Sharepoint"
 		value="http://***REMOVED***/kiosque-rh/_layouts/Noumea.RH.Eae/GetWebDavUrl.aspx?ID="
 		override="false" />
-	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String" description="GED Sharepoint app user" 
-		value="***REMOVED***" override="false" />
-	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String" description="GED Sharepoint app pwd" 
-		value="w9qgb340" override="false" />
+	<Environment name="AVCT_GED_WEBDAV_USER" type="java.lang.String"
+		description="GED Sharepoint app user" value="***REMOVED***" override="false" />
+	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
+		description="GED Sharepoint app pwd" value="w9qgb340" override="false" />
 	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
 		description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)"
 		value="21600000" override="false" />
-		
 
-	<!--  -->
+
+	<!-- -->
 	<!-- SHAREPOINT -->
-	<!--  -->
-	<Environment description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
+	<!-- -->
+	<Environment description="User pour connexion NTLM à Sharepoint"
+		name="USER_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="***REMOVED***" />
-	<Environment description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false" 
-		value="fum2ndo5" />
-	<Environment description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
+	<Environment description="User Pws pour connexion NTLM à Sharepoint"
+		name="USER_PWD_SHAREPOINT_WEBDAV_EAE" type="java.lang.String"
+		override="false" value="fum2ndo5" />
+	<Environment description="Domain pour connexion NTLM à Sharepoint"
+		name="DOMAIN_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="SITE-MAIRIE" />
-	<Environment description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
+	<Environment description="URL pour connexion NTLM à Sharepoint"
+		name="URL_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="***REMOVED***" />
-	<Environment description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
+	<Environment description="PORT pour connexion NTLM à Sharepoint"
+		name="PORT_SHAREPOINT_WEBDAV_EAE" type="java.lang.String" override="false"
 		value="80" />
 
 
 
-	<!--  -->
+	<!-- -->
 	<!-- WS PTG -->
-	<!--  -->
+	<!-- -->
 	<!-- SIRH PTG Ventilation job -->
-	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for ventilating a Task" 
-		value="ventilation/processTask?idVentilTask=" override="false" />
+	<Environment name="SIRH_PTG_WS_VENTILATION_TASK_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for ventilating a Task" value="ventilation/processTask?idVentilTask="
+		override="false" />
 	<!-- SIRH PTG Export Paie job -->
-	<Environment name="SIRH_PTG_WS_EXPORT_TASK_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for exporting a Task" 
-		value="exportPaie/processTask?idExportPaieTask=" override="false" />
-	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)"
+	<Environment name="SIRH_PTG_WS_EXPORT_TASK_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for exporting a Task" value="exportPaie/processTask?idExportPaieTask="
+		override="false" />
+	<Environment name="SIRH_PTG_WS_EXPORT_DONE_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for notifying the export process is done (no more tasks)"
 		value="exportPaie/stop?typeChainePaie=" override="false" />
 	<!-- SIRH PTG Export Etats Payeur job -->
-	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task"
+	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for exporting an EtatsPayeur Task"
 		value="etatsPayeur/startExportTask?idExportEtatsPayeurTask=" override="false" />
-	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)"
-		value="etatsPayeur/finishExportTask?idExportEtatsPayeurTask=" override="false" />
-	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process"
+	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for notifying the EtatsPayeur process is done (no more tasks)"
+		value="etatsPayeur/finishExportTask?idExportEtatsPayeurTask="
+		override="false" />
+	<Environment name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL"
+		type="java.lang.String" description="sirh-ptg-ws Url endpoint for stopping the EtatsPayeur process"
 		value="etatsPayeur/stop?typeChainePaie=" override="false" />
-	<Environment name="SIRH_PTG_WS_ETAT_POINTAGE_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" 
-		value="etatPointage/majEtatPointagesByListId" override="false" />
+	<Environment name="SIRH_PTG_WS_ETAT_POINTAGE_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for an EtatsPayeur Task" value="etatPointage/majEtatPointagesByListId"
+		override="false" />
 	<!-- ReposComp Job service parameters -->
-	<Environment name="SIRH_PTG_WS_URL" type="java.lang.String" description="sirh-ptg-ws base Url endpoint" 
-		value="http://***REMOVED***:8085/sirh-ptg-ws/" override="false" />
-	<Environment name="SIRH_PTG_WS_RC_TASK_URL_PART" type="java.lang.String" description="sirh-ptg-ws base Url endpoint" 
-		value="reposcomp/startReposCompTask?idReposCompTask=" override="false" />
+	<Environment name="SIRH_PTG_WS_URL" type="java.lang.String"
+		description="sirh-ptg-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-ptg-ws/"
+		override="false" />
+	<Environment name="SIRH_PTG_WS_RC_TASK_URL_PART" type="java.lang.String"
+		description="sirh-ptg-ws base Url endpoint" value="reposcomp/startReposCompTask?idReposCompTask="
+		override="false" />
 	<!--Job envoie emails infos Pointages -->
-	<Environment name="SIRH_PTG_WS_EMAIL_INFO_URL" type="java.lang.String" description="sirh-ptg-ws Url endpoint for email information pointages"
+	<Environment name="SIRH_PTG_WS_EMAIL_INFO_URL" type="java.lang.String"
+		description="sirh-ptg-ws Url endpoint for email information pointages"
 		value="email/listDestinatairesEmailInfo" override="false" />
-		
 
-	<!--  -->
+
+	<!-- -->
 	<!-- WS ABS -->
-	<!--  -->
+	<!-- -->
 	<!--Job Absences -->
-	<Environment name="SIRH_ABS_WS_URL" type="java.lang.String" description="sirh-abs-ws base Url endpoint" 
-		value="http://***REMOVED***:8085/sirh-abs-ws/" override="false" />
+	<Environment name="SIRH_ABS_WS_URL" type="java.lang.String"
+		description="sirh-abs-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-abs-ws/"
+		override="false" />
 	<!--Job maj des demandes à l'état PRIS -->
-	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String" description="sirh-abs-ws Url endpoint for an Etat Pris Task" 
-		value="demandes/updateToEtatPris" override="false" />
+	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String"
+		description="sirh-abs-ws Url endpoint for an Etat Pris Task" value="demandes/updateToEtatPris"
+		override="false" />
 	<!--Job envoie emails infos Absences -->
-	<Environment name="SIRH_ABS_WS_EMAIL_INFO_URL" type="java.lang.String" description="sirh-abs-ws Url endpoint for email information absence"
+	<Environment name="SIRH_ABS_WS_EMAIL_INFO_URL" type="java.lang.String"
+		description="sirh-abs-ws Url endpoint for email information absence"
 		value="email/listDestinatairesEmailInfo" override="false" />
-	<Environment name="emailInformationJob.numberOfTentatives" type="java.lang.Integer" description="Maximum number of tentatives of retry on errors before giving up sending email information"
+	<Environment name="emailInformationJob.numberOfTentatives"
+		type="java.lang.Integer"
+		description="Maximum number of tentatives of retry on errors before giving up sending email information"
 		value="3" override="false" />
 	<!-- Job Remise A Zero Compteur Repos Comp. -->
 	<Environment name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL"
@@ -194,41 +222,51 @@
 		type="java.lang.String" description="sirh-abs-ws Url endpoint for reset conge annuel counter"
 		value="congeannuel/resetCompteurCongeAnnuel" override="false" />
 	<!-- Pour le detail d'une demande -->
-	<Environment name="SIRH_ABS_WS_DEMANDE_URL"
-		type="java.lang.String" description="sirh-abs-ws Url endpoint for demande detail"
-		value="demandes/demande" override="false" />
+	<Environment name="SIRH_ABS_WS_DEMANDE_URL" type="java.lang.String"
+		description="sirh-abs-ws Url endpoint for demande detail" value="demandes/demande"
+		override="false" />
 	<!-- Job Alimentation Auto Compteur CongeAnnuel. -->
 	<Environment name="SIRH_ABS_WS_ALIMENTATION_AUTO_CONGE_ANNUEL_URL"
 		type="java.lang.String" description="sirh-abs-ws Url endpoint to add automatic conge annuel counter"
 		value="congeannuel/alimentationAutoCongesAnnuels" override="false" />
-	
+	<Environment name="SIRH_ABS_WS_MISE_A_JOUR_SPSOLD_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint to update Spsold"
+		value="congeannuel/miseAJourSpsold" override="false" />
+	<Environment name="SIRH_ABS_WS_MISE_A_JOUR_SPSORC_URL"
+		type="java.lang.String" description="sirh-abs-ws Url endpoint to update Spsorc"
+		value="reposcomps/miseAJourSpsorc" override="false" />
 
-	<!--  -->
+
+	<!-- -->
 	<!-- WS EAE -->
-	<!--  -->
-	<Environment name="SIRH_WS_URL" type="java.lang.String" description="sirh-ws base Url endpoint" 
-		value="http://***REMOVED***:8085/sirhws/" override="false" />
-	<Environment name="SIRH_EAE_WS_URL" type="java.lang.String" description="sirh-eae-ws base Url endpoint" 
-		value="http://***REMOVED***:8085/sirh-eae-ws/" override="false" />
+	<!-- -->
+	<Environment name="SIRH_WS_URL" type="java.lang.String"
+		description="sirh-ws base Url endpoint" value="http://***REMOVED***:8085/sirhws/"
+		override="false" />
+	<Environment name="SIRH_EAE_WS_URL" type="java.lang.String"
+		description="sirh-eae-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-eae-ws/"
+		override="false" />
 
 
-	<!--  -->
+	<!-- -->
 	<!-- WS RADI -->
-	<!--  -->
-	<Environment name="RADI_WS_URL" type="java.lang.String" description="radi-ws base Url endpoint" 
-		value="http://***REMOVED***:8085/radi/" override="false" />
-		
-		
-	<!--  -->
+	<!-- -->
+	<Environment name="RADI_WS_URL" type="java.lang.String"
+		description="radi-ws base Url endpoint" value="http://***REMOVED***:8085/radi/"
+		override="false" />
+
+
+	<!-- -->
 	<!-- WS SIRH -->
-	<!--  -->
-	<Environment name="RADI_WS_SEARCH_USER_URL" type="java.lang.String" description="radi-ws base Url endpoint for searching users" 
-		value="users" override="false" />
+	<!-- -->
+	<Environment name="RADI_WS_SEARCH_USER_URL" type="java.lang.String"
+		description="radi-ws base Url endpoint for searching users" value="users"
+		override="false" />
 
 
-	<!--  -->
+	<!-- -->
 	<!-- Redmine Logger info -->
-	<!--  -->
+	<!-- -->
 	<Environment name="SIRH_JOBS_REDMINE_API_KEY" type="java.lang.String"
 		description="Redmine authentication api key" value="api-key" override="false" />
 
@@ -267,7 +305,7 @@
 	<Environment name="SIRH_JOBS_REDMINE_VERSION_BACKLOG_ID"
 		type="java.lang.Integer" description="Redmine SIRH-JOBS project custom field id for version"
 		value="56" override="false" />
-		
+
 	<!-- -->
 	<!-- URL Kiosque -->
 	<!-- -->
