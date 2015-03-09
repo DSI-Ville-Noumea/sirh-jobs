@@ -118,6 +118,18 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 			}
 		}).when(absWSConsumer)
 				.alimentationAutoCongesAnnuels(Mockito.anyInt(), Mockito.any(Date.class), Mockito.any(Date.class));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSoldAgent(Mockito.anyString());
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSorcAgent(Mockito.anyString());
 
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 		IAbsencesDao absencesDao = Mockito.mock(IAbsencesDao.class);
@@ -166,6 +178,18 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 			}
 		}).when(absWSConsumer)
 				.alimentationAutoCongesAnnuels(Mockito.anyInt(), Mockito.any(Date.class), Mockito.any(Date.class));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSoldAgent(Mockito.anyString());
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSorcAgent(Mockito.anyString());
 
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 		IAbsencesDao absencesDao = Mockito.mock(IAbsencesDao.class);
@@ -213,6 +237,18 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 			}
 		}).when(absWSConsumer)
 				.alimentationAutoCongesAnnuels(Mockito.anyInt(), Mockito.any(Date.class), Mockito.any(Date.class));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSoldAgent(Mockito.anyString());
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				ReturnMessageDto result = new ReturnMessageDto();
+				return result;
+			}
+		}).when(absWSConsumer).miseAJourSpSorcAgent(Mockito.anyString());
 
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 		IAbsencesDao absencesDao = Mockito.mock(IAbsencesDao.class);
