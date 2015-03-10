@@ -72,15 +72,16 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 			try {
 				result = absWSConsumer.alimentationAutoCongesAnnuels(nomatr, helper.getFirstDayOfPreviousMonth(),
 						helper.getLastDayOfPreviousMonth());
-
-				// redmine #14036 alimentation solde SPSOLD et SPSORC
-				ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper.getIdAgent(nomatr));
-				if (resultSpsold.getErrors().size() > 0) {
-					result.getErrors().addAll(resultSpsold.getErrors());
-				}
-				ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper.getIdAgent(nomatr));
-				if (resultSpsorc.getErrors().size() > 0) {
-					result.getErrors().addAll(resultSpsorc.getErrors());
+				if (result.getErrors().size() == 0) {
+					// redmine #14036 alimentation solde SPSOLD et SPSORC
+					ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper.getIdAgent(nomatr));
+					if (resultSpsold.getErrors().size() > 0) {
+						result.getErrors().addAll(resultSpsold.getErrors());
+					}
+					ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper.getIdAgent(nomatr));
+					if (resultSpsorc.getErrors().size() > 0) {
+						result.getErrors().addAll(resultSpsorc.getErrors());
+					}
 				}
 
 			} catch (Exception ex) {

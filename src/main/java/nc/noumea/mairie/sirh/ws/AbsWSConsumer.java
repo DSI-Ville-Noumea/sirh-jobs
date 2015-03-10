@@ -191,7 +191,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", idAgent);
 
-		ClientResponse res = createAndFirePostRequest(parameters, url);
+		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(ReturnMessageDto.class, res, url);
 	}
@@ -203,7 +203,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", idAgent);
 
-		ClientResponse res = createAndFirePostRequest(parameters, url);
+		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(ReturnMessageDto.class, res, url);
 	}

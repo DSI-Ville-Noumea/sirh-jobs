@@ -34,7 +34,7 @@ public class Helper {
 	 * @return 900xxxx
 	 */
 	public String getIdAgent(int employeeNumber) {
-		return "900" + getNomatr(employeeNumber);
+		return "900" + employeeNumber;
 	}
 
 	/**
@@ -47,20 +47,20 @@ public class Helper {
 	public String getEmployeeNumber(Integer idAgent) {
 		return "90" + String.valueOf(idAgent).substring(3, String.valueOf(idAgent).length());
 	}
-	
+
 	public Date getFirstDayOfPreviousMonth() {
 		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
-		
-		return date.minusMonths(1)  // moins un mois
-				.dayOfMonth()       // Accès à la propriété 'Jour du Mois'
-		 .withMinimumValue().toDate();
+
+		return date.minusMonths(1) // moins un mois
+				.dayOfMonth() // Accès à la propriété 'Jour du Mois'
+				.withMinimumValue().toDate();
 	}
-	
+
 	public Date getLastDayOfPreviousMonth() {
 		DateTime date = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
-		
-		return date.minusMonths(1)  // moins un mois
-				.dayOfMonth()       // Accès à la propriété 'Jour du Mois'
-		 .withMaximumValue().toDate();
+
+		return date.minusMonths(1) // moins un mois
+				.dayOfMonth() // Accès à la propriété 'Jour du Mois'
+				.withMaximumValue().toDate();
 	}
 }
