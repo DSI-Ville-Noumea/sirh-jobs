@@ -65,7 +65,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 
 		boolean isError = false;
 		for (Integer nomatr : listNomatrAgents) {
-			logger.debug("Processing agent counters idAgent {}...", helper.getIdAgent(nomatr));
+			logger.debug("Processing agent counters idAgent {}...", helper.getIdAgentWithNomatr(nomatr));
 
 			String error = "";
 			ReturnMessageDto result = null;
@@ -74,11 +74,13 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 						helper.getLastDayOfPreviousMonth());
 				if (result.getErrors().size() == 0) {
 					// redmine #14036 alimentation solde SPSOLD et SPSORC
-					ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper.getIdAgent(nomatr));
+					ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper
+							.getIdAgentWithNomatr(nomatr));
 					if (resultSpsold.getErrors().size() > 0) {
 						result.getErrors().addAll(resultSpsold.getErrors());
 					}
-					ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper.getIdAgent(nomatr));
+					ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper
+							.getIdAgentWithNomatr(nomatr));
 					if (resultSpsorc.getErrors().size() > 0) {
 						result.getErrors().addAll(resultSpsorc.getErrors());
 					}
@@ -103,7 +105,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 				error = "OK";
 			}
 
-			createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgent(nomatr)), error);
+			createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgentWithNomatr(nomatr)), error);
 		}
 
 		if (isError) {

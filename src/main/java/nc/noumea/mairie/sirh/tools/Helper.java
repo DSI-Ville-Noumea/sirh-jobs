@@ -33,8 +33,19 @@ public class Helper {
 	 *            90xxxx
 	 * @return 900xxxx
 	 */
-	public String getIdAgent(int employeeNumber) {
-		return "900" + employeeNumber;
+	public String getIdAgentWithEmployeeNumber(int employeeNumber) {
+		return "900" + getNomatr(employeeNumber);
+	}
+
+	/**
+	 * Converts a xxxx employeeNumber into an IdAgent readable one: 900xxxx
+	 * 
+	 * @param nomatr
+	 *            xxxx
+	 * @return 900xxxx
+	 */
+	public String getIdAgentWithNomatr(int nomatr) {
+		return "900" + nomatr;
 	}
 
 	/**
