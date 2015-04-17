@@ -38,6 +38,9 @@ public class CongeAnnuelAlimAutoHisto {
 	@Column(name = "STATUS")
 	private String status;
 
+	@Column(name = "MESSAGE_INFOS")
+	private String messageInfos;
+
 	public Integer getIdCongeAnnuelAlimAutoHisto() {
 		return idCongeAnnuelAlimAutoHisto;
 	}
@@ -76,6 +79,14 @@ public class CongeAnnuelAlimAutoHisto {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getMessageInfos() {
+		return messageInfos;
+	}
+
+	public void setMessageInfos(String messageInfos) {
+		this.messageInfos = messageInfos;
 	}
 
 }

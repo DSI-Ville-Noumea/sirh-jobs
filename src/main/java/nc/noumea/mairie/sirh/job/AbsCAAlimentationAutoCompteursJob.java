@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -65,47 +66,64 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 
 		boolean isError = false;
 		for (Integer nomatr : listNomatrAgents) {
-			logger.debug("Processing agent counters idAgent {}...", helper.getIdAgentWithNomatr(nomatr));
-
-			String error = "";
-			ReturnMessageDto result = null;
-			try {
-				result = absWSConsumer.alimentationAutoCongesAnnuels(nomatr, helper.getFirstDayOfPreviousMonth(),
-						helper.getLastDayOfPreviousMonth());
-				if (result.getErrors().size() == 0) {
-					// redmine #14036 alimentation solde SPSOLD et SPSORC
-					ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper
-							.getIdAgentWithNomatr(nomatr));
-					if (resultSpsold.getErrors().size() > 0) {
-						result.getErrors().addAll(resultSpsold.getErrors());
+			
+				logger.debug("Processing agent counters idAgent {}...", helper.getIdAgentWithNomatr(nomatr));
+	
+				String error = "";
+				String infos = "";
+				ReturnMessageDto result = null;
+				try {
+					result = absWSConsumer.alimentationAutoCongesAnnuels(nomatr, helper.getFirstDayOfPreviousMonth(),
+							helper.getLastDayOfPreviousMonth());
+					if (result.getErrors().size() == 0) {
+						// redmine #14036 alimentation solde SPSOLD et SPSORC
+						ReturnMessageDto resultSpsold = absWSConsumer.miseAJourSpSoldAgent(helper
+								.getIdAgentWithNomatr(nomatr));
+						if (resultSpsold.getErrors().size() > 0) {
+							result.getErrors().addAll(resultSpsold.getErrors());
+						}
+						if (resultSpsold.getInfos().size() > 0) {
+							result.getInfos().addAll(resultSpsold.getInfos());
+						}
+						ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper
+								.getIdAgentWithNomatr(nomatr));
+						if (resultSpsorc.getErrors().size() > 0) {
+							result.getErrors().addAll(resultSpsorc.getErrors());
+						}
+						if (resultSpsorc.getInfos().size() > 0) {
+							result.getInfos().addAll(resultSpsorc.getInfos());
+						}
 					}
-					ReturnMessageDto resultSpsorc = absWSConsumer.miseAJourSpSorcAgent(helper
-							.getIdAgentWithNomatr(nomatr));
-					if (resultSpsorc.getErrors().size() > 0) {
-						result.getErrors().addAll(resultSpsorc.getErrors());
+	
+				} catch (Exception ex) {
+					logger.error("Une erreur technique est survenue lors du traitement : ", ex);
+					incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
+					error = ex.getMessage();
+				}
+	
+				if (result != null && result.getErrors().size() != 0) {
+					isError = true;
+	
+					for (String err : result.getErrors()) {
+						logger.info(err);
+						error += err + " ; ";
 					}
 				}
-
-			} catch (Exception ex) {
-				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-				incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
-				error = ex.getMessage();
-			}
-
-			if (result != null && result.getErrors().size() != 0) {
-				isError = true;
-
-				for (String err : result.getErrors()) {
-					logger.info(err);
-					error += err + " ; ";
+	
+				if (result != null && result.getInfos().size() != 0) {
+					isError = true;
+	
+					for (String info : result.getInfos()) {
+						logger.info(info);
+						infos += info + " ; ";
+					}
 				}
-			}
-
-			if ("".equals(error)) {
-				error = "OK";
-			}
-
-			createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgentWithNomatr(nomatr)), error);
+	
+				if ("".equals(error)) {
+					error = "OK";
+				}
+	
+				createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgentWithNomatr(nomatr)), error, infos);
 		}
 
 		if (isError) {
@@ -116,7 +134,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");
 	}
 
-	private void createCongeAnnuelAlimAutoHisto(Integer idAgent, String error) {
+	private void createCongeAnnuelAlimAutoHisto(Integer idAgent, String error, String infos) {
 
 		absencesDao.beginTransaction();
 
@@ -125,15 +143,22 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 				error = error.substring(0, 255);
 			}
 		}
+		if (!"".equals(infos)) {
+			if (255 < infos.length()) {
+				infos = infos.substring(0, 255);
+			}
+		}
 
 		CongeAnnuelAlimAutoHisto histo = new CongeAnnuelAlimAutoHisto();
 		histo.setDateMonth(helper.getFirstDayOfPreviousMonth());
 		histo.setDateModification(new Date());
 		histo.setIdAgent(idAgent);
 		histo.setStatus(error);
+		histo.setMessageInfos(infos);
 
 		absencesDao.persistObject(histo);
 
 		absencesDao.commitTransaction();
 	}
+
 }
