@@ -15,7 +15,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.7</slf4j.version>
 		<spring.version>4.0.6.RELEASE</spring.version>
-		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 	</properties>
 
 	<issueManagement>
@@ -28,14 +27,6 @@
 		<developerConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh-jobs/trunk</developerConnection>
 		<url>https://svn.ville-noumea.nc/sed/sirh-jobs/trunk</url>
 	</scm>
-
-	<distributionManagement>
-		<site>
-			<id>sirhjobs.website.prod</id>
-			<name>SIRH JOBS Website Prod</name>
-			<url>file:\\cristal\DSI$\DSI\PROJETS\doxia\${project.name}</url>
-		</site>
-	</distributionManagement>
 
 	<dependencies>
 
@@ -270,7 +261,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>sirh-jobs##${maven.build.timestamp}-${project.version}</finalName>
+		<finalName>sirh-jobs##${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -298,11 +289,6 @@
 						</resource>
 					</webResources>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
