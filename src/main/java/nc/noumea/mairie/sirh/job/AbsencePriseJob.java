@@ -84,7 +84,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 	@Autowired
 	private JavaMailSender mailSender;
-
+	
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 
@@ -137,7 +137,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 					result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
 				} catch (Exception ex) {
 					logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
-					incidentLoggerService.logIncident("AbsencePriseJob", ex.getCause().getMessage(), ex);
+					incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
 				}
 
 				if (result != null && result.getErrors().size() != 0) {

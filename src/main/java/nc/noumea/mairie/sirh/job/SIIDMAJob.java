@@ -77,7 +77,8 @@ public class SIIDMAJob extends QuartzJobBean {
 				sirhDocumentDao.addSIISDMA(user);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de ce user.", ex);
-				incidentLoggerService.logIncident("SIIDMAJob", ex.getCause().getMessage(), ex);
+				incidentLoggerService.logIncident("SIIDMAJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
+						.getMessage(), ex);
 			}
 		}
 

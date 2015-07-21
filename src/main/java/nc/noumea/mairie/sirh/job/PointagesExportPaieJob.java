@@ -69,7 +69,8 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ExportPaieTask :", ex);
 				eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
-				incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause().getMessage(), ex);
+				incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
+						.getMessage(), ex);
 			}
 			
 			eT.setDateExport(new Date());
@@ -87,7 +88,8 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 			downloadDocumentService.downloadDocumentAs(String.class, String.format("%s%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_ExportPaieDoneUrl, exportedChainePaie), null);
 		} catch (Exception ex) {
 			logger.error("An error occured trying to notify SIRH-PTG-WS that all ExportPaieTask have been processed :", ex);
-			incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause().getMessage(), ex);
+			incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
+					.getMessage(), ex);
 		}
 		
 	}

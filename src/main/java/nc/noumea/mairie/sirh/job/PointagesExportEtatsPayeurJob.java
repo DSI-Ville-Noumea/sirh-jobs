@@ -94,7 +94,8 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 			downloadDocumentService.downloadDocumentAs(String.class, url, null);
 		} catch (Exception ex) {
 			logger.error("An error occured trying to stop the ExportEtatsPayeurTask :", ex);
-			incidentLoggerService.logIncident("PointagesExportEtatsPayeurJob", ex.getCause().getMessage(), ex);
+			incidentLoggerService.logIncident("PointagesExportEtatsPayeurJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
+					.getMessage(), ex);
 		}
 
 		eT.setDateExport(new Date());
