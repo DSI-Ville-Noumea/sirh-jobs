@@ -84,7 +84,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 
@@ -165,10 +165,10 @@ public class AbsencePriseJob extends QuartzJobBean {
 			// on recupere la demande
 			DemandeDto demande = absWSConsumer.getDemandeAbsence(idDemandeCongeUnique);
 			if (demande != null) {
-				if (demande.getAgentWithServiceDto().getCodeService() != null) {
+				if (demande.getAgentWithServiceDto().getIdServiceADS() != null) {
 					// on cherche le gestionnaire de carriere de l'agent
 					List<Integer> listIdAgentGestionnaire = sirhDao.getReferentRHService(demande
-							.getAgentWithServiceDto().getCodeService());
+							.getAgentWithServiceDto().getIdServiceADS());
 					// si on ne trouve pas de gestionnaire alors on cherche le
 					// gestionnaire global
 					if (listIdAgentGestionnaire.size() == 0) {

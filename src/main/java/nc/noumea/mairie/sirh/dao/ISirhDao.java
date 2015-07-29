@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ISirhDao {
 
-	List<Integer> getReferentRHService(String codeService);
+	List<Integer> getReferentRHService(Integer idServiceADS);
 
 	Integer getReferentRHGlobal();
 }

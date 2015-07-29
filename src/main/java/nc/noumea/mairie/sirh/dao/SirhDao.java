@@ -21,7 +21,7 @@ public class SirhDao implements ISirhDao {
 	private SessionFactory sirhSessionFactory;
 
 	@Override
-	public List<Integer> getReferentRHService(String codeService) {
+	public List<Integer> getReferentRHService(Integer idServiceADS) {
 		Session session = sirhSessionFactory.getCurrentSession();
 
 		if (!session.getTransaction().isActive()) {
@@ -31,11 +31,11 @@ public class SirhDao implements ISirhDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT ref.ID_AGENT_REFERENT AS idReferent FROM P_REFERENT_RH ref ");
-		sb.append("WHERE ref.SERVI = :codeService ");
+		sb.append("WHERE ref.ID_SERVICE_ADS = :idServiceADS ");
 
 		@SuppressWarnings("unchecked")
 		List<Integer> result = session.createSQLQuery(sb.toString())
-				.addScalar("idReferent", StandardBasicTypes.INTEGER).setParameter("codeService", codeService).list();
+				.addScalar("idReferent", StandardBasicTypes.INTEGER).setParameter("idServiceADS", idServiceADS).list();
 
 		session.getTransaction().rollback();
 		return result;
@@ -52,7 +52,7 @@ public class SirhDao implements ISirhDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT ref.ID_AGENT_REFERENT AS idReferent FROM P_REFERENT_RH ref ");
-		sb.append("WHERE ref.SERVI is null ");
+		sb.append("WHERE ref.ID_SERVICE_ADS is null ");
 
 		@SuppressWarnings("unchecked")
 		List<Integer> result = session.createSQLQuery(sb.toString()).addScalar("idReferent", StandardBasicTypes.INTEGER)

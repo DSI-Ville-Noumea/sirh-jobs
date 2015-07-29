@@ -3,8 +3,7 @@ package nc.noumea.mairie.sirh.ws.dto;
 public class AgentWithServiceDto extends AgentDto {
 
 	private String service;
-	private String codeService;
-	private String statut;
+	private Integer idServiceADS;
 	private String direction;
 
 	public AgentWithServiceDto() {
@@ -19,27 +18,19 @@ public class AgentWithServiceDto extends AgentDto {
 		this.service = service;
 	}
 
-	public String getCodeService() {
-		return codeService;
-	}
-
-	public void setCodeService(String codeService) {
-		this.codeService = codeService;
-	}
-
-	public String getStatut() {
-		return statut;
-	}
-
-	public void setStatut(String statut) {
-		this.statut = statut;
-	}
-
 	public String getDirection() {
 		return direction;
 	}
 
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+
+	public Integer getIdServiceADS() {
+		return idServiceADS;
+	}
+
+	public void setIdServiceADS(Integer idServiceADS) {
+		this.idServiceADS = idServiceADS;
 	}
 }
