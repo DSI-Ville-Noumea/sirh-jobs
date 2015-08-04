@@ -28,7 +28,7 @@ public class SuppressionFDPJob extends QuartzJobBean {
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
-	
+
 	@Autowired
 	private ISirhWSConsumer sirhWSConsumer;
 
@@ -48,17 +48,14 @@ public class SuppressionFDPJob extends QuartzJobBean {
 				eT.getIdActionFdpJob(), eT.getIdFichePoste(), eT.getTypeAction(), eT.getIdAgent());
 
 		try {
-			ReturnMessageDto result =  sirhWSConsumer.deleteFDP(eT.getIdFichePoste(),eT.getIdAgent());
-			if(result.getErrors().size()>0){
+			ReturnMessageDto result = sirhWSConsumer.deleteFDP(eT.getIdFichePoste(), eT.getIdAgent());
+			if (result.getErrors().size() > 0) {
 				eT.setStatut(result.getErrors().get(0));
-				eT.setDateStatut(new Date());
-				sirhDao.rollBackTransaction();
-				return;
+			} else {
+				// At this point, everything went allright, the status can be
+				// updated to OK
+				eT.setStatut("OK");
 			}
-
-			// At this point, everything went allright, the status can be
-			// updated to OK
-			eT.setStatut("OK");
 		} catch (Exception ex) {
 			logger.error("An error occured trying to process SuppressionFDPTask :", ex);
 			eT.setStatut(String.format("Erreur: %s", ex.getMessage()));

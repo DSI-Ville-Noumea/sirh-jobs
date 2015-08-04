@@ -4,7 +4,6 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.domain.ActionFDPJob;
 
-import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.StandardBasicTypes;
@@ -83,13 +82,11 @@ public class SirhDao implements ISirhDao {
 
 		@SuppressWarnings("unchecked")
 		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
-				.getNamedQuery("ActionFDPJob.getNextSuppressionFDPTask").setLockMode("eT", LockMode.PESSIMISTIC_WRITE)
-				.setMaxResults(1).list();
+				.getNamedQuery("ActionFDPJob.getNextSuppressionFDPTask").setMaxResults(1).list();
 
 		if (result.size() == 0)
 			return null;
 
 		return result.get(0);
 	}
-
 }
