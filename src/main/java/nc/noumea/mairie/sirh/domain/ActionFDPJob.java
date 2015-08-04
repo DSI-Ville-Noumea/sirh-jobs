@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "ACTION_FDP_JOB")
 @PersistenceUnit(unitName = "sirhPersistenceUnit")
-@NamedQueries({ @NamedQuery(name = "ActionFDPJob.getNextSuppressionFDPTask", query = "SELECT eT from ActionFDPJob eT WHERE eT.statut is NULL AND eT.dateStatut is NULL order by eT.idActionFdpJob asc)") })
+@NamedQueries({ @NamedQuery(name = "ActionFDPJob.getNextSuppressionFDPTask", query = "SELECT eT from ActionFDPJob eT WHERE eT.typeAction = 'SUPPRESSION' and eT.statut is NULL AND eT.dateStatut is NULL order by eT.idActionFdpJob asc)") })
 public class ActionFDPJob {
 
 	@Id
