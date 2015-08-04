@@ -8,6 +8,8 @@ import java.util.Map;
 
 import nc.noumea.mairie.sirh.ws.dto.AgentDto;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import com.sun.jersey.api.client.ClientResponse;
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
+	private Logger logger = LoggerFactory.getLogger(SirhWSConsumer.class);
+
 	@Autowired
 	@Qualifier("sirhWsBaseUrl")
 	private String sirhWsBaseUrl;
@@ -25,6 +29,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String listeAgentEligibleEAEAffectesUrl = "calculEae/listeAgentEligibleEAEAffectes";
 	private static final String listAgentPourAlimAutoCompteursCongesAnnuelsUrl = "absences/listAgentPourAlimAutoCompteursCongesAnnuels";
 	private static final String isPaieEnCoursUrl = "utils/isPaieEnCours";
+	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -72,6 +77,19 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(isPaieEnCoursUrl));
 
 		return readResponse(ReturnMessageDto.class, res, getWSUrl(isPaieEnCoursUrl));
+	}
+
+	@Override
+	public ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idFichePoste", idFichePoste.toString());
+		parameters.put("idAgent", idAgent.toString());
+
+		logger.debug("Call sirhWS for deleteFDP with url [{}] for idFDP [{}]", getWSUrl(deleteFDPUrl), idFichePoste);
+
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(deleteFDPUrl));
+
+		return readResponse(ReturnMessageDto.class, res, getWSUrl(deleteFDPUrl));
 	}
 
 }

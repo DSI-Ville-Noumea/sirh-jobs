@@ -49,6 +49,7 @@
 				<value>nc.noumea.mairie.sirh.domain.DocumentAssocie</value>
 				<value>nc.noumea.mairie.sirh.domain.AvctCapPrintJob</value>
 				<value>nc.noumea.mairie.sirh.domain.SIIDMA_SIRH</value>
+				<value>nc.noumea.mairie.sirh.domain.ActionFDPJob</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

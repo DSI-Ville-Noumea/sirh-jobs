@@ -14,4 +14,6 @@ public interface ISirhWSConsumer {
 	List<Integer> getListAgentPourAlimAutoCompteursCongesAnnuels(Date dateDebut, Date dateFin);
 
 	ReturnMessageDto isPaieEnCours();
+
+	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
 }

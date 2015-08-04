@@ -2,6 +2,9 @@ package nc.noumea.mairie.sirh.dao;
 
 import java.util.List;
 
+import nc.noumea.mairie.sirh.domain.ActionFDPJob;
+
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.StandardBasicTypes;
@@ -55,12 +58,38 @@ public class SirhDao implements ISirhDao {
 		sb.append("WHERE ref.ID_SERVICE_ADS is null ");
 
 		@SuppressWarnings("unchecked")
-		List<Integer> result = session.createSQLQuery(sb.toString()).addScalar("idReferent", StandardBasicTypes.INTEGER)
-				.list();
+		List<Integer> result = session.createSQLQuery(sb.toString())
+				.addScalar("idReferent", StandardBasicTypes.INTEGER).list();
 
 		session.getTransaction().rollback();
 
-		return result.size()==0 ? null : result.get(0);
+		return result.size() == 0 ? null : result.get(0);
+	}
+
+	public void beginTransaction() {
+		sirhSessionFactory.getCurrentSession().beginTransaction();
+	}
+
+	public void commitTransaction() {
+		sirhSessionFactory.getCurrentSession().getTransaction().commit();
+	}
+
+	public void rollBackTransaction() {
+		sirhSessionFactory.getCurrentSession().getTransaction().rollback();
+	}
+
+	@Override
+	public ActionFDPJob getNextSuppressionFDPTask() {
+
+		@SuppressWarnings("unchecked")
+		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
+				.getNamedQuery("ActionFDPJob.getNextSuppressionFDPTask").setLockMode("eT", LockMode.PESSIMISTIC_WRITE)
+				.setMaxResults(1).list();
+
+		if (result.size() == 0)
+			return null;
+
+		return result.get(0);
 	}
 
 }
