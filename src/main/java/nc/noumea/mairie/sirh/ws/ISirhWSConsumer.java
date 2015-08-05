@@ -16,4 +16,6 @@ public interface ISirhWSConsumer {
 	ReturnMessageDto isPaieEnCours();
 
 	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
+
+	ReturnMessageDto dupliqueFDP(Integer idFichePoste, Integer idNewServiceAds, Integer idAgent);
 }

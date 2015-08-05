@@ -30,6 +30,9 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String listAgentPourAlimAutoCompteursCongesAnnuelsUrl = "absences/listAgentPourAlimAutoCompteursCongesAnnuels";
 	private static final String isPaieEnCoursUrl = "utils/isPaieEnCours";
 	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
+	private static final String dupliqueFDPUrl = "fichePostes/dupliqueFichePosteByIdFichePoste";
+	
+	
 
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -90,6 +93,20 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(deleteFDPUrl));
 
 		return readResponse(ReturnMessageDto.class, res, getWSUrl(deleteFDPUrl));
+	}
+
+	@Override
+	public ReturnMessageDto dupliqueFDP(Integer idFichePoste, Integer idNewServiceAds, Integer idAgent) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idFichePoste", idFichePoste.toString());
+		parameters.put("idEntite", idNewServiceAds.toString());
+		parameters.put("idAgent", idAgent.toString());
+
+		logger.debug("Call sirhWS for dupliqueFDP with url [{}] for idFDP [{}]", getWSUrl(dupliqueFDPUrl), idFichePoste);
+
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(dupliqueFDPUrl));
+
+		return readResponse(ReturnMessageDto.class, res, getWSUrl(dupliqueFDPUrl));
 	}
 
 }
