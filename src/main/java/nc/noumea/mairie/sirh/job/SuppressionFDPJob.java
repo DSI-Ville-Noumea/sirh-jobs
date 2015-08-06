@@ -52,9 +52,11 @@ public class SuppressionFDPJob extends QuartzJobBean {
 			if (result.getErrors().size() > 0) {
 				eT.setStatut(result.getErrors().get(0));
 			} else {
-				// At this point, everything went allright, the status can be
-				// updated to OK
-				eT.setStatut("OK");
+				if (result.getInfos().size() > 0) {
+					eT.setStatut(result.getInfos().get(0));
+				} else {
+					eT.setStatut("OK");
+				}
 			}
 		} catch (Exception ex) {
 			logger.error("An error occured trying to process SuppressionFDPTask :", ex);
