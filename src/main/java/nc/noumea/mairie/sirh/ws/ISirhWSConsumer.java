@@ -18,4 +18,6 @@ public interface ISirhWSConsumer {
 	ReturnMessageDto deleteFDP(Integer idFichePoste, Integer idAgent);
 
 	ReturnMessageDto dupliqueFDP(Integer idFichePoste, Integer idNewServiceAds, Integer idAgent);
+
+	ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent);
 }

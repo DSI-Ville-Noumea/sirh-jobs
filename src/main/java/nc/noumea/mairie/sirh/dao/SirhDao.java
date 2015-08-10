@@ -102,4 +102,17 @@ public class SirhDao implements ISirhDao {
 
 		return result.get(0);
 	}
+
+	@Override
+	public ActionFDPJob getNextActivationFDPTask() {
+
+		@SuppressWarnings("unchecked")
+		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
+				.getNamedQuery("ActionFDPJob.getNextActivationFDPTask").setMaxResults(1).list();
+
+		if (result.size() == 0)
+			return null;
+
+		return result.get(0);
+	}
 }

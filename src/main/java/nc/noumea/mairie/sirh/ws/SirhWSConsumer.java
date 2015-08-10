@@ -31,8 +31,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String isPaieEnCoursUrl = "utils/isPaieEnCours";
 	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 	private static final String dupliqueFDPUrl = "fichePostes/dupliqueFichePosteByIdFichePoste";
-	
-	
+	private static final String activeFDPUrl = "fichePostes/activeFichePosteByIdFichePoste";
 
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -107,6 +106,19 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(dupliqueFDPUrl));
 
 		return readResponse(ReturnMessageDto.class, res, getWSUrl(dupliqueFDPUrl));
+	}
+
+	@Override
+	public ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idFichePoste", idFichePoste.toString());
+		parameters.put("idAgent", idAgent.toString());
+
+		logger.debug("Call sirhWS for activeFDP with url [{}] for idFDP [{}]", getWSUrl(activeFDPUrl), idFichePoste);
+
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(activeFDPUrl));
+
+		return readResponse(ReturnMessageDto.class, res, getWSUrl(activeFDPUrl));
 	}
 
 }

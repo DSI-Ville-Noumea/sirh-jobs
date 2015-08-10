@@ -19,4 +19,6 @@ public interface ISirhDao {
 	ActionFDPJob getNextSuppressionFDPTask();
 
 	ActionFDPJob getNextDuplicationFDPTask();
+
+	ActionFDPJob getNextActivationFDPTask();
 }
