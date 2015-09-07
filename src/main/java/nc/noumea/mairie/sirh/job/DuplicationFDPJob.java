@@ -44,23 +44,29 @@ public class DuplicationFDPJob extends QuartzJobBean {
 			return;
 		}
 
-		logger.info("Processing DuplicationFDPTask id [{}] for idFDP [{} : {}], schedulded by [{}]...",
-				eT.getIdActionFdpJob(), eT.getIdFichePoste(), eT.getTypeAction(), eT.getIdAgent());
+		logger.info("Processing DuplicationFDPTask id [{}] for idFDP [{} : {}], schedulded by [{}]...", eT.getIdActionFdpJob(), eT.getIdFichePoste(), eT.getTypeAction(), eT.getIdAgent());
 
 		try {
-			ReturnMessageDto result = sirhWSConsumer.dupliqueFDP(eT.getIdFichePoste(),eT.getIdNewServiceAds(), eT.getIdAgent());
+			ReturnMessageDto result = sirhWSConsumer.dupliqueFDP(eT.getIdFichePoste(), eT.getIdNewServiceAds(), eT.getIdAgent());
 			if (result.getErrors().size() > 0) {
 				eT.setStatut(result.getErrors().get(0));
 			} else {
 				// At this point, everything went allright, the status can be
 				// updated to OK
-				eT.setStatut("OK");
+				if (result.getInfos().size() > 0) {
+					String info = "";
+					for (String inf : result.getInfos()) {
+						info += inf + " ";
+					}
+					eT.setStatut("OK : " + info);
+				} else {
+					eT.setStatut("OK");
+				}
 			}
 		} catch (Exception ex) {
 			logger.error("An error occured trying to process DuplicationFDPTask :", ex);
 			eT.setStatut(String.format("Erreur: %s", ex.getMessage()));
-			incidentLoggerService.logIncident("DuplicationFDPJob", ex.getCause() == null ? ex.getMessage() : ex
-					.getCause().getMessage(), ex);
+			incidentLoggerService.logIncident("DuplicationFDPJob", ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage(), ex);
 		}
 
 		eT.setDateStatut(new Date());
