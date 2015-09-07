@@ -16,9 +16,5 @@ public interface ISirhDao {
 
 	void rollBackTransaction();
 
-	ActionFDPJob getNextSuppressionFDPTask();
-
-	ActionFDPJob getNextDuplicationFDPTask();
-
-	ActionFDPJob getNextActivationFDPTask();
+	ActionFDPJob getNextActionFDPTask();
 }

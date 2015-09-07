@@ -78,37 +78,11 @@ public class SirhDao implements ISirhDao {
 	}
 
 	@Override
-	public ActionFDPJob getNextSuppressionFDPTask() {
+	public ActionFDPJob getNextActionFDPTask() {
 
 		@SuppressWarnings("unchecked")
 		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
-				.getNamedQuery("ActionFDPJob.getNextSuppressionFDPTask").setMaxResults(1).list();
-
-		if (result.size() == 0)
-			return null;
-
-		return result.get(0);
-	}
-
-	@Override
-	public ActionFDPJob getNextDuplicationFDPTask() {
-
-		@SuppressWarnings("unchecked")
-		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
-				.getNamedQuery("ActionFDPJob.getNextDuplicationFDPTask").setMaxResults(1).list();
-
-		if (result.size() == 0)
-			return null;
-
-		return result.get(0);
-	}
-
-	@Override
-	public ActionFDPJob getNextActivationFDPTask() {
-
-		@SuppressWarnings("unchecked")
-		List<ActionFDPJob> result = sirhSessionFactory.getCurrentSession()
-				.getNamedQuery("ActionFDPJob.getNextActivationFDPTask").setMaxResults(1).list();
+				.getNamedQuery("ActionFDPJob.getNextActionFDPTask").setMaxResults(1).list();
 
 		if (result.size() == 0)
 			return null;
