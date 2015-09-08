@@ -99,15 +99,24 @@ public class ActionsFDPJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ActionFDPTask :", ex);
 				eT.setStatut(String.format("Erreur: %s", ex.getMessage()));
-				incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex
+				try {
+					incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex
 						.getCause().getMessage(), ex);
+				} catch (Exception e) {
+					logger.error("An error occured trying to process ActionFDPTask and logIncident in Redmine :", e);
+				}
+			}
+
+			
+			if(eT.getStatut().length() > 255){
+				eT.setStatut(eT.getStatut().substring(0, 255));
 			}
 		
 			eT.setDateStatut(new Date());
 
 			logger.info("Processed ActionFDPTask id [{}].", eT.getIdActionFdpJob());
+			sirhDao.commitTransaction();
 		} while (eT != null);
 			 
-		sirhDao.commitTransaction();
 	}
 }
