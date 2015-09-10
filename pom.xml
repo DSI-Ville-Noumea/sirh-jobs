@@ -278,6 +278,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
+					<packagingExcludes>META-INF/context.xml</packagingExcludes>
 					<webResources>
 						<resource>
 							<directory>src/main/java</directory>
@@ -290,6 +291,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
