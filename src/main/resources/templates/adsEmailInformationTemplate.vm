@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<style>
+			table {
+			    border-collapse: collapse;
+			}
+			table, tr, td {
+			   border: 1px solid black;
+			} 
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Retrouvez ci-dessous le compte rendu des passages de statuts dans l'application organigramme pour la journée du ${dateHistorique} : <br /> <br />
+		</p>
+		
+		<table>
+			<tr>
+				<td>Sigle</td>
+				<td>Libellé</td>
+				<td>Nouveau statut</td>
+				<td>Entité remplacée</td>
+				<td>Code service</td>
+				<td>Code AS400</td>
+			</tr>
+			#foreach($entiteHistoDto in $listeEntiteHistoDto)
+			    <tr>
+				    <td>$entiteHistoDto.sigle</td>
+				    <td>$entiteHistoDto.label</td>
+				    <td>$entiteHistoDto.libStatut</td>
+				    <td>$entiteHistoDto.libelleEntiteRemplacee</td>
+				    <td>$entiteHistoDto.codeServi</td>
+				    <td>$entiteHistoDto.codeServiAS400</td>
+			  	</tr>
+			#end
+		</table>
+		
+		<br /><br />
+		<p>
+			Cordialement,
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application ADS.</i></span></p>
+		</div>
+	</body>
+</html>

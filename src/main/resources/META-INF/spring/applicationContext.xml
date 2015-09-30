@@ -244,7 +244,18 @@
 	<jee:jndi-lookup id="SIRH_ABS_WS_MiseAJourSpsorcUrl"
 		jndi-name="SIRH_ABS_WS_MISE_A_JOUR_SPSORC_URL" expected-type="java.lang.String" />
 
-
+	<!-- Pour ADS -->
+	<jee:jndi-lookup id="ADS_WS_Base_URL" jndi-name="ADS_WS_URL"
+		expected-type="java.lang.String" />
+	<!-- pour les emails d information des passages de statuts des entités -->
+	<jee:jndi-lookup id="ADS_WS_ListIdAgentEmailInfo"
+		jndi-name="ADS_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
+	<jee:jndi-lookup id="ADS_WS_SirhAdsGetInfoSiservUrl"
+		jndi-name="ADS_WS_SISERV_INFO_URL" expected-type="java.lang.String" />		
+	<jee:jndi-lookup id="ADS_WS_ListEntityHistoChangementStatutVeille"
+		jndi-name="ADS_WS_LISTE_ENTITY_HISTO_CHANGEMENT_STATUT_VEILLE"
+		expected-type="java.lang.String" />
+	
 	<!-- Pour RADI -->
 	<jee:jndi-lookup id="RADI_WS_Base_URL" jndi-name="RADI_WS_URL"
 		expected-type="java.lang.String" />

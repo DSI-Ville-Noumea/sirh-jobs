@@ -235,7 +235,17 @@
 	<Environment name="SIRH_ABS_WS_MISE_A_JOUR_SPSORC_URL"
 		type="java.lang.String" description="sirh-abs-ws Url endpoint to update Spsorc"
 		value="reposcomps/miseAJourSpsorc" override="false" />
-
+	<!-- Job ADS -->
+	<!--Job envoie emails informations des passages de statuts des entités -->
+	<Environment name="ADS_WS_EMAIL_INFO_URL" type="java.lang.String"
+		description="ads-ws Url endpoint for email information status changes"
+		value="api/email/listeIdAgentEmailInfo" override="false" />
+	<Environment name="ADS_WS_LISTE_ENTITY_HISTO_CHANGEMENT_STATUT_VEILLE"
+		type="java.lang.String" description="ads-ws Url endpoint for entity's statut changes list"
+		value="api/email/histoChangementStatutVeille" override="false" />
+	<Environment name="ADS_WS_SISERV_INFO_URL" type="java.lang.String"
+		description="ads-ws Url endpoint for email information for siserv info"
+		value="api/entite/infoSiserv/" override="false" />
 
 	<!-- -->
 	<!-- WS EAE -->
@@ -245,6 +255,13 @@
 		override="false" />
 	<Environment name="SIRH_EAE_WS_URL" type="java.lang.String"
 		description="sirh-eae-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-eae-ws/"
+		override="false" />
+		
+	<!-- -->
+	<!-- WS ADS -->
+	<!-- -->
+	<Environment name="ADS_WS_URL" type="java.lang.String"
+		description="ADS WS endpoint url" value="http://***REMOVED***:8077/"
 		override="false" />
 
 
