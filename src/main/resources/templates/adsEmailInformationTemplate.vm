@@ -21,17 +21,27 @@
 			<tr>
 				<td>Sigle</td>
 				<td>Libellé</td>
-				<td>Nouveau statut</td>
-				<td>Entité remplacée</td>
-				<td>Code service</td>
-				<td>Code AS400</td>
+				<td>Date statut</td>
+				<td>Statut</td>
+				<td>Sigle entité remplacée</td>
+				<td>Libellé entité remplacée</td>
+				<td>Code SISERVNW</td>
+				<td>Code SISERV</td>
 			</tr>
 			#foreach($entiteHistoDto in $listeEntiteHistoDto)
 			    <tr>
 				    <td>$entiteHistoDto.sigle</td>
 				    <td>$entiteHistoDto.label</td>
+				    <td>${dateHistorique}</td>
 				    <td>$entiteHistoDto.libStatut</td>
-				    <td>$entiteHistoDto.libelleEntiteRemplacee</td>
+				    ##on traite le cas ou entiteRemplacée est null
+				    #if ($entiteHistoDto.entiteRemplacee)
+				    	<td>$entiteHistoDto.entiteRemplacee.sigle</td>	
+				    	<td>$entiteHistoDto.entiteRemplacee.label</td>
+				    #else
+				    	<td> </td>
+				    	<td> </td>
+				    #end				    				    
 				    <td>$entiteHistoDto.codeServi</td>
 				    <td>$entiteHistoDto.codeServiAS400</td>
 			  	</tr>

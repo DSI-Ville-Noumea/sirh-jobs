@@ -251,14 +251,6 @@ public class EntiteDto {
 		this.entiteAs400 = entiteAs400;
 	}
 
-	public String getLibelleEntiteRemplacee() {
-		if (this.entiteRemplacee == null) {
-			return "";
-		}
-
-		return this.entiteRemplacee.getSigle();
-	}
-
 	public String getLibStatut() {
 		return StatutEntiteEnum.getStatutEntiteEnum(this.idStatut) == null ? null : StatutEntiteEnum.getStatutEntiteEnum(this.idStatut).name();
 	}
