@@ -16,9 +16,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "ACTION_FDP_JOB")
 @PersistenceUnit(unitName = "sirhPersistenceUnit")
-@NamedQueries({
-		@NamedQuery(name = "ActionFDPJob.getNextActionFDPTask", query = "SELECT eT from ActionFDPJob eT WHERE eT.statut is NULL AND eT.dateStatut is NULL order by eT.idActionFdpJob asc)") 
-})
+@NamedQueries({ @NamedQuery(name = "ActionFDPJob.getNextActionFDPTask", query = "SELECT eT from ActionFDPJob eT WHERE eT.statut is NULL AND eT.dateStatut is NULL order by eT.idActionFdpJob asc)") })
 public class ActionFDPJob {
 
 	@Id
@@ -50,6 +48,9 @@ public class ActionFDPJob {
 	@Column(name = "DATE_STATUT")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateStatut;
+
+	@Column(name = "NEW_ID_FICHE_POSTE")
+	private Integer newIdFichePoste;
 
 	public Integer getIdActionFdpJob() {
 		return idActionFdpJob;
@@ -113,5 +114,13 @@ public class ActionFDPJob {
 
 	public void setDateStatut(Date dateStatut) {
 		this.dateStatut = dateStatut;
+	}
+
+	public Integer getNewIdFichePoste() {
+		return newIdFichePoste;
+	}
+
+	public void setNewIdFichePoste(Integer newIdFichePoste) {
+		this.newIdFichePoste = newIdFichePoste;
 	}
 }

@@ -7,6 +7,7 @@ public class ReturnMessageDto {
 
 	private List<String> errors;
 	private List<String> infos;
+	private Integer id;
 
 	public ReturnMessageDto() {
 		errors = new ArrayList<String>();
@@ -27,5 +28,13 @@ public class ReturnMessageDto {
 
 	public void setInfos(List<String> infos) {
 		this.infos = infos;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

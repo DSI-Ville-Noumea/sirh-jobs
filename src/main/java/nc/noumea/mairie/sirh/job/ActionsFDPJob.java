@@ -31,7 +31,7 @@ public class ActionsFDPJob extends QuartzJobBean {
 
 	@Autowired
 	private ISirhWSConsumer sirhWSConsumer;
-	
+
 	private static final String SUPPRESSION_ACTION = "SUPPRESSION";
 	private static final String DUPLICATION_ACTION = "DUPLICATION";
 	private static final String ACTIVATION_ACTION = "ACTIVATION";
@@ -40,37 +40,38 @@ public class ActionsFDPJob extends QuartzJobBean {
 	protected void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
 
 		ActionFDPJob eT = null;
-		
+
 		do {
 			sirhDao.beginTransaction();
 			eT = sirhDao.getNextActionFDPTask();
-			
+
 			if (eT == null) {
 				logger.info("Did not find any ActionFDPTask to process... exiting job.");
 				sirhDao.rollBackTransaction();
 				return;
 			}
-		
-			logger.info("Processing ActionFDPTask id [{}] for idFDP [{} : {}], schedulded by [{}]...",
-					eT.getIdActionFdpJob(), eT.getIdFichePoste(), eT.getTypeAction(), eT.getIdAgent());
-		
+
+			logger.info("Processing ActionFDPTask id [{}] for idFDP [{} : {}], schedulded by [{}]...", eT.getIdActionFdpJob(), eT.getIdFichePoste(), eT.getTypeAction(), eT.getIdAgent());
+
 			try {
-				if(ACTIVATION_ACTION.equals(eT.getTypeAction())) {
+				if (ACTIVATION_ACTION.equals(eT.getTypeAction())) {
 					ReturnMessageDto result = sirhWSConsumer.activeFDP(eT.getIdFichePoste(), eT.getIdAgent());
 					if (result.getErrors().size() > 0) {
 						eT.setStatut(result.getErrors().get(0));
 					} else {
-						// At this point, everything went allright, the status can be
+						// At this point, everything went allright, the status
+						// can be
 						// updated to OK
 						eT.setStatut("OK");
 					}
 				}
-				if(DUPLICATION_ACTION.equals(eT.getTypeAction())) {
+				if (DUPLICATION_ACTION.equals(eT.getTypeAction())) {
 					ReturnMessageDto result = sirhWSConsumer.dupliqueFDP(eT.getIdFichePoste(), eT.getIdNewServiceAds(), eT.getIdAgent());
 					if (result.getErrors().size() > 0) {
 						eT.setStatut(result.getErrors().get(0));
 					} else {
-						// At this point, everything went allright, the status can be
+						// At this point, everything went allright, the status
+						// can be
 						// updated to OK
 						if (result.getInfos().size() > 0) {
 							String info = "";
@@ -81,9 +82,11 @@ public class ActionsFDPJob extends QuartzJobBean {
 						} else {
 							eT.setStatut("OK");
 						}
+						if (result.getId() != null)
+							eT.setNewIdFichePoste(result.getId());
 					}
 				}
-				if(SUPPRESSION_ACTION.equals(eT.getTypeAction())) {
+				if (SUPPRESSION_ACTION.equals(eT.getTypeAction())) {
 					ReturnMessageDto result = sirhWSConsumer.deleteFDP(eT.getIdFichePoste(), eT.getIdAgent());
 					if (result.getErrors().size() > 0) {
 						eT.setStatut(result.getErrors().get(0));
@@ -95,28 +98,26 @@ public class ActionsFDPJob extends QuartzJobBean {
 						}
 					}
 				}
-				
+
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ActionFDPTask :", ex);
 				eT.setStatut(String.format("Erreur: %s", ex.getMessage()));
 				try {
-					incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex
-						.getCause().getMessage(), ex);
+					incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage(), ex);
 				} catch (Exception e) {
 					logger.error("An error occured trying to process ActionFDPTask and logIncident in Redmine :", e);
 				}
 			}
 
-			
-			if(eT.getStatut().length() > 255){
+			if (eT.getStatut().length() > 255) {
 				eT.setStatut(eT.getStatut().substring(0, 255));
 			}
-		
+
 			eT.setDateStatut(new Date());
 
 			logger.info("Processed ActionFDPTask id [{}].", eT.getIdActionFdpJob());
 			sirhDao.commitTransaction();
 		} while (eT != null);
-			 
+
 	}
 }
