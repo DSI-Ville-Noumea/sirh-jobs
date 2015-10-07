@@ -22,6 +22,7 @@
 				<td>Sigle</td>
 				<td>Libellé</td>
 				<td>Date statut</td>
+				<td>Heure statut</td>
 				<td>Statut</td>
 				<td>Sigle entité remplacée</td>
 				<td>Libellé entité remplacée</td>
@@ -33,6 +34,7 @@
 				    <td>$entiteHistoDto.sigle</td>
 				    <td>$entiteHistoDto.label</td>
 				    <td>${dateHistorique}</td>
+				    <td>$entiteHistoDto.heureHisto</td>
 				    <td>$entiteHistoDto.libStatut</td>
 				    ##on traite le cas ou entiteRemplacée est null
 				    #if ($entiteHistoDto.entiteRemplacee)

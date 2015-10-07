@@ -1,5 +1,6 @@
 package nc.noumea.mairie.ads.ws.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EntiteHistoDto extends EntiteDto {
@@ -39,6 +40,11 @@ public class EntiteHistoDto extends EntiteDto {
 
 	public void setTypeHisto(Integer typeHisto) {
 		this.typeHisto = typeHisto;
+	}
+
+	public String getHeureHisto() {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		return sdf.format(this.dateHisto);
 	}
 
 }

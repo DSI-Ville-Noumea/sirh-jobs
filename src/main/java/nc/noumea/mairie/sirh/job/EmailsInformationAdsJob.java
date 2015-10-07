@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,8 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 		String todayToString = sdf.format(today);
 
 		List<EntiteHistoDto> listeEntiteHistoDto = adsWSConsumer.getListeEntiteHistoChangementStatutVeille();
-		List<Integer> listeIdAgentDestinataire = adsWSConsumer.getListeIdAgentEmailInfo();
+		List<Integer> listeIdAgentDestinataire = new ArrayList<Integer>();
+		listeIdAgentDestinataire.add(9004997);
 
 		if (CollectionUtils.isEmpty(listeEntiteHistoDto) || CollectionUtils.isEmpty(listeIdAgentDestinataire))
 			return;
