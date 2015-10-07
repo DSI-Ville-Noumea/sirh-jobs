@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.joda.time.DateTime;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -74,9 +76,10 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 	}
 
 	protected void sendEmailsInformation() throws PointagesEmailsInformationException {
-
-		Date today = helper.getCurrentDate();
-		String todayToString = sdf.format(today);
+		// #18865 : on enleve un jour car c'est les changements de la veille
+		DateTime today = new DateTime(helper.getCurrentDate());
+		today = today.minusDays(1);
+		String todayToString = sdf.format(today.toDate());
 
 		List<EntiteHistoDto> listeEntiteHistoDto = adsWSConsumer.getListeEntiteHistoChangementStatutVeille();
 		List<Integer> listeIdAgentDestinataire = adsWSConsumer.getListeIdAgentEmailInfo();
@@ -90,7 +93,7 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 				histo.setCodeServiAS400(as400.getCodeServi());
 		}
 
-		sendEmailsInformationOneByOne(listeIdAgentDestinataire, listeEntiteHistoDto, today, "Organigramme : Compte rendu des changements de statut du " + todayToString);
+		sendEmailsInformationOneByOne(listeIdAgentDestinataire, listeEntiteHistoDto, today.toDate(), "Organigramme : Compte rendu des changements de statut du " + todayToString);
 
 		logger.info("Finished sending today's AdsEmailInformation...");
 	}
