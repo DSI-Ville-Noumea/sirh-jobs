@@ -327,7 +327,7 @@
 	<!-- URL Kiosque -->
 	<!-- -->
 	<Environment name="KIOSQUE_URL" type="java.lang.String"
-		description="Url du kiosque pour envoi des mails" value="http://***REMOVED***.site-mairie.noumea.nc:8085/"
+		description="Url du kiosque pour envoi des mails" value="http://loclahost:8090/"
 		override="false" />
 
 </Context>
