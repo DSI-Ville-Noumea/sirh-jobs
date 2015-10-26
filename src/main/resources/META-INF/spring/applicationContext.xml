@@ -306,4 +306,8 @@
 	<jee:jndi-lookup id="adresseKiosqueRH" jndi-name="KIOSQUE_URL"
 		expected-type="java.lang.String" />
 
+	<!-- Type environnement pour envoie de mail -->
+	<jee:jndi-lookup id="typeEnvironnement" jndi-name="TYPE_ENV"
+		expected-type="java.lang.String" />
+
 </beans>

@@ -1,7 +1,6 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,10 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
 	private Integer numberOfTries;
+
+	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String typeEnvironnement;
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
@@ -153,6 +156,7 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 				Map model = new HashMap();
 				model.put("dateHistorique", sdf.format(theDate));
 				model.put("listeEntiteHistoDto", listeEntiteHistoDto);
+				model.put("typeEnvironnement", typeEnvironnement);
 
 				// Set the body with velocity
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/adsEmailInformationTemplate.vm", "UTF-8", model);

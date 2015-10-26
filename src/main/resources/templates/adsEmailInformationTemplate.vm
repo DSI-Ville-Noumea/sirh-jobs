@@ -14,7 +14,7 @@
 			Bonjour, 
 		</p>
 		<p>
-			Retrouvez ci-dessous le compte rendu des passages de statuts dans l'application organigramme pour la journée du ${dateHistorique} : <br /> <br />
+			Retrouvez ci-dessous le compte rendu des passages de statuts dans l'application organigramme pour la journée du ${dateHistorique} pour l'environnement  ${typeEnvironnement} : <br /> <br />
 		</p>
 		
 		<table>

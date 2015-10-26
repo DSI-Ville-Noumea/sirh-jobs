@@ -327,7 +327,14 @@
 	<!-- URL Kiosque -->
 	<!-- -->
 	<Environment name="KIOSQUE_URL" type="java.lang.String"
-		description="Url du kiosque pour envoi des mails" value="http://loclahost:8090/"
+		description="Url du kiosque pour envoi des mails" value="http://localhost:8090/"
 		override="false" />
+
+	<!-- -->
+	<!-- AUTRE PARAM -->
+	<!-- -->
+	<Environment
+		description="parametre pour afficher dans le titre de l'appli si on est en prod ou en recette (DEV ou PROD)"
+		name="TYPE_ENV" override="false" value="DEV" type="java.lang.String"/>
 
 </Context>
