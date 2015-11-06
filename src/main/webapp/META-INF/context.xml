@@ -94,7 +94,7 @@
 		description="Temp directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/"
 		override="false" />
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
-		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIds"
+		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIdsForSIRHJobs"
 		override="false" />
 	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
 		description="CUPS printing server hostname" value="172.16.24.19"
