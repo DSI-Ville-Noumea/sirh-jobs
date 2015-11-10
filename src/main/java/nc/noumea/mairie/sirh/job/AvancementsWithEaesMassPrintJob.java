@@ -358,7 +358,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 	public void sendErrorEmail(final AvctCapPrintJob job) throws DaoException {
 
-		logger.debug("Sending error email for job id [{}] on status {}", job.getJobId(), job.getStatus().toString());
+		logger.debug("Sending error email for job id [{}] on status {}", job.getJobId(), null == job.getStatus() ? "" : job.getStatus().toString());
 
 		final LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(job
 				.getAgentId()));
@@ -376,7 +376,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 				model.put("jobId", job.getJobId());
 				model.put("CAP", job.getCodeCap());
 				model.put("CE", job.getLibCadreEmploi());
-				model.put("status", job.getStatus().toString());
+				model.put("status", null == job.getStatus() ? "" : job.getStatus().toString());
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
 						"templates/sirhAvctErrorMailTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
