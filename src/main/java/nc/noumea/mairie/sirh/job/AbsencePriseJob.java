@@ -98,7 +98,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 			// pour les RECUP et les REPOS COMP
 			List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(
 					getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
-			// pour les ASA, CONGES_EXCEP
+			// pour les ASA, CONGES_EXCEP, Maladies
 			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
 					getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
 			// pour les CONGES ANNUELS
@@ -283,6 +283,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
 		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.AS.getValue());
 		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.CONGES_EXCEP.getValue());
+		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.MALADIES.getValue());
 		return listTypeAbsASA;
 	}
 
