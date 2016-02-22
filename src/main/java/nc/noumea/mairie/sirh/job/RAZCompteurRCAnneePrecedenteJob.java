@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 
@@ -39,10 +40,13 @@ public class RAZCompteurRCAnneePrecedenteJob extends QuartzJobBean {
 			listeIdCompteur = absWSConsumer.getListeCompteurAnneePrecedente();
 		} catch (Exception ex) {
 			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-			incidentLoggerService.logIncident("RAZCompteurRCAnneePrecedenteJob", ex.getMessage(), ex);
+			incidentLoggerService.logIncident("RAZCompteurRCAnneePrecedenteJob", ex.getMessage(), 
+					"Erreur a l appel du WS absWSConsumer.getListeCompteurAnneePrecedente()", ex);
 		}
 		
 		logger.info("Found {} previous year RC counters to update...", listeIdCompteur.size());
+		
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 		
 		for (Integer idCompteur : listeIdCompteur) {
 			
@@ -53,7 +57,9 @@ public class RAZCompteurRCAnneePrecedenteJob extends QuartzJobBean {
 				result = absWSConsumer.resetCompteurAnneePrecedente(idCompteur);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-				incidentLoggerService.logIncident("RAZCompteurRCAnneePrecedenteJob", ex.getMessage(), ex);
+				// #28779 ne pas boucler sur le logger redmine
+				incidentRedmine.addException(ex, idCompteur);
+//				incidentLoggerService.logIncident("RAZCompteurRCAnneePrecedenteJob", ex.getMessage(), ex);
 			}
 			
 			if (result != null && result.getErrors().size() != 0) {
@@ -61,6 +67,10 @@ public class RAZCompteurRCAnneePrecedenteJob extends QuartzJobBean {
 					logger.info(err);
 				}
 			}
+		}
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
 		}
 		
 		logger.info("Processed RAZCompteurRCAnneePrecedenteJob");
