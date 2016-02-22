@@ -56,6 +56,7 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 		
 		absencesDao.rollBackTransaction();
 		
+		StringBuffer errors = new StringBuffer();
 		for (Integer idDemande : listEp) {
 			
 			logger.debug("Processing demande id {}...", idDemande);
@@ -70,15 +71,28 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 				result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
-				incidentLoggerService.logIncident("AbsenceSupprimerJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
-						.getMessage(), ex);
+				// #28790 ne pas boucler sur le logger redmine pour ne pas creer plein d incident
+				errors.append("Une erreur technique est survenue lors du traitement de cette demande " + idDemande + ex.getMessage());
+//				incidentLoggerService.logIncident("AbsenceSupprimerJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
+//						.getMessage(), ex);
 			}
 			
 			if (result != null && result.getErrors().size() != 0) {
 				for (String err : result.getErrors()) {
 					logger.info(err);
+					errors.append("Une erreur focntionnelle est survenue sur cette demande " + idDemande + " : " + err);
 				}
 			}
+		}
+		
+		// #28790 : on logge un seul incident
+		if(errors.length() > 0) {
+			incidentLoggerService
+			.logIncident(
+					"AbsencePriseJob",
+					"Erreur de AbsencePriseJob : Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé. Penser à verifier demain que celui-ci a bien de nouveau été lancé."
+					+ errors.toString(),
+					null);
 		}
 		
 		logger.info("Processed AbsenceSupprimerJob");
