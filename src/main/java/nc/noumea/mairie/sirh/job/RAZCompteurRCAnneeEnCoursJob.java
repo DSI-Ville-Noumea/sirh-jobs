@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 
@@ -38,10 +39,13 @@ public class RAZCompteurRCAnneeEnCoursJob extends QuartzJobBean {
 			listeIdCompteur = absWSConsumer.getListeCompteurAnneeEnCours();
 		} catch (Exception ex) {
 			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-			incidentLoggerService.logIncident("RAZCompteurRCAnneeEnCoursJob", ex.getMessage(), ex);
+			incidentLoggerService.logIncident("RAZCompteurRCAnneeEnCoursJob", ex.getMessage(), 
+					"Erreur a l appel du WS absWSConsumer.getListeCompteurAnneeEnCours()", ex);
 		}
 		
 		logger.info("Found {} current year Repos Comp. counters to update...", listeIdCompteur.size());
+		
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 		
 		for (Integer idCompteur : listeIdCompteur) {
 			
@@ -52,7 +56,9 @@ public class RAZCompteurRCAnneeEnCoursJob extends QuartzJobBean {
 				result = absWSConsumer.resetCompteurAnneeEnCours(idCompteur);
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-				incidentLoggerService.logIncident("RAZCompteurRCAnneeEnCoursJob", ex.getMessage(), ex);
+				// #28780 ne pas boulcer sur le logger redmine
+				incidentRedmine.addException(ex, idCompteur);
+//				incidentLoggerService.logIncident("RAZCompteurRCAnneeEnCoursJob", ex.getMessage(), ex);
 			}
 			
 			if (result != null && result.getErrors().size() != 0) {
@@ -60,6 +66,10 @@ public class RAZCompteurRCAnneeEnCoursJob extends QuartzJobBean {
 					logger.info(err);
 				}
 			}
+		}
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
 		}
 		
 		logger.info("Processed RAZCompteurRCAnneeEnCoursJob");
