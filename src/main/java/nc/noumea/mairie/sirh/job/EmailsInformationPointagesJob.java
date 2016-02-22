@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IPtgWSConsumer;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
@@ -60,6 +61,8 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
+	
+	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
@@ -86,6 +89,10 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 
 		sendEmailsInformationOneByOne(emailInfoDto.getListApprobateurs(), today, "approuver");
 
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
+		
 		logger.info("Finished sending today's PtgEmailInformation...");
 	}
 
@@ -107,7 +114,8 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 					logger.warn("An error occured while trying to send PtgEmailInformation with idAgent {}.",
 							new Object[] { idAgent });
 					logger.warn("Here follows the exception : ", ex);
-					incidentLoggerService.logIncident("EmailsInformationDemandeJob", ex.getMessage(), ex);
+					// #28786 ne pas boucler sur le logger redmine
+					incidentRedmine.addException(ex, idAgent);
 					nbErrors++;
 				}
 
