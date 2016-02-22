@@ -19,37 +19,33 @@ public class VoRedmineIncidentLogger {
 	
 	public void addException(Throwable exception, Integer id) {
 		
-		boolean isExceptionExist = false;
-		// on cherche d abord si l exception existe deja
-		for(VoExceptionWithListAgents ex : listException) {
-			if(ex.getNameException().equals(exception.getClass().getName())) {
-				ex.addId(id);
-				isExceptionExist = true;
-			}
-		}
-		
-		if(!isExceptionExist) {
-			listException.add(new VoExceptionWithListAgents(exception.getClass().getName(), exception.getMessage(),
-					exception, id));
-		}
-	}
-	
-	public void addException(String nameJob, String messageException, Throwable exception, Integer id) {
-		
-		boolean isExceptionExist = false;
 		// on cherche d abord si l exception existe deja
 		for(VoExceptionWithListAgents ex : listException) {
 			if(null != exception
 					&& ex.getNameException().equals(exception.getClass().getName())) {
 				ex.addId(id);
-				isExceptionExist = true;
+				return;
 			}
 		}
 		
-		if(!isExceptionExist) {
-			listException.add(new VoExceptionWithListAgents(nameJob, messageException,
-					exception, id));
+		listException.add(new VoExceptionWithListAgents(exception.getClass().getName(), exception.getMessage(),
+				exception, id));
+	}
+	
+	public void addException(String nameException, String messageException, Throwable exception, Integer id) {
+		
+		boolean isExceptionExist = false;
+		// on cherche d abord si l exception existe deja
+		for(VoExceptionWithListAgents ex : listException) {
+			if(null != nameException
+					&& ex.getNameException().equals(nameException)) {
+				ex.addId(id);
+				return;
+			}
 		}
+		
+		listException.add(new VoExceptionWithListAgents(nameException, messageException,
+				exception, id));
 	}
 
 	public List<VoExceptionWithListAgents> getListException() {
