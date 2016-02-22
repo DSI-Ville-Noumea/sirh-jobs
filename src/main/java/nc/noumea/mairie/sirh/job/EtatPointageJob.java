@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
 import nc.noumea.mairie.sirh.service.IPointageService;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -19,6 +20,9 @@ public class EtatPointageJob extends QuartzJobBean {
 	
 	@Autowired
 	private IPointageService service;
+
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
 	
 	@Override
 	public void executeInternal(JobExecutionContext arg0)
@@ -26,7 +30,14 @@ public class EtatPointageJob extends QuartzJobBean {
 		
 		logger.info("Start EtatPointageJob");
 		
-		service.majEtatPointagesRefusesEtRejetesPlus3Mois();
+		try {
+			service.majEtatPointagesRefusesEtRejetesPlus3Mois();
+		} catch(Exception ex) {
+			// #28785
+			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
+			incidentLoggerService.logIncident("EtatPointageJob", ex.getMessage(), 
+					null, ex);
+		}
 		
 		logger.info("Processed EtatPointageJob");
 	}
