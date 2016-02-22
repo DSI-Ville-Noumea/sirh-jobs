@@ -13,6 +13,7 @@ import nc.noumea.mairie.ads.ws.dto.EntiteDto;
 import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -66,6 +67,8 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 	private IIncidentLoggerService incidentLoggerService;
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
+	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
@@ -98,6 +101,10 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 
 		sendEmailsInformationOneByOne(listeIdAgentDestinataire, listeEntiteHistoDto, today.toDate(), "Organigramme : Compte rendu des changements de statut du " + todayToString);
 
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
+		
 		logger.info("Finished sending today's AdsEmailInformation...");
 	}
 
@@ -119,7 +126,8 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 				} catch (Exception ex) {
 					logger.warn("An error occured while trying to send AdsEmailInformation.");
 					logger.warn("Here follows the exception : ", ex);
-					incidentLoggerService.logIncident("AdsEmailInformation", ex.getMessage(), ex);
+					// #28787 ne pas boucler sur le logger redmine
+					incidentRedmine.addException(ex, idAgent);
 					nbErrors++;
 				}
 
