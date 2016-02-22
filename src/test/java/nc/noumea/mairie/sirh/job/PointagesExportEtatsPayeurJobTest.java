@@ -84,7 +84,7 @@ public class PointagesExportEtatsPayeurJobTest {
 				public Object answer(InvocationOnMock invocation) { 
 					return true;
 				}
-			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 		
 		PointagesExportEtatsPayeurJob job = new PointagesExportEtatsPayeurJob();
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "base");

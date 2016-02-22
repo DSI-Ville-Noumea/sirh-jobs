@@ -59,7 +59,7 @@ public class PointagesVentilationJobTest {
 				public Object answer(InvocationOnMock invocation) { 
 					return true;
 				}
-			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+			}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 		
 		PointagesVentilationJob job = new PointagesVentilationJob();
 		ReflectionTestUtils.setField(job, "pointagesDao", pDao);

@@ -32,7 +32,7 @@ public class RedmineIncidentLoggerServiceTest {
 
 		// When
 		try {
-		logger.logIncident(jobName, message, new Exception(
+		logger.logIncident(jobName, message, "", new Exception(
 				"this is the fake exception that needs to be logged in Redmine under Incident."));
 		} catch(Exception e) {
 			fail("probleme logger redmine : " + e.getMessage());

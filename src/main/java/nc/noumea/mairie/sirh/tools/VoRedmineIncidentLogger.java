@@ -39,7 +39,8 @@ public class VoRedmineIncidentLogger {
 		boolean isExceptionExist = false;
 		// on cherche d abord si l exception existe deja
 		for(VoExceptionWithListAgents ex : listException) {
-			if(ex.getNameException().equals(exception.getClass().getName())) {
+			if(null != exception
+					&& ex.getNameException().equals(exception.getClass().getName())) {
 				ex.addId(id);
 				isExceptionExist = true;
 			}

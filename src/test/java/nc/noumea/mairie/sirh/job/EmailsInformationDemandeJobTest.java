@@ -104,7 +104,7 @@ public class EmailsInformationDemandeJobTest {
 				return true;
 			}
 		}).when(incidentLoggerService)
-				.logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+				.logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 
 		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
 		ReflectionTestUtils.setField(service, "helper", helperMock);

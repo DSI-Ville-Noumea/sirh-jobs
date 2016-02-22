@@ -17,6 +17,7 @@ import nc.noumea.mairie.sirh.eae.dao.IEaeCampagneActionDao;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -112,12 +113,15 @@ public class EaeCampagneActionNotificationsJobTest {
 		LightUser agentLdap = new LightUser();
 		IRadiWSConsumer radiMock = Mockito.mock(IRadiWSConsumer.class);
 		when(radiMock.retrieveAgentFromLdapFromMatricule("90")).thenReturn(agentLdap);
+		
+		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 
 		EaeCampagneActionNotificationsJob service = new EaeCampagneActionNotificationsJob();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "eaeCampagneActionDao", eaeCampagneActionDaoMock);
 		ReflectionTestUtils.setField(service, "numberOfTries", 2);
 		ReflectionTestUtils.setField(service, "radiWSConsumer", radiMock);
+		ReflectionTestUtils.setField(service, "incidentLoggerService", incidentLoggerService);
 
 		EaeCampagneActionNotificationsJob serviceSpy = spy(service);
 		doThrow(new Exception()).when(serviceSpy).sendEmail(eq(agentLdap), any(List.class), eq(campagneAction),

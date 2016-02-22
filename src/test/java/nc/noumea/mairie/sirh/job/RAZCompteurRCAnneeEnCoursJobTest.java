@@ -66,7 +66,7 @@ public class RAZCompteurRCAnneeEnCoursJobTest {
 			public Object answer(InvocationOnMock invocation) { 
 				return true;
 			}
-		}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+		}).when(incidentLoggerService).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 		
 		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);
 		Mockito.doAnswer(new Answer<Object>() {
@@ -83,6 +83,6 @@ public class RAZCompteurRCAnneeEnCoursJobTest {
 		
 		job.executeInternal(null);
 		
-		Mockito.verify(incidentLoggerService, Mockito.times(1)).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+		Mockito.verify(incidentLoggerService, Mockito.times(1)).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 	}
 }

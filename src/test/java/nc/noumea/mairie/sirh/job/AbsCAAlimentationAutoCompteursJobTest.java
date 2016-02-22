@@ -10,6 +10,7 @@ import java.util.List;
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
@@ -46,7 +47,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		job.executeInternal(null);
 
 		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(Exception.class));
+				 Mockito.anyString(), Mockito.any(Exception.class));
 	}
 
 	@Test
@@ -87,8 +88,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		job.executeInternal(null);
 
-		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(Exception.class));
+		verify(incidentLoggerService, times(1)).logIncident(Mockito.isA(VoRedmineIncidentLogger.class));
 	}
 
 	@Test
@@ -145,8 +145,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		Mockito.verify(absencesDao, Mockito.times(1)).beginTransaction();
 		verify(absencesDao, times(1)).commitTransaction();
-		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(Exception.class));
+		verify(incidentLoggerService, times(1)).logIncident(Mockito.isA(VoRedmineIncidentLogger.class));
 	}
 
 	@Test
@@ -205,8 +204,7 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 
 		Mockito.verify(absencesDao, Mockito.times(2)).beginTransaction();
 		verify(absencesDao, times(2)).commitTransaction();
-		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(Exception.class));
+		verify(incidentLoggerService, times(1)).logIncident(Mockito.isA(VoRedmineIncidentLogger.class));
 	}
 
 	@Test
@@ -265,6 +263,6 @@ public class AbsCAAlimentationAutoCompteursJobTest {
 		Mockito.verify(absencesDao, Mockito.times(2)).beginTransaction();
 		verify(absencesDao, times(2)).commitTransaction();
 		verify(incidentLoggerService, times(0)).logIncident(Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(Exception.class));
+				Mockito.anyString(), Mockito.any(Exception.class));
 	}
 }

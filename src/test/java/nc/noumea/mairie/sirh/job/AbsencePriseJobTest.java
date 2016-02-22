@@ -70,7 +70,7 @@ public class AbsencePriseJobTest {
 				return true;
 			}
 		}).when(incidentLoggerService)
-				.logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
+				.logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Exception.class));
 
 		AbsencePriseJob service = new AbsencePriseJob();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
