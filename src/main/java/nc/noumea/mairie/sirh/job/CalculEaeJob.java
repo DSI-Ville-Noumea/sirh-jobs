@@ -7,6 +7,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.dao.IEaeCampagneTaskDao;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IEaeWSConsumer;
 import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
@@ -56,6 +57,8 @@ public class CalculEaeJob extends QuartzJobBean {
 		if(null == eT)
 			logger.info("CalculEaeTask no exist");
 		
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+		
 		if(null != eT) {
 			
 			///////////////////// TRAITEMENT DES EAEs SANS AFFECTES //////////////////////
@@ -65,7 +68,8 @@ public class CalculEaeJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement des EAEs SANS affectes : ", ex);
 				taskStatus += " Erreur récupération listeAgentEaeSansAffectes : " + ex.getMessage() + " ;\n ";
-				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), 
+						"Erreur lors de l appel du WS sirhWSConsumer.getListeAgentEligibleEAESansAffectes()", ex);
 			}
 			
 			logger.info("Found {} agents to calculate EAE SANS affectes ...", listeAgentEaeSansAffectes.size());
@@ -86,7 +90,8 @@ public class CalculEaeJob extends QuartzJobBean {
 						}else{
 							taskStatus += " Erreur creerEAESansAffecte sur l'agent " + agent.getIdAgent() + " : " + ex.getMessage() + " ;\n ";
 						}
-						incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+						// #28799 ne pas boucler sur le logger redmine
+						incidentRedmine.addException(ex, agent.getIdAgent());
 						nbErrors++;
 					}
 				}
@@ -99,7 +104,8 @@ public class CalculEaeJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement des EAEs affectes : ", ex);
 				taskStatus += " Erreur récupération listeAgentEaeAffectes : " + ex.getMessage() + " ;\n ";
-				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+				incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), 
+						"Erreur lors de l appel du WS sirhWSConsumer.getListeAgentEligibleEAEAffectes()", ex);
 			}
 			
 			logger.info("Found {} agents to calculate EAE affectes ...", listeAgentEaeAffectes.size());
@@ -120,7 +126,8 @@ public class CalculEaeJob extends QuartzJobBean {
 						}else{
 							taskStatus += " Erreur creerEaeAffecte sur l'agent " + agent.getIdAgent() + " : " + ex.getMessage() + " ;\n ";
 						}
-						incidentLoggerService.logIncident("CalculEaeJob", ex.getMessage(), ex);
+						// #28799 ne pas boucler sur le logger redmine
+						incidentRedmine.addException(ex, agent.getIdAgent());
 						nbErrors++;
 					}
 				}
@@ -136,6 +143,10 @@ public class CalculEaeJob extends QuartzJobBean {
 			}
 			
 			eT.setDateCalculEae(new Date());
+			
+			if(!incidentRedmine.getListException().isEmpty()) {
+				incidentLoggerService.logIncident(incidentRedmine);
+			}
 			
 			logger.info("Processed CalculEaeJob");
 		}
