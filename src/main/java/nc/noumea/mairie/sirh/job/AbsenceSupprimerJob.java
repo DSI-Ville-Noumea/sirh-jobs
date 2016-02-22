@@ -73,7 +73,7 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
 				// #28790 ne pas boucler sur le logger redmine pour ne pas creer plein d incident
-				incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, idDemande);
+				incidentRedmine.addException(ex, idDemande);
 //				incidentLoggerService.logIncident("AbsenceSupprimerJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
 //						.getMessage(), ex);
 			}
