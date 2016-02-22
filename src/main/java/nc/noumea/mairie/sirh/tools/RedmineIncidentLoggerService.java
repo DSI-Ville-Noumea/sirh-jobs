@@ -91,7 +91,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 			issueToCreate.setTargetVersion(version);
 			
 			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", 
-					(null != messageCustom ? messageCustom : "") + "\r\n" + ex.getMessage(), 
+					(null != messageCustom ? messageCustom : "") + "\r\n" + (null != ex ? ex.getMessage() : ""), 
 					ExceptionUtils.getStackTrace(ex)));
 			issueToCreate.getCustomFields().add(envField);
 			issueToCreate.getCustomFields().add(jobNameField);

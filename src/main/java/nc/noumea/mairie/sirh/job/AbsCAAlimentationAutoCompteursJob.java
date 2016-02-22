@@ -111,6 +111,8 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 						logger.info(err);
 						error += err + " ; ";
 					}
+					
+					incidentRedmine.addException("Erreur fonctionnelle", "Merci de vérifier le JOB", null, nomatr);
 				}
 	
 				if (result != null && result.getInfos().size() != 0) {
@@ -120,6 +122,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 						logger.info(info);
 						infos += info + " ; ";
 					}
+					incidentRedmine.addException("Erreur fonctionnelle", "Merci de vérifier le JOB", null, nomatr);
 				}
 	
 				if ("".equals(error)) {
@@ -129,7 +132,8 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 				createCongeAnnuelAlimAutoHisto(Integer.valueOf(helper.getIdAgentWithNomatr(nomatr)), error, infos);
 		}
 
-		if (isError) {
+		if (isError
+				|| !incidentRedmine.getListException().isEmpty()) {
 			incidentLoggerService.logIncident(incidentRedmine);
 		}
 
