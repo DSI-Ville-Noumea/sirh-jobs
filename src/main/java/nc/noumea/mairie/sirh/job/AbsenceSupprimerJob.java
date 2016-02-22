@@ -8,6 +8,7 @@ import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 
 import org.quartz.DisallowConcurrentExecution;
@@ -56,7 +57,7 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 		
 		absencesDao.rollBackTransaction();
 		
-		StringBuffer errors = new StringBuffer();
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 		for (Integer idDemande : listEp) {
 			
 			logger.debug("Processing demande id {}...", idDemande);
@@ -72,7 +73,7 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
 				// #28790 ne pas boucler sur le logger redmine pour ne pas creer plein d incident
-				errors.append("Une erreur technique est survenue lors du traitement de cette demande " + idDemande + ex.getMessage());
+				incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, idDemande);
 //				incidentLoggerService.logIncident("AbsenceSupprimerJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
 //						.getMessage(), ex);
 			}
@@ -80,19 +81,14 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 			if (result != null && result.getErrors().size() != 0) {
 				for (String err : result.getErrors()) {
 					logger.info(err);
-					errors.append("Une erreur focntionnelle est survenue sur cette demande " + idDemande + " : " + err);
 				}
 			}
 		}
 		
 		// #28790 : on logge un seul incident
-		if(errors.length() > 0) {
+		if(!incidentRedmine.getListException().isEmpty()) {
 			incidentLoggerService
-			.logIncident(
-					"AbsencePriseJob",
-					"Erreur de AbsencePriseJob : Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé. Penser à verifier demain que celui-ci a bien de nouveau été lancé."
-					+ errors.toString(),
-					null);
+			.logIncident(incidentRedmine);
 		}
 		
 		logger.info("Processed AbsenceSupprimerJob");
