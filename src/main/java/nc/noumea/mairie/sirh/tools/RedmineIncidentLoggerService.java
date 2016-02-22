@@ -61,9 +61,9 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 	private Integer backlogVersionId;
 	
 	@Override
-	public void logIncident(String jobName, String message, Throwable ex) {
+	public void logIncident(String jobName, String titreIncident, String messageCustom, Throwable ex) {
 
-		logger.info("Logging into redmine {}, {}, {}...", jobName, message, ex);
+		logger.info("Logging into redmine {}, {}, {}...", jobName, titreIncident, ex);
 
 		if (StringUtils.isBlank(environnment)) {
 			logger.info("Environment variable is not properly set: SIRH-JOBS will not create the redmine issue.");
@@ -87,10 +87,12 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 			
 			Issue issueToCreate = new Issue();
 			issueToCreate.setTracker(incidentTracker);
-			issueToCreate.setSubject(message);
+			issueToCreate.setSubject(titreIncident);
 			issueToCreate.setTargetVersion(version);
 			
-			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", ex.getMessage(), ExceptionUtils.getStackTrace(ex)));
+			issueToCreate.setDescription(String.format("**%s**\r\n<pre>%s</pre>", 
+					(null != messageCustom ? messageCustom : "") + "\r\n" + ex.getMessage(), 
+					ExceptionUtils.getStackTrace(ex)));
 			issueToCreate.getCustomFields().add(envField);
 			issueToCreate.getCustomFields().add(jobNameField);
 			
@@ -101,7 +103,22 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 		} catch (RedmineException e) {
 			logger.error(String.format("An error occured while trying to save the exception and message for job name [%s]", jobName), e);
 		}
-
+	}
+	
+	@Override
+	public void logIncident(String jobName, VoRedmineIncidentLogger incidentRedmine) {
+		if(null != incidentRedmine
+				&& !incidentRedmine.getListException().isEmpty()) {
+			for(VoExceptionWithListAgents ex : incidentRedmine.getListException()) {
+				
+				StringBuffer messageCustom = new StringBuffer("Une ou des erreurs sont survenues pour les traitements suivants : \n ");
+				for(Integer idAgent : ex.getListIds()) {
+					messageCustom.append(idAgent + ", ");
+				}
+				
+				logIncident(jobName, ex.getMessageException(), messageCustom.toString(), ex.getException());
+			}
+		}
 	}
 
 }

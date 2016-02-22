@@ -1,7 +1,6 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import nc.noumea.mairie.abs.dao.IAbsencesDao;
 import nc.noumea.mairie.abs.domain.CongeAnnuelAlimAutoHisto;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
@@ -59,12 +59,13 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 					helper.getFirstDayOfPreviousMonth(), helper.getLastDayOfPreviousMonth());
 		} catch (Exception ex) {
 			logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
+			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), null, ex);
 		}
 
 		logger.info("Found {} agents counters to update...", listNomatrAgents.size());
 
 		boolean isError = false;
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger();
 		for (Integer nomatr : listNomatrAgents) {
 			
 				logger.debug("Processing agent counters idAgent {}...", helper.getIdAgentWithNomatr(nomatr));
@@ -100,6 +101,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 					// #28792 ne pas boucler sur le logger redmine pour eviter de creer 1200 incidents
 					// incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
 					error = ex.getMessage();
+					incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, nomatr);
 				}
 	
 				if (result != null && result.getErrors().size() != 0) {
@@ -128,8 +130,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		}
 
 		if (isError) {
-			incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob",
-					"Erreur de AbsCAAlimentationAutoCompteursJob : voir ABS_CA_ALIM_AUTO_HISTO", null);
+			incidentLoggerService.logIncident(this.getClass().getSimpleName(), incidentRedmine);
 		}
 
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");
