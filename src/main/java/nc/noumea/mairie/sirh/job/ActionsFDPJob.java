@@ -5,6 +5,7 @@ import java.util.Date;
 import nc.noumea.mairie.sirh.dao.ISirhDao;
 import nc.noumea.mairie.sirh.domain.ActionFDPJob;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 
@@ -39,6 +40,8 @@ public class ActionsFDPJob extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
 
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+		
 		ActionFDPJob eT = null;
 
 		do {
@@ -103,7 +106,9 @@ public class ActionsFDPJob extends QuartzJobBean {
 				logger.error("An error occured trying to process ActionFDPTask :", ex);
 				eT.setStatut(String.format("Erreur: %s", ex.getMessage()));
 				try {
-					incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage(), ex);
+					// #28798 ne pas boucler sur le logger redmine
+					incidentRedmine.addException(ex, eT.getIdFichePoste());
+//					incidentLoggerService.logIncident("ActionFDPJob", ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage(), ex);
 				} catch (Exception e) {
 					logger.error("An error occured trying to process ActionFDPTask and logIncident in Redmine :", e);
 				}
@@ -118,6 +123,10 @@ public class ActionsFDPJob extends QuartzJobBean {
 			logger.info("Processed ActionFDPTask id [{}].", eT.getIdActionFdpJob());
 			sirhDao.commitTransaction();
 		} while (eT != null);
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
 
 	}
 }
