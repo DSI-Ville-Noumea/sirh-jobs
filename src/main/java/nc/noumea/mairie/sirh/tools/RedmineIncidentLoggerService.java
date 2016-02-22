@@ -106,7 +106,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 	}
 	
 	@Override
-	public void logIncident(String jobName, VoRedmineIncidentLogger incidentRedmine) {
+	public void logIncident(VoRedmineIncidentLogger incidentRedmine) {
 		if(null != incidentRedmine
 				&& !incidentRedmine.getListException().isEmpty()) {
 			for(VoExceptionWithListAgents ex : incidentRedmine.getListException()) {
@@ -116,7 +116,7 @@ public class RedmineIncidentLoggerService implements IIncidentLoggerService {
 					messageCustom.append(idAgent + ", ");
 				}
 				
-				logIncident(jobName, ex.getMessageException(), messageCustom.toString(), ex.getException());
+				logIncident(incidentRedmine.getJobName(), ex.getMessageException(), messageCustom.toString(), ex.getException());
 			}
 		}
 	}

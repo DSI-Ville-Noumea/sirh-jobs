@@ -65,7 +65,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		logger.info("Found {} agents counters to update...", listNomatrAgents.size());
 
 		boolean isError = false;
-		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger();
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 		for (Integer nomatr : listNomatrAgents) {
 			
 				logger.debug("Processing agent counters idAgent {}...", helper.getIdAgentWithNomatr(nomatr));
@@ -130,7 +130,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 		}
 
 		if (isError) {
-			incidentLoggerService.logIncident(this.getClass().getSimpleName(), incidentRedmine);
+			incidentLoggerService.logIncident(incidentRedmine);
 		}
 
 		logger.info("Processed AbsCAAlimentationAutoCompteursJob");

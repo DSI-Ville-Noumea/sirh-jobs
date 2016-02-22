@@ -8,7 +8,7 @@ public interface IIncidentLoggerService {
 	 * @param jobName String Nom du JOB
 	 * @param incidentRedmine VoRedmineIncidentLogger
 	 */
-	void logIncident(String jobName, VoRedmineIncidentLogger incidentRedmine);
+	void logIncident(VoRedmineIncidentLogger incidentRedmine);
 
 	/**
 	 * Cree un incident Redmine dans le projet SIRH-JOBS
