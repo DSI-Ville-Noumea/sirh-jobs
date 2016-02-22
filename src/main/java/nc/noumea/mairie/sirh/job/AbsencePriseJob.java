@@ -123,6 +123,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 			absencesDao.rollBackTransaction();
 
+			StringBuffer error = new StringBuffer();
 			for (Integer idDemande : listEp) {
 
 				logger.debug("Processing demande id {}...", idDemande);
@@ -136,15 +137,27 @@ public class AbsencePriseJob extends QuartzJobBean {
 				try {
 					result = downloadDocumentService.postAs(ReturnMessageDto.class, url, map);
 				} catch (Exception ex) {
-					logger.error("Une erreur technique est survenue lors du traitement de cette demande.", ex);
-					incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
+					logger.error("Une erreur technique est survenue lors du traitement de cette demande " + idDemande, ex);
+					// #28791 ne pas boucler sur le logger redmine pour ne pas creer une multitude d incidents 
+					error.append("Une erreur est survenue sur la demande " + idDemande + ". ");
+//					incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
 				}
 
 				if (result != null && result.getErrors().size() != 0) {
 					for (String err : result.getErrors()) {
 						logger.info(err);
+						error.append("Une erreur est survenue sur la demande " + idDemande + " : " + err);
 					}
 				}
+			}
+			
+			if(error.length() > 0) {
+				incidentLoggerService
+				.logIncident(
+						"AbsencePriseJob",
+						"Erreur de AbsencePriseJob : Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé. Penser à verifier demain que celui-ci a bien de nouveau été lancé."
+						+ error.toString(),
+						null);
 			}
 		} else {
 			logger.error("Une paie est en cours, le job de passage des demandes à l'état PRIS ne peut être lancé.");
