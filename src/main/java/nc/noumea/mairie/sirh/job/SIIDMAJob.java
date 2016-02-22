@@ -5,6 +5,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.dao.ISirhDocumentDao;
 import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -45,7 +46,7 @@ public class SIIDMAJob extends QuartzJobBean {
 		} catch (Exception e) {
 			logger.error("An error occured trying to process SIIDMAJob :", e);
 			incidentLoggerService.logIncident("SIIDMAJob", e.getCause() == null ? e.getMessage() : e.getCause()
-					.getMessage(), e);
+					.getMessage(), null, e);
 			throw new JobExecutionException(e);
 		}
 		logger.info("Processed SIIDMAJob");
@@ -69,6 +70,8 @@ public class SIIDMAJob extends QuartzJobBean {
 
 	private void rempliSIIDMA(List<LightUser> listUser) throws DaoException {
 
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+		
 		for (LightUser user : listUser) {
 
 			logger.debug("Processing user login {} , employeeNumber {} ...", user.getsAMAccountName(),
@@ -79,8 +82,12 @@ public class SIIDMAJob extends QuartzJobBean {
 			} catch(DaoException e) {
 				logger.error("An error occured trying to process SIIDMAJob with user :" + user.getEmployeeNumber());
 				// #25613 amelioration
-				throw e;
+				incidentRedmine.addException(e.getClass().getName(), e.getMessage(), e, user.getEmployeeNumber());
 			}
+		}
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
 		}
 	}
 
@@ -90,7 +97,7 @@ public class SIIDMAJob extends QuartzJobBean {
 		} catch (Exception ex) {
 			logger.warn("An error occured while trying to delete SIIDMA entries.");
 			logger.warn("Here follows the exception : ", ex);
-			incidentLoggerService.logIncident("SIIDMAJob", ex.getMessage(), ex);
+			incidentLoggerService.logIncident("SIIDMAJob", ex.getMessage(), "Erreur dans la fonction videSIIDMA()", ex);
 			return false;
 		}
 		return true;
