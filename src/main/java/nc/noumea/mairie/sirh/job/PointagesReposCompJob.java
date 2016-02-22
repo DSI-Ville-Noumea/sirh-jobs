@@ -5,6 +5,7 @@ import nc.noumea.mairie.ptg.domain.ReposCompTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -45,6 +46,8 @@ public class PointagesReposCompJob extends QuartzJobBean {
 
 		ReposCompTask rcT = null;
 
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+		
 		do {
 			pointagesDao.beginTransaction();
 			rcT = pointagesDao.getNextReposCompTask();
@@ -67,8 +70,10 @@ public class PointagesReposCompJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ReposCompTask :", ex);
 				rcT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
-				incidentLoggerService.logIncident("PointagesReposCompJob", ex.getCause() == null ? ex.getMessage() : ex
-						.getCause().getMessage(), ex);
+				// #28783 ne pas boucler sur le logger redmine
+				incidentRedmine.addException(ex, rcT.getIdRcTask());
+//				incidentLoggerService.logIncident("PointagesReposCompJob", ex.getCause() == null ? ex.getMessage() : ex
+//						.getCause().getMessage(), ex);
 			}
 
 			rcT.setDateCalcul(helper.getCurrentDate());
@@ -77,6 +82,10 @@ public class PointagesReposCompJob extends QuartzJobBean {
 			logger.info("Processed ReposCompTask id [{}].", rcT.getIdRcTask());
 
 		} while (rcT != null);
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
 
 	}
 
