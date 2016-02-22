@@ -101,7 +101,7 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 					// #28792 ne pas boucler sur le logger redmine pour eviter de creer 1200 incidents
 					// incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
 					error = ex.getMessage();
-					incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, nomatr);
+					incidentRedmine.addException(ex, nomatr);
 				}
 	
 				if (result != null && result.getErrors().size() != 0) {
