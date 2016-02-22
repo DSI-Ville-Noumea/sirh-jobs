@@ -97,7 +97,8 @@ public class AbsCAAlimentationAutoCompteursJob extends QuartzJobBean {
 	
 				} catch (Exception ex) {
 					logger.error("Une erreur technique est survenue lors du traitement : ", ex);
-					incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
+					// #28792 ne pas boucler sur le logger redmine pour eviter de creer 1200 incidents
+					// incidentLoggerService.logIncident("AbsCAAlimentationAutoCompteursJob", ex.getMessage(), ex);
 					error = ex.getMessage();
 				}
 	
