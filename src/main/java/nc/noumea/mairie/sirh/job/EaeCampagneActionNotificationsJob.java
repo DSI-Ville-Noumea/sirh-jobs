@@ -16,7 +16,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeur;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeDocument;
 import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.tools.VfsInputStreamSource;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -71,7 +73,12 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	@Qualifier("baseSirhDocumentsUrl")
 	private String baseSirhDocumentsUrl;
 
+	@Autowired
+	private IIncidentLoggerService incidentLoggerService;
+
 	private static FileSystemManager fsManager;
+	
+	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	public EaeCampagneActionNotificationsJob() throws FileSystemException {
 		fsManager = VFS.getManager();
@@ -116,6 +123,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 							new Object[] { eA.getIdCampagneAction(), eA.getNomAction(),
 									eA.getEaeCampagne().getIdEaeCampagne(), eA.getEaeCampagne().getAnnee() });
 					logger.warn("Here follows the exception : ", ex);
+					// #28789 ajout de logger redmine
+					incidentRedmine.addException(ex, eA.getIdCampagneAction());
 					nbErrors++;
 				}
 
@@ -125,6 +134,10 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 							numberOfTries);
 				}
 			}
+		}
+
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
 		}
 
 		logger.info("Finished sending today's notifications...");
