@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.job;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.dao.ISirhDocumentDao;
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
@@ -50,7 +51,7 @@ public class SIIDMAJob extends QuartzJobBean {
 		logger.info("Processed SIIDMAJob");
 	}
 
-	protected boolean alimenteSIIDMA() {
+	protected boolean alimenteSIIDMA() throws DaoException {
 
 		List<LightUser> listUser = radiWSConsumer.getListeAgentMairie();
 
@@ -66,22 +67,21 @@ public class SIIDMAJob extends QuartzJobBean {
 		return true;
 	}
 
-	private void rempliSIIDMA(List<LightUser> listUser) {
+	private void rempliSIIDMA(List<LightUser> listUser) throws DaoException {
 
 		for (LightUser user : listUser) {
 
 			logger.debug("Processing user login {} , employeeNumber {} ...", user.getsAMAccountName(),
 					user.getEmployeeNumber());
-
+			
 			try {
 				sirhDocumentDao.addSIISDMA(user);
-			} catch (Exception ex) {
-				logger.error("Une erreur technique est survenue lors du traitement de ce user.", ex);
-				incidentLoggerService.logIncident("SIIDMAJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
-						.getMessage(), ex);
+			} catch(DaoException e) {
+				logger.error("An error occured trying to process SIIDMAJob with user :" + user.getEmployeeNumber());
+				// #25613 amelioration
+				throw e;
 			}
 		}
-
 	}
 
 	protected boolean videSIIDMA() {
