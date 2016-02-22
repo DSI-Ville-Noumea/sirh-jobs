@@ -6,6 +6,7 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -45,6 +46,8 @@ public class PointagesVentilationJob extends QuartzJobBean {
 
 		VentilTask vT = null;
 
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+		
 		do {
 			pointagesDao.beginTransaction();
 			vT = pointagesDao.getNextVentilTask();
@@ -67,8 +70,10 @@ public class PointagesVentilationJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process VentilTask :", ex);
 				vT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
-				incidentLoggerService.logIncident("PointagesVentilationJob", ex.getCause() == null ? ex.getMessage()
-						: ex.getCause().getMessage(), ex);
+				// #28782 ne pas boucler sur le logger redmine
+				incidentRedmine.addException(ex, vT.getIdVentilTask());
+//				incidentLoggerService.logIncident("PointagesVentilationJob", ex.getCause() == null ? ex.getMessage()
+//						: ex.getCause().getMessage(), ex);
 			}
 
 			vT.setDateVentilation(new Date());
@@ -77,6 +82,10 @@ public class PointagesVentilationJob extends QuartzJobBean {
 			logger.info("Processed VentilTask id [{}].", vT.getIdVentilTask());
 
 		} while (vT != null);
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
 	}
 
 }
