@@ -6,6 +6,7 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -50,6 +51,8 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 		
 		ExportPaieTask eT = null;
 		String exportedChainePaie = null;
+
+		VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 		
 		do {
 			pointagesDao.beginTransaction();
@@ -69,8 +72,8 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 			} catch (Exception ex) {
 				logger.error("An error occured trying to process ExportPaieTask :", ex);
 				eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
-				incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
-						.getMessage(), ex);
+				// #28784 ne pas boucler sur le logger redmine
+				incidentRedmine.addException(ex, eT.getIdExportPaieTask());
 			}
 			
 			eT.setDateExport(new Date());
@@ -79,6 +82,10 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 			logger.info("Processed ExportPaieTask id [{}].", eT.getIdExportPaieTask());
 		
 		} while (eT != null);
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
 		
 		if (exportedChainePaie == null)
 			return;
@@ -89,7 +96,7 @@ public class PointagesExportPaieJob extends QuartzJobBean {
 		} catch (Exception ex) {
 			logger.error("An error occured trying to notify SIRH-PTG-WS that all ExportPaieTask have been processed :", ex);
 			incidentLoggerService.logIncident("PointagesExportPaieJob", ex.getCause() == null ? ex.getMessage() : ex.getCause()
-					.getMessage(), ex);
+					.getMessage(), "Erreur de la finalisation de l export paie", ex);
 		}
 		
 	}
