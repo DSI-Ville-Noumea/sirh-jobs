@@ -141,7 +141,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 				} catch (Exception ex) {
 					logger.error("Une erreur technique est survenue lors du traitement de cette demande " + idDemande, ex);
 					// #28791 ne pas boucler sur le logger redmine pour ne pas creer une multitude d incidents 
-					incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, idDemande);
+					incidentRedmine.addException(ex, idDemande);
 //					incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
 				}
 
@@ -226,7 +226,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 				logger.warn("An error occured while trying to send CongeUniqueEmailInformation to idAgent {}.",
 						new Object[] { idAgentGestionnaire });
 				logger.warn("Here follows the exception : ", ex);
-				incidentRedmine.addException(ex.getClass().getName(), ex.getMessage(), ex, idAgentGestionnaire);
+				incidentRedmine.addException(ex, idAgentGestionnaire);
 				nbErrors++;
 			}
 
