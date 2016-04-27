@@ -22,25 +22,27 @@ public class ReportingService extends DownloadDocumentService implements IReport
 	@Qualifier("reportServerPath")
 	private String reportServerPath;
 
+	@Autowired
+	@Qualifier("sirhWsBaseUrl")
+	private String sirhWsBaseUrl;
+
+	private static final String sirhDownloadTabAvctPDFUrl = "avancements/downloadTableauAvancementsPDF"; // edition
+																											// PDF
+
 	private static final String REPORT_PAGE = "frameset";
 	private static final String PARAM_REPORT = "__report";
 	private static final String PARAM_FORMAT = "__format";
 
 	@Override
-	public void getTableauAvancementsReportAndSaveItToFile(int idCap, int idCadreEmploi, boolean avisEAE,
-			String targetPath) throws Exception {
+	public void getTableauAvancementsReportAndSaveItToFile(int idCap, int idCadreEmploi, boolean avisEAE, String targetPath) throws Exception {
+
+		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
+
+		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(PARAM_REPORT, reportServerPath + "avctFonctCap.rptdesign");
-		map.put(PARAM_FORMAT, "PDF");
-		map.put("idCap", String.valueOf(idCap));
-		map.put("idCadreEmploi", String.valueOf(idCadreEmploi));
-		map.put("avisEAE", avisEAE ? "true" : "false");
-
-		String url = reportingBaseUrl + REPORT_PAGE;
-
-		ClientResponse response = createAndFireRequest(url, map);
-		readResponseIntoFile(response, url, map, targetPath);
+		ClientResponse response = createAndFireRequest(urlWSTableauAvctCAP, map);
+		readResponseIntoFile(response, urlWSTableauAvctCAP, map, targetPath);
 	}
 
 	@Override
