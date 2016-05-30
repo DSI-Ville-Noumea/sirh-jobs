@@ -65,7 +65,11 @@ public class ActionsFDPJob extends QuartzJobBean {
 						// At this point, everything went allright, the status
 						// can be
 						// updated to OK
-						eT.setStatut("OK");
+						if (result.getInfos().size() > 0) {
+							eT.setStatut(result.getInfos().get(0));
+						} else {
+							eT.setStatut("OK");
+						}
 					}
 				}
 				if (DUPLICATION_ACTION.equals(eT.getTypeAction())) {
