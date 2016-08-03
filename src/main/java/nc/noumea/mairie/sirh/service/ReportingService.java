@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.service;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class ReportingService extends DownloadDocumentService implements IReport
 	private static final String PARAM_FORMAT = "__format";
 
 	@Override
-	public void getTableauAvancementsReportAndSaveItToFile(int idCap, int idCadreEmploi, boolean avisEAE, String targetPath) throws Exception {
+	public InputStream getTableauAvancementsReport(int idCap, int idCadreEmploi, boolean avisEAE) throws Exception {
 
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
@@ -42,12 +43,12 @@ public class ReportingService extends DownloadDocumentService implements IReport
 
 		Map<String, String> map = new HashMap<String, String>();
 		ClientResponse response = createAndFireRequest(urlWSTableauAvctCAP, map);
-		readResponseIntoFile(response, urlWSTableauAvctCAP, map, targetPath);
+		return readResponseAsInputStream(response, urlWSTableauAvctCAP, map);
 	}
 
 	@Override
-	public void getAvctFirstLastPrintPage(String jobId, String jobUser, String codeCap, String cadreEmploi,
-			Date submissionDate, boolean isFirst, boolean isEaes, String targetPath) throws Exception {
+	public InputStream getAvctFirstLastPrintPage(String jobId, String jobUser, String codeCap, String cadreEmploi,
+			Date submissionDate, boolean isFirst, boolean isEaes) throws Exception {
 
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(PARAM_REPORT, reportServerPath + "pageGardeJobAvctCap.rptdesign");
@@ -64,6 +65,6 @@ public class ReportingService extends DownloadDocumentService implements IReport
 		String url = reportingBaseUrl + REPORT_PAGE;
 
 		ClientResponse response = createAndFireRequest(url, map);
-		readResponseIntoFile(response, url, map, targetPath);
+		return readResponseAsInputStream(response, url, map);
 	}
 }

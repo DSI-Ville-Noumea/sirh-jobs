@@ -20,6 +20,9 @@ public class DocumentAssocie {
 
 	@Column(name = "LIEN_DOCUMENT")
 	private String lienDocument;
+	
+	@Column(name = "NODE_REF_ALFRESCO")
+	private String nodeRefAlfresco;
 
 	public Integer getIdDocument() {
 		return idDocument;
@@ -44,4 +47,13 @@ public class DocumentAssocie {
 	public void setLienDocument(String lienDocument) {
 		this.lienDocument = lienDocument;
 	}
+
+	public String getNodeRefAlfresco() {
+		return nodeRefAlfresco;
+	}
+
+	public void setNodeRefAlfresco(String nodeRefAlfresco) {
+		this.nodeRefAlfresco = nodeRefAlfresco;
+	}
+	
 }

@@ -24,26 +24,14 @@ public interface IAvancementsWithEaesMassPrintJob {
 	 * - Update status in PrintJobTable
 	 * @throws Exception 
 	 */
-	public void generateAvancementsReport(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException;
+	public void generateAvancementsReport(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException;
 	
 	/**
-	 * Download and store EAEs related to avancements
+	 * Print EAEs related to avancements
 	 * - Update status in PrintJobTable
 	 * @throws Exception 
 	 */
-	public void downloadRelatedEaes(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException;
-	
-	/**
-	 * Sends all the document to the printer server in the right sequence
-	 * - Update status in PrintJobTable
-	 */
-	public void printAllDocuments(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException;
-	
-	/**
-	 * Erases all the downloaded and created documents from the working directory
-	 * - Update status in PrintJobTable
-	 */
-	public void wipeJobDocuments(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException;
+	public void printRelatedEaes(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException;
 	
 	/**
 	 * Update a job's status

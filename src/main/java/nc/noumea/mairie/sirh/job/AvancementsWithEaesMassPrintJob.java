@@ -1,9 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
-import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,6 @@ import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
@@ -70,10 +67,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	private VelocityEngine velocityEngine;
 
 	@Autowired
-	@Qualifier("avcstTempWorkspacePath")
-	private String avcstTempWorkspacePath;
-
-	@Autowired
 	@Qualifier("sharepointEaeDocBaseUrl")
 	private String sharepointEaeDocBaseUrl;
 
@@ -119,7 +112,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 
 		AvctCapPrintJob job = null;
-
+ 
 		try {
 
 			job = getNextPrintJob();
@@ -136,14 +129,11 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			initializePrintJob(job);
 
 			// generate the avct reports, cover and back pages
-			generateAvancementsReport(job);
+			generateAvancementsReport(job, pH);
 
 			// if selected, the eaes should be downloaded from sharepoint
 			if (job.isEaes())
-				downloadRelatedEaes(job);
-
-			// send all the documents above to the configured printer
-			printAllDocuments(job, pH);
+				printRelatedEaes(job, pH);
 
 		} catch (Exception e) {
 			logger.error("An error occured during 'Avancement Print Job'", e);
@@ -162,14 +152,6 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			throw new JobExecutionException(String.format("An error occured during 'Avancement Print Job' [%s]",
 					job != null ? job.getJobId() : "-"), e);
 		} finally {
-			try {
-				if (job == null)
-					return;
-
-				wipeJobDocuments(job);
-			} catch (Exception e) {
-				logger.error("An error occured during 'wipeJobDocuments'", e);
-			}
 		}
 
 		// set the job as DONE
@@ -204,38 +186,44 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	}
 
 	@Override
-	public void generateAvancementsReport(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException {
+	public void generateAvancementsReport(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException {
 
 		// Update status
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT);
-
+		InputStream inputStream = null;
 		try {
 			// download report and add it to the list of prints
-			String targetReportFilePath = String.format("%s%s_001_%s", avcstTempWorkspacePath, job.getJobId(),
+			String targetReportFilePath = String.format("%s_001_%s", job.getJobId(),
 					"avct_table_report.pdf");
-			reportingService.getTableauAvancementsReportAndSaveItToFile(job.getIdCap(), job.getIdCadreEmploi(),
-					job.isAvisEAE(), targetReportFilePath);
-			job.getFilesToPrint().add(targetReportFilePath);
+			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(),
+					job.isAvisEAE());
+			
+			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
 
 			targetReportFilePath = String
-					.format("%s%s_000_%s", avcstTempWorkspacePath, job.getJobId(), "firstPage.pdf");
-			reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
-					job.getLibCadreEmploi(), job.getSubmissionDate(), true, job.isEaes(), targetReportFilePath);
-			job.getFilesToPrint().add(targetReportFilePath);
+					.format("%s_000_%s", job.getJobId(), "firstPage.pdf");
+			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
+					job.getLibCadreEmploi(), job.getSubmissionDate(), true, job.isEaes());
 
-			targetReportFilePath = String.format("%s%s_999_%s", avcstTempWorkspacePath, job.getJobId(), "lastPage.pdf");
-			reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
-					job.getLibCadreEmploi(), job.getSubmissionDate(), false, job.isEaes(), targetReportFilePath);
-			job.getFilesToPrint().add(targetReportFilePath);
+			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
+
+			targetReportFilePath = String.format("%s_999_%s", job.getJobId(), "lastPage.pdf");
+			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
+					job.getLibCadreEmploi(), job.getSubmissionDate(), false, job.isEaes());
+
+			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
+			
 		} catch (Exception e) {
 			throw new AvancementsWithEaesMassPrintException(String.format(
 					"An error occured while generating AVCT reports for job id [%s]", job.getJobId()), e);
+		} finally {
+			IOUtils.closeQuietly(inputStream);
 		}
 
 	}
 
 	@Override
-	public void downloadRelatedEaes(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException {
+	public void printRelatedEaes(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException {
 
 		// Update status
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.EAE_DOWNLOAD);
@@ -254,56 +242,13 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			// For each document, download it to local temp path
 			for (String eaeId : eaesToDownload) {
 				logger.info("Downloading EAE document [{}] to local path...", eaeId);
-				String locaFilePath = copyEaeToLocalPath(job, eaeId, ++i);
-				job.getFilesToPrint().add(locaFilePath);
+				printEae(job, eaeId, ++i, pH);
 			}
 
 		} catch (Exception e) {
 			throw new AvancementsWithEaesMassPrintException(String.format(
 					"An error occured while downloading AVCT EAEs reports for job id [%s]", job.getJobId()), e);
 		}
-	}
-
-	@Override
-	public void printAllDocuments(AvctCapPrintJob job, PrinterHelper pH) throws AvancementsWithEaesMassPrintException {
-
-		// Update status
-		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT);
-
-		Collections.sort(job.getFilesToPrint());
-
-		try {
-			// Send each file to the printer
-			for (String filePath : job.getFilesToPrint()) {
-				logger.info("Sending document [{}] to printer...", filePath);
-				pH.printDocument(filePath, job.getLogin());
-			}
-		} catch (Exception e) {
-			throw new AvancementsWithEaesMassPrintException(String.format(
-					"An error occured while sending AVCT and EAEs reports to print server for job id [%s]",
-					job.getJobId()), e);
-		}
-	}
-
-	@Override
-	public void wipeJobDocuments(AvctCapPrintJob job) throws AvancementsWithEaesMassPrintException {
-
-		logger.info("Removing documents from temp path...", job.getJobId(), job.getStatus());
-
-		try {
-
-			FileSystemManager fsManager = getVfsManager();
-			fsManager.resolveFile(avcstTempWorkspacePath);
-			for (FileObject file : fsManager.resolveFile(avcstTempWorkspacePath).getChildren()) {
-				file.delete();
-			}
-
-		} catch (Exception e) {
-			throw new AvancementsWithEaesMassPrintException(String.format(
-					"An error occured while deleting all AVCT and EAEs documents from temp path for job id [%s]",
-					job.getJobId()), e);
-		}
-
 	}
 
 	@Override
@@ -316,10 +261,9 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		printJobDao.updateAvctCapPrintJob(job);
 	}
 
-	public String copyEaeToLocalPath(AvctCapPrintJob job, String eaeId, int sequenceNumber) throws Exception {
+	public void printEae(AvctCapPrintJob job, String eaeId, int sequenceNumber, PrinterHelper pH) throws Exception {
 
-		String eaeLocalFilePath = String.format("%s%s_%03d_%s.pdf", avcstTempWorkspacePath, job.getJobId(),
-				sequenceNumber, eaeId);
+		String baseName = String.format("%s_%03d_%s.pdf", job.getJobId(), sequenceNumber, eaeId);
 		String eaeRemoteFileUri = null;
 
 		// GET url from sharepoint
@@ -336,24 +280,14 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		HttpResponse response = downloadDocumentService.createAndFireRequestNTLM(urlDocument);
 
 		// Copy doc using downloadDocument
-		logger.debug("Copying [{}] into [{}]", eaeRemoteFileUri, eaeLocalFilePath);
-
-		InputStream in = null;
-		BufferedOutputStream out = null;
+		logger.debug("Print [{}]", baseName);
 
 		try {
-			in = response.getEntity().getContent();
-			out = new BufferedOutputStream(getVfsManager().resolveFile(eaeLocalFilePath).getContent()
-					.getOutputStream(false));
-			IOUtils.copy(in, out);
+			pH.printDocument(response.getEntity().getContent(), baseName, job.getLogin());
 		} catch (Exception ex) {
 			throw new Exception("An error occured while copying a remote EAE into the local file path", ex);
 		} finally {
-			IOUtils.closeQuietly(out);
-			IOUtils.closeQuietly(in);
 		}
-
-		return eaeLocalFilePath;
 	}
 
 	public void sendErrorEmail(final AvctCapPrintJob job) throws DaoException {

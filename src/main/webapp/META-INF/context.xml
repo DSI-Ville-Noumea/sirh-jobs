@@ -48,6 +48,12 @@
 		password="***REMOVED***" driverClassName="org.postgresql.Driver"
 		url="jdbc:postgresql://localhost:5432/sirh" poolPreparedStatements="true" />
 
+<!-- <Resource name="jdbc/SIRH_JOBS_DS5" auth="Container" type="javax.sql.DataSource" -->
+<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1" -->
+<!-- 		maxWait="10000" initialSize="1" username="abs_read" password="sal8mveg" -->
+<!-- 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://***REMOVED***:5432/sirh" -->
+<!-- 		poolPreparedStatements="true" /> -->
+		
 	<Resource name="jdbc/SIRH_JOBS_DS5" auth="Container"
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30" minIdle="0"
 		validationQuery="select 1" maxWait="10000" initialSize="1" username="***REMOVED***"
@@ -81,18 +87,11 @@
 		type="java.lang.Integer"
 		description="Maximum number of tentatives of retry on errors before giving up sending notifications"
 		value="3" override="false" />
-	<Environment name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
-		type="java.lang.String"
-		description="The Commons-vfs2 compatible root path (with the trailing slash) where SIRH documents are being stored"
-		value="file:///cristal/drh$/DRH/SIRH-document/DEV/temp/" override="false" />
 
 
 	<!-- -->
 	<!-- SIRH AVCT printing job -->
 	<!-- -->
-	<Environment name="AVCT_JOB_TEMP_DIR" type="java.lang.String"
-		description="Temp directory for SIRH avancements printing job" value="//cristal/drh$/DRH/SIRH-document/DEV/temp/"
-		override="false" />
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIdsForSIRHJobs"
 		override="false" />
@@ -111,9 +110,6 @@
 		description="GED Sharepoint app user" value="***REMOVED***" override="false" />
 	<Environment name="AVCT_GED_WEBDAV_PWD" type="java.lang.String"
 		description="GED Sharepoint app pwd" value="w9qgb340" override="false" />
-	<Environment name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" type="java.lang.Long"
-		description="Number of milliseconds to subtract from DateTime.Now() to qualify a document for deletion (ex. 21600000 = to remove docs that have been modified more than 6 hours ago)"
-		value="21600000" override="false" />
 
 
 	<!-- -->
@@ -183,7 +179,7 @@
 	<!-- -->
 	<!--Job Absences -->
 	<Environment name="SIRH_ABS_WS_URL" type="java.lang.String"
-		description="sirh-abs-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-abs-ws/"
+		description="sirh-abs-ws base Url endpoint" value="http://localhost:8085/sirh-abs-ws/"
 		override="false" />
 	<!--Job maj des demandes à l'état PRIS -->
 	<Environment name="SIRH_ABS_WS_ETAT_ABSENCE_URL" type="java.lang.String"
@@ -336,5 +332,18 @@
 	<Environment
 		description="parametre pour afficher dans le titre de l'appli si on est en prod ou en recette (DEV ou PROD)"
 		name="TYPE_ENV" override="false" value="DEV" type="java.lang.String"/>
+		
+	<!--  -->
+	<!-- ALFRESCO -->
+	<!--  -->
+	<!-- ATTENTION : bien mettre le "/" apres le port -->
+	<Environment name="ALFRESCO_URL" type="java.lang.String" description="Alfresco endpoint url" 
+		value="http://localhost:8080/" override="false" />
+		
+	<Environment name="ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
+		value="***REMOVED***" override="false" />
+		
+	<Environment name="ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
+		value="***REMOVED***" override="false" />
 
 </Context>

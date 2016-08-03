@@ -134,9 +134,12 @@
 	<jee:jndi-lookup id="numberOfTries"
 		jndi-name="eaeCampagneActionNotificationsJob.numberOfTentatives"
 		expected-type="java.lang.Integer" />
-	<jee:jndi-lookup id="baseSirhDocumentsUrl"
-		jndi-name="eaeCampagneActionNotificationsJob.baseSirhDocumentsUrl"
-		expected-type="java.lang.String" />
+	
+	<!-- ALFRESCO -->
+	<jee:jndi-lookup id="alfrescoUrl" jndi-name="ALFRESCO_URL" expected-type="java.lang.String"/>
+	<jee:jndi-lookup id="alfrescoLogin" jndi-name="ALFRESCO_LOGIN" expected-type="java.lang.String"/>
+	<jee:jndi-lookup id="alfrescoPassword" jndi-name="ALFRESCO_PASSWORD" expected-type="java.lang.String"/>
+	<!-- FIN ALFRESCO -->
 
 	<!-- Reporting service parameters -->
 	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL"
@@ -145,8 +148,6 @@
 		expected-type="java.lang.String" />
 
 	<!-- AvancementsWithEaesMassPrintJob parameters -->
-	<jee:jndi-lookup id="avcstTempWorkspacePath" jndi-name="AVCT_JOB_TEMP_DIR"
-		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="sirhWsAvctEaesEndpointUrl"
 		jndi-name="AVCT_SIRH_WS_AVCT_EAE_URL" expected-type="java.lang.String" />
 	<jee:jndi-lookup id="cupsServerHostName" jndi-name="AVCT_CUPS_SERVER_HOSTNAME"
@@ -172,10 +173,6 @@
 		expected-type="java.lang.String" />
 	<jee:jndi-lookup id="kiosquePortWebdav" jndi-name="PORT_SHAREPOINT_WEBDAV_EAE"
 		expected-type="java.lang.String" />
-
-	<!-- EraseAvancementsWithEaesMassPrintDocumentsJob parameters -->
-	<jee:jndi-lookup id="sirhAvctPastThresholdMilliseconds"
-		jndi-name="AVCT_SIRH_PAST_DOCS_THRESHOLD_MS" expected-type="java.lang.Long" />
 
 	<!-- Ventilation service parameters -->
 	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl"

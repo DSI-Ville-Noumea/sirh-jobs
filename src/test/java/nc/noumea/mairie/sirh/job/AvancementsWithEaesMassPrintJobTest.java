@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.job;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,9 +17,8 @@ import nc.noumea.mairie.sirh.service.PrinterHelper;
 import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
 import nc.noumea.mairie.sirh.tools.Helper;
 
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.VFS;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +76,6 @@ public class AvancementsWithEaesMassPrintJobTest {
 		pj.setLibCadreEmploi("CADRE EMPLOI");
 		pj.setSubmissionDate(new DateTime(2013, 02, 25, 10, 48, 0).toDate());
 		pj.setJobId("SIRH_AVCT_20130222-090607_9005138_11_87");
-		String avcstTempWorkspacePath = "/home/sirh/docs/";
 
 		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
 		IReportingService reportingServiceMock = Mockito.mock(IReportingService.class);
@@ -84,32 +83,32 @@ public class AvancementsWithEaesMassPrintJobTest {
 		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
 		ReflectionTestUtils.setField(job, "reportingService", reportingServiceMock);
-		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", avcstTempWorkspacePath);
 		ReflectionTestUtils.setField(job, "helper", helperMock);
 
-		String expectedOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_001_avct_table_report.pdf";
-		String expectedFirstPageOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_000_firstPage.pdf";
-		String expectedLastPageOutputFileName = "/home/sirh/docs/SIRH_AVCT_20130222-090607_9005138_11_87_999_lastPage.pdf";
-
+		PrinterHelper pH = Mockito.spy(new PrinterHelper());
+		Mockito.doNothing().when(pH).printDocument(Mockito.any(InputStream.class), Mockito.anyString(), Mockito.anyString());
+		
 		// When
-		job.generateAvancementsReport(pj);
+		job.generateAvancementsReport(pj, pH);
 
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.AVCT_REPORT.toString(), pj.getStatus());
-		assertEquals(3, pj.getFilesToPrint().size());
-		assertEquals(expectedOutputFileName, pj.getFilesToPrint().get(0));
-		assertEquals(expectedFirstPageOutputFileName, pj.getFilesToPrint().get(1));
-		assertEquals(expectedLastPageOutputFileName, pj.getFilesToPrint().get(2));
+//		assertEquals(3, pj.getFilesToPrint().size());
+//		assertEquals(expectedOutputFileName, pj.getFilesToPrint().get(0));
+//		assertEquals(expectedFirstPageOutputFileName, pj.getFilesToPrint().get(1));
+//		assertEquals(expectedLastPageOutputFileName, pj.getFilesToPrint().get(2));
 
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
-		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReportAndSaveItToFile(11, 87,
-				false, expectedOutputFileName);
+		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReport(11, 87,
+				false);
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getAvctFirstLastPrintPage(
 				"SIRH_AVCT_20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI",
-				new DateTime(2013, 02, 25, 10, 48, 0).toDate(), true, true, expectedFirstPageOutputFileName);
+				new DateTime(2013, 02, 25, 10, 48, 0).toDate(), true, true);
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getAvctFirstLastPrintPage(
 				"SIRH_AVCT_20130222-090607_9005138_11_87", "login", "CODE CAP", "CADRE EMPLOI",
-				new DateTime(2013, 02, 25, 10, 48, 0).toDate(), false, true, expectedLastPageOutputFileName);
+				new DateTime(2013, 02, 25, 10, 48, 0).toDate(), false, true);
+
+		Mockito.verify(pH, Mockito.times(3)).printDocument(Mockito.any(InputStream.class), Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test
@@ -132,71 +131,85 @@ public class AvancementsWithEaesMassPrintJobTest {
 		Mockito.when(
 				downloadDocumentServiceMock.downloadJsonDocumentAsList(String.class, sirhWsEndpointUrl,
 						sirhUrlParameters)).thenReturn(Arrays.asList("eae1", "eae2"));
+		
+		Mockito.when(downloadDocumentServiceMock.downloadDocumentAccesNTLMAs(Mockito.anyString())).thenReturn("EAE_TEST");
 
 		AvancementsWithEaesMassPrintJob job = Mockito.spy(new AvancementsWithEaesMassPrintJob());
 		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
 		ReflectionTestUtils.setField(job, "sirhWsAvctEaesEndpointUrl", sirhWsEndpointUrl);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", downloadDocumentServiceMock);
 		ReflectionTestUtils.setField(job, "helper", helperMock);
+		ReflectionTestUtils.setField(job, "sharepointEaeDocBaseUrl", "sharepointEaeDocBaseUrl");
+		ReflectionTestUtils.setField(job, "gedWebdavUser", "gedWebdavUser");
+		ReflectionTestUtils.setField(job, "gedWebdavPwd", "gedWebdavPwd");
 
-		Mockito.doReturn("eaeFileName1.pdf").when(job).copyEaeToLocalPath(pj, "eae1", 1);
-		Mockito.doReturn("eaeFileName2.pdf").when(job).copyEaeToLocalPath(pj, "eae2", 2);
+		PrinterHelper pH = Mockito.spy(new PrinterHelper());
+		Mockito.doNothing().when(pH).printDocument(Mockito.any(InputStream.class), Mockito.anyString(), Mockito.anyString());
+		InputStream in = Mockito.mock(InputStream.class);
+		HttpEntity httpEntity = Mockito.mock(HttpEntity.class);
+		HttpResponse response = Mockito.mock(HttpResponse.class);
+		Mockito.when(response.getEntity()).thenReturn(httpEntity);
+		Mockito.when(response.getEntity().getContent()).thenReturn(in);
+		Mockito.when(downloadDocumentServiceMock.createAndFireRequestNTLM(Mockito.anyString())).thenReturn(response);
+		
+//		Mockito.verify(job, Mockito.times(1)).printEae(pj, "eae1", 1, pH);
+//		Mockito.doReturn("eaeFileName2.pdf").when(job).printEae(pj, "eae2", 2, pH);
 
 		// When
-		job.downloadRelatedEaes(pj);
+		job.printRelatedEaes(pj, pH);
 
 		// Then
 		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.EAE_DOWNLOAD.toString(), pj.getStatus());
-		assertEquals(2, pj.getFilesToPrint().size());
-		assertEquals("eaeFileName1.pdf", pj.getFilesToPrint().get(0));
-		assertEquals("eaeFileName2.pdf", pj.getFilesToPrint().get(1));
+//		assertEquals(2, pj.getFilesToPrint().size());
+//		assertEquals("eaeFileName1.pdf", pj.getFilesToPrint().get(0));
+//		assertEquals("eaeFileName2.pdf", pj.getFilesToPrint().get(1));
 
-		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
+		Mockito.verify(pH, Mockito.times(2)).printDocument(Mockito.any(InputStream.class), Mockito.anyString(), Mockito.anyString());
 	}
 
-	@Test
-	public void testprintAllDocuments_sendAllDocumentsToPrinter() throws Exception {
+//	@Test
+//	public void testprintAllDocuments_sendAllDocumentsToPrinter() throws Exception {
+//
+//		// Given
+//		AvctCapPrintJob pj = new AvctCapPrintJob();
+//		pj.setLogin("login");
+//		pj.getFilesToPrint().add("doc1.pdf");
+//		pj.getFilesToPrint().add("doc2.pdf");
+//
+//		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
+//		PrinterHelper pHMock = Mockito.mock(PrinterHelper.class);
+//
+//		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
+//		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
+//		ReflectionTestUtils.setField(job, "helper", helperMock);
+//
+//		// When
+//		job.printAllDocuments(pj, pHMock);
+//
+//		// Then
+//		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT.toString(), pj.getStatus());
+//		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
+//		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc1.pdf", "login");
+//		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc2.pdf", "login");
+//	}
 
-		// Given
-		AvctCapPrintJob pj = new AvctCapPrintJob();
-		pj.setLogin("login");
-		pj.getFilesToPrint().add("doc1.pdf");
-		pj.getFilesToPrint().add("doc2.pdf");
-
-		IAvctCapPrintJobDao daoMock = Mockito.mock(IAvctCapPrintJobDao.class);
-		PrinterHelper pHMock = Mockito.mock(PrinterHelper.class);
-
-		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
-		ReflectionTestUtils.setField(job, "printJobDao", daoMock);
-		ReflectionTestUtils.setField(job, "helper", helperMock);
-
-		// When
-		job.printAllDocuments(pj, pHMock);
-
-		// Then
-		assertEquals(AvancementsWithEaesMassPrintJobStatusEnum.QUEUE_PRINT.toString(), pj.getStatus());
-		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
-		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc1.pdf", "login");
-		Mockito.verify(pHMock, Mockito.times(1)).printDocument("doc2.pdf", "login");
-	}
-
-	@Test
-	public void testwipeJobDocuments() throws FileSystemException, AvancementsWithEaesMassPrintException {
-
-		// Given
-		String tempFilePath = "ram:///temp/folder/";
-		FileObject fo = VFS.getManager().resolveFile(tempFilePath);
-		fo.resolveFile("doc1.pdf").createFile();
-		fo.resolveFile("doc2.pdf").createFile();
-		AvctCapPrintJob pj = new AvctCapPrintJob();
-
-		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
-		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", tempFilePath);
-
-		// When
-		job.wipeJobDocuments(pj);
-
-		// Then
-		assertEquals(0, fo.getChildren().length);
-	}
+//	@Test
+//	public void testwipeJobDocuments() throws FileSystemException, AvancementsWithEaesMassPrintException {
+//
+//		// Given
+//		String tempFilePath = "ram:///temp/folder/";
+//		FileObject fo = VFS.getManager().resolveFile(tempFilePath);
+//		fo.resolveFile("doc1.pdf").createFile();
+//		fo.resolveFile("doc2.pdf").createFile();
+//		AvctCapPrintJob pj = new AvctCapPrintJob();
+//
+//		AvancementsWithEaesMassPrintJob job = new AvancementsWithEaesMassPrintJob();
+//		ReflectionTestUtils.setField(job, "avcstTempWorkspacePath", tempFilePath);
+//
+//		// When
+//		job.wipeJobDocuments(pj);
+//
+//		// Then
+//		assertEquals(0, fo.getChildren().length);
+//	}
 }

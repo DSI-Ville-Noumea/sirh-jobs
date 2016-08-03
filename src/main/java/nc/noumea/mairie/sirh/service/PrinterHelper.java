@@ -28,6 +28,9 @@ public class PrinterHelper {
 		return fsManager;
 	}
 	
+	public PrinterHelper() {
+	}
+	
 	public PrinterHelper(String host, int port, String printerName, String printJobName) throws Exception {
 		this.host= host;
 		this.port = port;
@@ -63,6 +66,20 @@ public class PrinterHelper {
 		FileObject fo = getFsManager().resolveFile(filePath);
 		InputStream is = fo.getContent().getInputStream();
 		PrintJob pj = new PrintJob.Builder(is).jobName(fo.getName().getBaseName()).userName(userName).build();
+        PrintRequestResult res = cupsPrinter.print(pj);
+        
+        if (!res.isSuccessfulResult()) {
+			throw new Exception(
+					String.format(
+							"An error occured while submitting a job to the printer: id [%s] resultCode [%s] desc [%s]",
+							res.getJobId(), res.getResultCode(),
+							res.getResultDescription()));
+        }
+	}
+
+	public void printDocument(InputStream is, String baseName, String userName) throws Exception {
+		
+		PrintJob pj = new PrintJob.Builder(is).jobName(baseName).userName(userName).build();
         PrintRequestResult res = cupsPrinter.print(pj);
         
         if (!res.isSuccessfulResult()) {

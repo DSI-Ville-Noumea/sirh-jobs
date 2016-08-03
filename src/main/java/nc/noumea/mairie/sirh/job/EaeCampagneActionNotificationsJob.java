@@ -1,6 +1,6 @@
 package nc.noumea.mairie.sirh.job;
 
-import java.nio.file.Paths;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
 import nc.noumea.mairie.sirh.dao.ISirhDocumentDao;
 import nc.noumea.mairie.sirh.domain.DocumentAssocie;
 import nc.noumea.mairie.sirh.eae.dao.IEaeCampagneActionDao;
@@ -66,12 +67,12 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	private VelocityEngine velocityEngine;
 
 	@Autowired
+	private IAlfrescoCMISService alfrescoCMISService;
+
+	@Autowired
 	@Qualifier("numberOfTries")
 	private Integer numberOfTries;
 
-	@Autowired
-	@Qualifier("baseSirhDocumentsUrl")
-	private String baseSirhDocumentsUrl;
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
@@ -203,8 +204,10 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 				// Set the attached documents
 				for (EaeDocument doc : eaeCampagneAction.getEaeDocuments()) {
  					DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
-					FileObject attachedFileVfs = fsManager.resolveFile(Paths.get(baseSirhDocumentsUrl,
-					docA.getLienDocument()).toString());
+ 					
+ 					File file = alfrescoCMISService.getFile(docA.getNodeRefAlfresco());
+ 					
+					FileObject attachedFileVfs = fsManager.toFileObject(file);
 					logger.debug("Adding file '{}' [Exists {}] as attachment...", attachedFileVfs.getURL(),
 							attachedFileVfs.exists());
 					VfsInputStreamSource res = new VfsInputStreamSource(attachedFileVfs);
