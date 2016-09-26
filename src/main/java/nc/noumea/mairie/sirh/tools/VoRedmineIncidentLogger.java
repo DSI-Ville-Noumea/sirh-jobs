@@ -34,6 +34,7 @@ public class VoRedmineIncidentLogger {
 	
 	public void addException(String nameException, String messageException, Throwable exception, Integer id) {
 		
+		@SuppressWarnings("unused")
 		boolean isExceptionExist = false;
 		// on cherche d abord si l exception existe deja
 		for(VoExceptionWithListAgents ex : listException) {

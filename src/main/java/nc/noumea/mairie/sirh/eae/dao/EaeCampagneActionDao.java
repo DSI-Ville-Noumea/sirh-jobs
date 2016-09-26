@@ -3,64 +3,67 @@ package nc.noumea.mairie.sirh.eae.dao;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction;
 
-//@Repository
+@Repository
 public class EaeCampagneActionDao implements IEaeCampagneActionDao {
 
-	@PersistenceContext(unitName = "eaePersistenceUnit")
-	private EntityManager eaeEntityManager;
-	
-	@Override
-	public long countEaeCampagneActionToSend(Date asOfDate) {
-		TypedQuery<Long> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.countTodayNotifications", Long.class);
-		eaeQuery.setParameter("todayDate", asOfDate);
-		Long result = eaeQuery.getSingleResult();
-		
-		return result;
+	@Autowired
+	@Qualifier("eaeSessionFactory")
+	private SessionFactory eaeSessionFactory;
+
+	public void beginTransaction() {
+		eaeSessionFactory.getCurrentSession().beginTransaction();
 	}
-	
+
+	public void commitTransaction() {
+		eaeSessionFactory.getCurrentSession().getTransaction().commit();
+	}
+
+	public void rollBackTransaction() {
+		eaeSessionFactory.getCurrentSession().getTransaction().rollback();
+	}
+
 	@Override
 	public List<EaeCampagneAction> getEaeCampagneActionToSend(Date asOfDate) {
-		TypedQuery<EaeCampagneAction> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.getTodayNotifications", EaeCampagneAction.class);
-		eaeQuery.setParameter("todayDate", asOfDate);
-		List<EaeCampagneAction> result = eaeQuery.getResultList();
-		
-		return result;
+
+		@SuppressWarnings("unchecked")
+		List<EaeCampagneAction> l = eaeSessionFactory.getCurrentSession().getNamedQuery("EaeCampagneAction.getTodayNotifications")
+				.setParameter("todayDate", asOfDate).list();
+
+		return l;
 	}
-	
+
 	@Override
 	public EaeCampagneAction getNextEaeCampagneActionToSend(Date asOfDate) {
 
-		TypedQuery<EaeCampagneAction> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneAction.getNextTodayNotification", EaeCampagneAction.class);
-		eaeQuery.setParameter("todayDate", asOfDate);
-		eaeQuery.setMaxResults(1);
-		List<EaeCampagneAction> result = eaeQuery.getResultList();
-		
+		@SuppressWarnings("unchecked")
+		List<EaeCampagneAction> result = eaeSessionFactory.getCurrentSession().getNamedQuery("EaeCampagneAction.getNextTodayNotification")
+				.setParameter("todayDate", asOfDate).setMaxResults(1).list();
+
 		return result.size() > 0 ? result.get(0) : null;
 	}
-	
+
 	@Override
 	public int setDateMailEnvoye(final EaeCampagneAction eaeCampagneAction, final Date dateMailEnvoye) throws DaoException {
-		
-		
-		Query q = eaeEntityManager.createNativeQuery("UPDATE EAE_CAMPAGNE_ACTION SET DATE_MAIL_ENVOYE = :date WHERE ID_CAMPAGNE_ACTION = :id");
-		q.setParameter("date", dateMailEnvoye);
-		q.setParameter("id", eaeCampagneAction.getIdCampagneAction());
-		
+		Query q = eaeSessionFactory.getCurrentSession()
+				.createQuery("UPDATE EAE_CAMPAGNE_ACTION SET DATE_MAIL_ENVOYE = :date WHERE ID_CAMPAGNE_ACTION = :id")
+				.setParameter("date", dateMailEnvoye).setParameter("id", eaeCampagneAction.getIdCampagneAction());
+
 		int result = 0;
 		try {
 			result = q.executeUpdate();
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new DaoException("An error occured while updating the EaeCampagneAction: ", ex);
 		}
-		
+
 		return result;
+
 	}
 }

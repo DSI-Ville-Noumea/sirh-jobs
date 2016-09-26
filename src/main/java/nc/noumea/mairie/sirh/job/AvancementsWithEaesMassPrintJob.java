@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -8,22 +10,10 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import nc.noumea.mairie.sirh.dao.IAvctCapPrintJobDao;
-import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
-import nc.noumea.mairie.sirh.eae.dao.DaoException;
-import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
-import nc.noumea.mairie.sirh.service.IReportingService;
-import nc.noumea.mairie.sirh.service.PrinterHelper;
-import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
-import nc.noumea.mairie.sirh.tools.Helper;
-import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
-import nc.noumea.mairie.sirh.ws.dto.LightUser;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
-import org.apache.http.HttpResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -39,66 +29,65 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
+import nc.noumea.mairie.sirh.dao.IAvctCapPrintJobDao;
+import nc.noumea.mairie.sirh.domain.AvctCapPrintJob;
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
+import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
+import nc.noumea.mairie.sirh.service.IReportingService;
+import nc.noumea.mairie.sirh.service.PrinterHelper;
+import nc.noumea.mairie.sirh.tools.AvancementsWithEaesMassPrintJobStatusEnum;
+import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
+
 @Service
 @DisallowConcurrentExecution
 public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IAvancementsWithEaesMassPrintJob {
 
-	private Logger logger = LoggerFactory.getLogger(AvancementsWithEaesMassPrintJob.class);
+	private Logger						logger	= LoggerFactory.getLogger(AvancementsWithEaesMassPrintJob.class);
 
 	@Autowired
-	private Helper helper;
+	private Helper						helper;
 
 	@Autowired
-	private IAvctCapPrintJobDao printJobDao;
+	private IAvctCapPrintJobDao			printJobDao;
 
 	@Autowired
-	private IReportingService reportingService;
+	private IReportingService			reportingService;
 
 	@Autowired
-	private IDownloadDocumentService downloadDocumentService;
+	private IDownloadDocumentService	downloadDocumentService;
 
 	@Autowired
-	private IRadiWSConsumer radiWSConsumer;
+	private IRadiWSConsumer				radiWSConsumer;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private JavaMailSender				mailSender;
 
 	@Autowired
-	private VelocityEngine velocityEngine;
+	private VelocityEngine				velocityEngine;
 
 	@Autowired
-	@Qualifier("sharepointEaeDocBaseUrl")
-	private String sharepointEaeDocBaseUrl;
+	private IAlfrescoCMISService		alfrescoCMISService;
 
 	@Autowired
 	@Qualifier("sirhWsAvctEaesEndpointUrl")
-	private String sirhWsAvctEaesEndpointUrl;
+	private String						sirhWsAvctEaesEndpointUrl;
 
 	@Autowired
 	@Qualifier("cupsServerHostName")
-	private String cupsServerHostName;
+	private String						cupsServerHostName;
 
 	@Autowired
 	@Qualifier("cupsServerPort")
-	private int cupsServerPort;
+	private int							cupsServerPort;
 
 	@Autowired
 	@Qualifier("cupsSirhPrinterName")
-	private String cupsSirhPrinterName;
+	private String						cupsSirhPrinterName;
 
-	@Autowired
-	@Qualifier("gedWebdavUser")
-	private String gedWebdavUser;
-
-	@Autowired
-	@Qualifier("gedWebdavPwd")
-	private String gedWebdavPwd;
-
-	@Autowired
-	@Qualifier("kiosqueUrlWebdav")
-	private String kiosqueUrlWebdav;
-
-	private FileSystemManager vfsManager;
+	private FileSystemManager			vfsManager;
 
 	public FileSystemManager getVfsManager() throws FileSystemException {
 
@@ -112,7 +101,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 
 		AvctCapPrintJob job = null;
- 
+
 		try {
 
 			job = getNextPrintJob();
@@ -121,8 +110,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 			// initialize printer helper early so that documents are not
 			// downloaded when no printer is reachable
-			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort, String.format(
-					"http://%s:%s/printers/%s", cupsServerHostName, cupsServerPort, cupsSirhPrinterName),
+			PrinterHelper pH = new PrinterHelper(cupsServerHostName, cupsServerPort,
+					String.format("http://%s:%s/printers/%s", cupsServerHostName, cupsServerPort, cupsSirhPrinterName),
 					"SIRH - Impression des documents de commissions d'avancements");
 
 			// initialize the print job id and status
@@ -149,8 +138,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 				updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.ERROR);
 			}
 
-			throw new JobExecutionException(String.format("An error occured during 'Avancement Print Job' [%s]",
-					job != null ? job.getJobId() : "-"), e);
+			throw new JobExecutionException(String.format("An error occured during 'Avancement Print Job' [%s]", job != null ? job.getJobId() : "-"),
+					e);
 		} finally {
 		}
 
@@ -164,9 +153,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		AvctCapPrintJob result = printJobDao.getNextPrintJob();
 
 		if (result != null)
-			logger.info("Found 1 print job for CAP [{}] CadreEmploi [{}] avisEAE[{}] submitted by [{}] on [{}]",
-					result.getIdCap(), result.getIdCadreEmploi(), result.isAvisEAE(), result.getAgentId(),
-					result.getSubmissionDate());
+			logger.info("Found 1 print job for CAP [{}] CadreEmploi [{}] avisEAE[{}] submitted by [{}] on [{}]", result.getIdCap(),
+					result.getIdCadreEmploi(), result.isAvisEAE(), result.getAgentId(), result.getSubmissionDate());
 		else
 			logger.info("Did not find any print job");
 
@@ -177,8 +165,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	public void initializePrintJob(AvctCapPrintJob job) {
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyMMdd-HHmmss");
-		String jobId = String.format("SIRH_AVCT_%s_%s_%s_%s_%s", df.format(helper.getCurrentDate()), job.getAgentId(),
-				job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE());
+		String jobId = String.format("SIRH_AVCT_%s_%s_%s_%s_%s", df.format(helper.getCurrentDate()), job.getAgentId(), job.getIdCap(),
+				job.getIdCadreEmploi(), job.isAvisEAE());
 		job.setJobId(jobId);
 		updateStatus(job, AvancementsWithEaesMassPrintJobStatusEnum.START);
 
@@ -193,29 +181,26 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		InputStream inputStream = null;
 		try {
 			// download report and add it to the list of prints
-			String targetReportFilePath = String.format("%s_001_%s", job.getJobId(),
-					"avct_table_report.pdf");
-			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(),
-					job.isAvisEAE());
-			
+			String targetReportFilePath = String.format("%s_001_%s", job.getJobId(), "avct_table_report.pdf");
+			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE());
+
 			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
 
-			targetReportFilePath = String
-					.format("%s_000_%s", job.getJobId(), "firstPage.pdf");
-			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
-					job.getLibCadreEmploi(), job.getSubmissionDate(), true, job.isEaes());
+			targetReportFilePath = String.format("%s_000_%s", job.getJobId(), "firstPage.pdf");
+			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(), job.getLibCadreEmploi(),
+					job.getSubmissionDate(), true, job.isEaes());
 
 			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
 
 			targetReportFilePath = String.format("%s_999_%s", job.getJobId(), "lastPage.pdf");
-			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(),
-					job.getLibCadreEmploi(), job.getSubmissionDate(), false, job.isEaes());
+			inputStream = reportingService.getAvctFirstLastPrintPage(job.getJobId(), job.getLogin(), job.getCodeCap(), job.getLibCadreEmploi(),
+					job.getSubmissionDate(), false, job.isEaes());
 
 			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
-			
+
 		} catch (Exception e) {
-			throw new AvancementsWithEaesMassPrintException(String.format(
-					"An error occured while generating AVCT reports for job id [%s]", job.getJobId()), e);
+			throw new AvancementsWithEaesMassPrintException(
+					String.format("An error occured while generating AVCT reports for job id [%s]", job.getJobId()), e);
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
@@ -234,8 +219,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			sirhParams.put("idCap", String.valueOf(job.getIdCap()));
 			sirhParams.put("idCadreEmploi", String.valueOf(job.getIdCadreEmploi()));
 			sirhParams.put("avisEAE", String.valueOf(job.isAvisEAE()));
-			List<String> eaesToDownload = downloadDocumentService.downloadJsonDocumentAsList(String.class,
-					sirhWsAvctEaesEndpointUrl, sirhParams);
+			List<String> eaesToDownload = downloadDocumentService.downloadJsonDocumentAsList(String.class, sirhWsAvctEaesEndpointUrl, sirhParams);
 
 			Integer i = job.getFilesToPrint().size();
 
@@ -246,8 +230,8 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 			}
 
 		} catch (Exception e) {
-			throw new AvancementsWithEaesMassPrintException(String.format(
-					"An error occured while downloading AVCT EAEs reports for job id [%s]", job.getJobId()), e);
+			throw new AvancementsWithEaesMassPrintException(
+					String.format("An error occured while downloading AVCT EAEs reports for job id [%s]", job.getJobId()), e);
 		}
 	}
 
@@ -264,26 +248,15 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 	public void printEae(AvctCapPrintJob job, String eaeId, int sequenceNumber, PrinterHelper pH) throws Exception {
 
 		String baseName = String.format("%s_%03d_%s.pdf", job.getJobId(), sequenceNumber, eaeId);
-		String eaeRemoteFileUri = null;
 
-		// GET url from sharepoint
-		String url = sharepointEaeDocBaseUrl.concat(eaeId);
-		String webDavUri = downloadDocumentService.downloadDocumentAccesNTLMAs(url);
-		logger.debug("Sharepoint WS query: URL [{}] Response [{}]", url, webDavUri);
-
-		// format result
-		eaeRemoteFileUri = String.format(webDavUri, gedWebdavUser, gedWebdavPwd);
-
-		String nomEAE = eaeRemoteFileUri.substring(eaeRemoteFileUri.indexOf("EAE_"), eaeRemoteFileUri.length());
-		String urlDocument = "http://" + kiosqueUrlWebdav + "/kiosque-rh/EAE/" + nomEAE;
-
-		HttpResponse response = downloadDocumentService.createAndFireRequestNTLM(urlDocument);
+		// on recupère l'EAE sous Alfresco
+		File file = alfrescoCMISService.getFile(eaeId);
 
 		// Copy doc using downloadDocument
 		logger.debug("Print [{}]", baseName);
 
 		try {
-			pH.printDocument(response.getEntity().getContent(), baseName, job.getLogin());
+			pH.printDocument(new FileInputStream(file), baseName, job.getLogin());
 		} catch (Exception ex) {
 			throw new Exception("An error occured while copying a remote EAE into the local file path", ex);
 		} finally {
@@ -294,8 +267,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 		logger.debug("Sending error email for job id [{}] on status {}", job.getJobId(), null == job.getStatus() ? "" : job.getStatus().toString());
 
-		final LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(job
-				.getAgentId()));
+		final LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(job.getAgentId()));
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -311,8 +283,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 				model.put("CAP", job.getCodeCap());
 				model.put("CE", job.getLibCadreEmploi());
 				model.put("status", null == job.getStatus() ? "" : job.getStatus().toString());
-				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-						"templates/sirhAvctErrorMailTemplate.vm", "UTF-8", model);
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhAvctErrorMailTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject

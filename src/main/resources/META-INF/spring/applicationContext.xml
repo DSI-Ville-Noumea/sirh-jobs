@@ -156,23 +156,6 @@
 		expected-type="java.lang.Integer" />
 	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="AVCT_CUPS_SIRH_PRINTER_NAME"
 		expected-type="java.lang.String" />
-	<!-- URL for EAE documents hosted on Sharepoint -->
-	<jee:jndi-lookup id="sharepointEaeDocBaseUrl"
-		jndi-name="AVCT_URL_SHAREPOINT_GED" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="gedWebdavUser" jndi-name="AVCT_GED_WEBDAV_USER"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="gedWebdavPwd" jndi-name="AVCT_GED_WEBDAV_PWD"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="kiosqueUserWebdav" jndi-name="USER_SHAREPOINT_WEBDAV_EAE"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="kiosqueUserPwsWebdav" jndi-name="USER_PWD_SHAREPOINT_WEBDAV_EAE"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="kiosqueDomainWebdav" jndi-name="DOMAIN_SHAREPOINT_WEBDAV_EAE"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="kiosqueUrlWebdav" jndi-name="URL_SHAREPOINT_WEBDAV_EAE"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="kiosquePortWebdav" jndi-name="PORT_SHAREPOINT_WEBDAV_EAE"
-		expected-type="java.lang.String" />
 
 	<!-- Ventilation service parameters -->
 	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl"

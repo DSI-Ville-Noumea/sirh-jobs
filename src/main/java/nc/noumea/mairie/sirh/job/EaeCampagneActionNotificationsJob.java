@@ -46,40 +46,39 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 @DisallowConcurrentExecution
 public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements IEaeCampagneActionNotificationsJob {
 
-	private Logger logger = LoggerFactory.getLogger(EaeCampagneActionNotificationsJob.class);
+	private Logger						logger			= LoggerFactory.getLogger(EaeCampagneActionNotificationsJob.class);
 
 	@Autowired
-	private Helper helper;
+	private Helper						helper;
 
 	@Autowired
-	private IEaeCampagneActionDao eaeCampagneActionDao;
+	private IEaeCampagneActionDao		eaeCampagneActionDao;
 
 	@Autowired
-	private ISirhDocumentDao sirhDocumentDao;
+	private ISirhDocumentDao			sirhDocumentDao;
 
 	@Autowired
-	private IRadiWSConsumer radiWSConsumer;
+	private IRadiWSConsumer				radiWSConsumer;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private JavaMailSender				mailSender;
 
 	@Autowired
-	private VelocityEngine velocityEngine;
+	private VelocityEngine				velocityEngine;
 
 	@Autowired
-	private IAlfrescoCMISService alfrescoCMISService;
+	private IAlfrescoCMISService		alfrescoCMISService;
 
 	@Autowired
 	@Qualifier("numberOfTries")
-	private Integer numberOfTries;
-
+	private Integer						numberOfTries;
 
 	@Autowired
-	private IIncidentLoggerService incidentLoggerService;
+	private IIncidentLoggerService		incidentLoggerService;
 
-	private static FileSystemManager fsManager;
-	
-	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+	private static FileSystemManager	fsManager;
+
+	private VoRedmineIncidentLogger		incidentRedmine	= new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	public EaeCampagneActionNotificationsJob() throws FileSystemException {
 		fsManager = VFS.getManager();
@@ -90,8 +89,14 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 
 		// Run the job
 		try {
+
+			eaeCampagneActionDao.beginTransaction();
+
 			sendNotificationsOneByOne();
+
+			eaeCampagneActionDao.commitTransaction();
 		} catch (EaeCampagneActionNotificationsException e) {
+			eaeCampagneActionDao.rollBackTransaction();
 			throw new JobExecutionException(e);
 		}
 	}
@@ -121,8 +126,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 				} catch (Exception ex) {
 					logger.warn(
 							"An error occured while trying to send notification for EaeCampagneAction id #{} with action name '{}' for EaeCampagne id #{} of year {}.",
-							new Object[] { eA.getIdCampagneAction(), eA.getNomAction(),
-									eA.getEaeCampagne().getIdEaeCampagne(), eA.getEaeCampagne().getAnnee() });
+							new Object[] { eA.getIdCampagneAction(), eA.getNomAction(), eA.getEaeCampagne().getIdEaeCampagne(),
+									eA.getEaeCampagne().getAnnee() });
 					logger.warn("Here follows the exception : ", ex);
 					// #28789 ajout de logger redmine
 					incidentRedmine.addException(ex, eA.getIdCampagneAction());
@@ -130,14 +135,12 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 				}
 
 				if (nbErrors >= numberOfTries) {
-					logger.error(
-							"Stopped sending notifications because exceeded the maximum authorized number of tries: {}.",
-							numberOfTries);
+					logger.error("Stopped sending notifications because exceeded the maximum authorized number of tries: {}.", numberOfTries);
 				}
 			}
 		}
 
-		if(!incidentRedmine.getListException().isEmpty()) {
+		if (!incidentRedmine.getListException().isEmpty()) {
 			incidentLoggerService.logIncident(incidentRedmine);
 		}
 
@@ -147,12 +150,10 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	public void sendNotification(final EaeCampagneAction eaeCampagneAction, final Date theDate) throws Exception {
 
 		logger.debug("Sending notification for action id #{} : {} due on {}",
-				new Object[] { eaeCampagneAction.getIdCampagneAction(), eaeCampagneAction.getNomAction(),
-						eaeCampagneAction.getDateAfaire() });
+				new Object[] { eaeCampagneAction.getIdCampagneAction(), eaeCampagneAction.getNomAction(), eaeCampagneAction.getDateAfaire() });
 
 		// Get the assignee email address for To
-		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(eaeCampagneAction
-				.getIdAgent()));
+		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(eaeCampagneAction.getIdAgent()));
 
 		// Get the actors email address for Cc
 		List<LightUser> agentsCc = new ArrayList<LightUser>();
@@ -170,8 +171,8 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 		eaeCampagneActionDao.setDateMailEnvoye(eaeCampagneAction, theDate);
 	}
 
-	protected void sendEmail(final LightUser user, final List<LightUser> agentsCc,
-			final EaeCampagneAction eaeCampagneAction, final Date theDate) throws Exception {
+	protected void sendEmail(final LightUser user, final List<LightUser> agentsCc, final EaeCampagneAction eaeCampagneAction, final Date theDate)
+			throws Exception {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -191,25 +192,23 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 				// Set the body with velocity
 				Map model = new HashMap();
 				model.put("eaeCampagneAction", eaeCampagneAction);
-				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-						"templates/sirhNotificationTemplate.vm", "UTF-8", model);
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhNotificationTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject(String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(),
-						eaeCampagneAction.getFormattedDateAfaire()));
+				message.setSubject(
+						String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(), eaeCampagneAction.getFormattedDateAfaire()));
 
 				logger.debug("nb docs {}", eaeCampagneAction.getEaeDocuments().size());
 
 				// Set the attached documents
 				for (EaeDocument doc : eaeCampagneAction.getEaeDocuments()) {
- 					DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
- 					
- 					File file = alfrescoCMISService.getFile(docA.getNodeRefAlfresco());
- 					
+					DocumentAssocie docA = sirhDocumentDao.getDocumentAssocie(doc.getSirhIdDocument());
+
+					File file = alfrescoCMISService.getFile(docA.getNodeRefAlfresco());
+
 					FileObject attachedFileVfs = fsManager.toFileObject(file);
-					logger.debug("Adding file '{}' [Exists {}] as attachment...", attachedFileVfs.getURL(),
-							attachedFileVfs.exists());
+					logger.debug("Adding file '{}' [Exists {}] as attachment...", attachedFileVfs.getURL(), attachedFileVfs.exists());
 					VfsInputStreamSource res = new VfsInputStreamSource(attachedFileVfs);
 					message.addAttachment(docA.getNomDocument(), res);
 				}
