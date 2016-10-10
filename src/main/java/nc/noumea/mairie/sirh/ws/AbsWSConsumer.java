@@ -6,65 +6,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
-import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
+import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
+
 @Service
 public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_Base_URL")
-	private String SIRH_ABS_WS_Base_URL;
+	private String				SIRH_ABS_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_emailInformationUrl")
-	private String emailInformationUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ListeCompteurAnneePrecedenteUrl")
-	private String listeCompteurAnneePrecedenteUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ResetCompteurAnneePrecedenteUrl")
-	private String resetCompteurAnneePrecedenteUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ListeCompteurAnneeEnCoursUrl")
-	private String listeCompteurAnneeEnCoursUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl")
-	private String resetCompteurAnneeEnCoursUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ListeCompteurCongeAnnuelUrl")
-	private String listeCompteurCongeAnnuelUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl")
-	private String resetCompteurCongeAnnuelUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_GetDemandeUrl")
-	private String getDemande;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl")
-	private String alimentationAutoCongeAnnuelUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_MiseAJourSpsoldUrl")
-	private String miseAJourSpsoldUrl;
-
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_MiseAJourSpsorcUrl")
-	private String miseAJourSpsorcUrl;
+	private static final String	emailInformationUrl				= "email/listDestinatairesEmailInfo";
+	private static final String	listeCompteurAnneePrecedenteUrl	= "reposcomps/getListeCompteurAnneePrecedente";
+	private static final String	resetCompteurAnneePrecedenteUrl	= "reposcomps/resetCompteurAnneePrecedente";
+	private static final String	listeCompteurAnneeEnCoursUrl	= "reposcomps/getListeCompteurAnneeEnCours";
+	private static final String	resetCompteurAnneeEnCoursUrl	= "reposcomps/resetCompteurAnneenCours";
+	private static final String	listeCompteurCongeAnnuelUrl		= "congeannuel/getListeCompteurCongeAnnuel";
+	private static final String	resetCompteurCongeAnnuelUrl		= "congeannuel/resetCompteurCongeAnnuel";
+	private static final String	getDemande						= "demandes/demande";
+	private static final String	alimentationAutoCongeAnnuelUrl	= "congeannuel/alimentationAutoCongesAnnuels";
+	private static final String	miseAJourSpsoldUrl				= "congeannuel/miseAJourSpsold";
+	private static final String	miseAJourSpsorcUrl				= "reposcomps/miseAJourSpsorc";
 
 	@Override
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {

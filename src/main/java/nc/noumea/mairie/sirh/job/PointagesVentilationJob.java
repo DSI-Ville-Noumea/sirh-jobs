@@ -27,9 +27,7 @@ public class PointagesVentilationJob extends QuartzJobBean {
 	@Autowired
 	private IPointagesDao pointagesDao;
 
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_VentilationTaskUrl")
-	private String SIRH_PTG_WS_VentilationTaskUrl;
+	private static final String SIRH_PTG_WS_VentilationTaskUrl = "ventilation/processTask?idVentilTask=";
 
 	@Autowired
 	@Qualifier("SIRH_PTG_WS_Base_URL")

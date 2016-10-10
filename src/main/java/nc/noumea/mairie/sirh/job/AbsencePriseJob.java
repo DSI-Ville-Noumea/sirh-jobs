@@ -48,9 +48,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 	@Qualifier("SIRH_ABS_WS_Base_URL")
 	private String SIRH_ABS_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_etatAbsenceUrl")
-	private String etatAbsenceUrl;
+	private static final String etatAbsenceUrl = "demandes/updateToEtatPris";
 
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;

@@ -4,36 +4,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.ads.ws.dto.EntiteDto;
-import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
-import nc.noumea.mairie.sirh.ws.BaseWsConsumer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import nc.noumea.mairie.ads.ws.dto.EntiteDto;
+import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
+import nc.noumea.mairie.sirh.ws.BaseWsConsumer;
+
 @Service
 public class AdsWSConsumer extends BaseWsConsumer implements IAdsWSConsumer {
 
 	@Autowired
 	@Qualifier("ADS_WS_Base_URL")
-	private String ADS_WS_Base_URL;
-
-	@Autowired
-	@Qualifier("ADS_WS_ListEntityHistoChangementStatutVeille")
-	private String listEntityHistoChangementStatutVeille;
-
-	@Autowired
-	@Qualifier("ADS_WS_ListIdAgentEmailInfo")
-	private String listeIdAgentEmailInfo;
-
-	@Autowired
-	@Qualifier("ADS_WS_SirhAdsGetInfoSiservUrl")
-	private String sirhAdsGetInfoSiservUrl;
-	
-	
+	private String				ADS_WS_Base_URL;
+	private static final String	listeIdAgentEmailInfo					= "api/email/listeIdAgentEmailInfo";
+	private static final String	listEntityHistoChangementStatutVeille	= "api/email/histoChangementStatutVeille";
+	private static final String	sirhAdsGetInfoSiservUrl					= "api/entite/infoSiserv/";
 
 	@Override
 	public List<EntiteHistoDto> getListeEntiteHistoChangementStatutVeille() {
@@ -71,7 +60,7 @@ public class AdsWSConsumer extends BaseWsConsumer implements IAdsWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		ClientResponse res = createAndFireGetRequest(parameters, url);
-		
+
 		return readResponse(EntiteDto.class, res, url);
 	}
 }

@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.eae.dao.DaoException;
-import nc.noumea.mairie.sirh.ws.dto.LightUser;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +12,19 @@ import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
+
 @Service
 public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 
 	@Autowired
 	@Qualifier("RADI_WS_Base_URL")
-	private String RADI_WS_Base_URL;
+	private String				RADI_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("RADI_WS_SearchUser")
-	private String searchUserUrl;
+	private static final String	searchUserUrl	= "users";
 
-	private Logger logger = LoggerFactory.getLogger(RadiWSConsumer.class);
+	private Logger				logger			= LoggerFactory.getLogger(RadiWSConsumer.class);
 
 	@Override
 	public List<LightUser> getListeAgentMairie() {
@@ -54,11 +52,10 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 
 		List<LightUser> list = readResponseAsList(LightUser.class, res, url);
 		if (list == null || list.size() == 0) {
-			throw new DaoException(String.format(
-					"Expected 1 user corresponding to this employeeNumber '%s' but found null.", employeeNumber));
+			throw new DaoException(String.format("Expected 1 user corresponding to this employeeNumber '%s' but found null.", employeeNumber));
 		}
-		logger.info("Agent found: employeeNumber={}, mail={}, login={}.", new Object[] {
-				list.get(0).getEmployeeNumber(), list.get(0).getMail(), list.get(0).getsAMAccountName() });
+		logger.info("Agent found: employeeNumber={}, mail={}, login={}.",
+				new Object[] { list.get(0).getEmployeeNumber(), list.get(0).getMail(), list.get(0).getsAMAccountName() });
 
 		return list.size() == 0 ? null : list.get(0);
 	}

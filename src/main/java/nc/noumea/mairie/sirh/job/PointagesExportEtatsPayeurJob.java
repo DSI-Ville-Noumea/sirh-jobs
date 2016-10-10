@@ -30,17 +30,10 @@ public class PointagesExportEtatsPayeurJob extends QuartzJobBean {
 	@Qualifier("SIRH_PTG_WS_Base_URL")
 	private String SIRH_PTG_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_ExportEtatsPayeurTaskUrl")
-	private String SIRH_PTG_WS_ExportEtatsPayeurTaskUrl;
+	private static final String SIRH_PTG_WS_ExportEtatsPayeurTaskUrl = "etatsPayeur/startExportTask?idExportEtatsPayeurTask=";
+	private static final String SIRH_PTG_WS_ExportEtatsPayeurDoneUrl = "etatsPayeur/finishExportTask?idExportEtatsPayeurTask=";
+	private static final String SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl = "etatsPayeur/stop?typeChainePaie=";
 
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_ExportEtatsPayeurDoneUrl")
-	private String SIRH_PTG_WS_ExportEtatsPayeurDoneUrl;
-
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl")
-	private String SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl;
 
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;

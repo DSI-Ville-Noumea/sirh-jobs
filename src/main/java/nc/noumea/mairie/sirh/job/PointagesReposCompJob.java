@@ -34,9 +34,7 @@ public class PointagesReposCompJob extends QuartzJobBean {
 	@Qualifier("SIRH_PTG_WS_Base_URL")
 	private String SIRH_PTG_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_ReposCompTaskUrlPart")
-	private String SIRH_PTG_WS_ReposCompTaskUrlPart;
+	private static final String SIRH_PTG_WS_ReposCompTaskUrlPart = "reposcomp/startReposCompTask?idReposCompTask=";
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;

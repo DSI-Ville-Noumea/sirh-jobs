@@ -134,6 +134,8 @@
 	<jee:jndi-lookup id="numberOfTries"
 		jndi-name="eaeCampagneActionNotificationsJob.numberOfTentatives"
 		expected-type="java.lang.Integer" />
+	<jee:jndi-lookup id="numberOfTriesEmailInformation"
+		jndi-name="emailInformationJob.numberOfTentatives" expected-type="java.lang.Integer" />
 	
 	<!-- ALFRESCO -->
 	<jee:jndi-lookup id="alfrescoUrl" jndi-name="ALFRESCO_URL" expected-type="java.lang.String"/>
@@ -157,89 +159,30 @@
 	<jee:jndi-lookup id="cupsSirhPrinterName" jndi-name="AVCT_CUPS_SIRH_PRINTER_NAME"
 		expected-type="java.lang.String" />
 
-	<!-- Ventilation service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_VentilationTaskUrl"
-		jndi-name="SIRH_PTG_WS_VENTILATION_TASK_URL" expected-type="java.lang.String" />
 
-	<!-- Export Paie service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieTaskUrl"
-		jndi-name="SIRH_PTG_WS_EXPORT_TASK_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportPaieDoneUrl"
-		jndi-name="SIRH_PTG_WS_EXPORT_DONE_URL" expected-type="java.lang.String" />
 
-	<!-- ReposComp Job service parameters -->
+	<!-- PTG -->
 	<jee:jndi-lookup id="SIRH_PTG_WS_Base_URL" jndi-name="SIRH_PTG_WS_URL"
 		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ReposCompTaskUrlPart"
-		jndi-name="SIRH_PTG_WS_RC_TASK_URL_PART" expected-type="java.lang.String" />
 
-	<!-- pour les emails d information des absences -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_emailInformationUrl"
-		jndi-name="SIRH_PTG_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
-
-	<!-- Export Etats Payeur service parameters -->
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurTaskUrl"
-		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_TASK_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneUrl"
-		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_PTG_WS_ExportEtatsPayeurDoneStopUrl"
-		jndi-name="SIRH_PTG_WS_ETATS_PAYEUR_DONE_STOP_URL" expected-type="java.lang.String" />
-
-	<jee:jndi-lookup id="SIRH_PTG_WS_etatPointageUrl"
-		jndi-name="SIRH_PTG_WS_ETAT_POINTAGE_URL" expected-type="java.lang.String" />
-
-	<!-- Pour les absences -->
+	<!-- ABS -->
 	<jee:jndi-lookup id="SIRH_ABS_WS_Base_URL" jndi-name="SIRH_ABS_WS_URL"
 		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_etatAbsenceUrl"
-		jndi-name="SIRH_ABS_WS_ETAT_ABSENCE_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_suppressionAbsenceUrl"
-		jndi-name="SIRH_ABS_WS_SUPP_ABSENCE_URL" expected-type="java.lang.String" />
-	<!-- pour les emails d information des absences -->
-	<jee:jndi-lookup id="SIRH_ABS_WS_emailInformationUrl"
-		jndi-name="SIRH_ABS_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="numberOfTriesEmailInformation"
-		jndi-name="emailInformationJob.numberOfTentatives" expected-type="java.lang.Integer" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneePrecedenteUrl"
-		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneePrecedenteUrl"
-		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_PRCDT_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurAnneeEnCoursUrl"
-		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_ANNEE_EN_COURS_URL"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurAnneeEnCoursUrl"
-		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_ANNEE_EN_COURS_URL"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ListeCompteurCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_LISTE_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_ResetCompteurCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_RESET_COMPTEUR_CONGE_ANNUEL_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_GetDemandeUrl"
-		jndi-name="SIRH_ABS_WS_DEMANDE_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_AlimentationAutoCongeAnnuelUrl"
-		jndi-name="SIRH_ABS_WS_ALIMENTATION_AUTO_CONGE_ANNUEL_URL"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_MiseAJourSpsoldUrl"
-		jndi-name="SIRH_ABS_WS_MISE_A_JOUR_SPSOLD_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="SIRH_ABS_WS_MiseAJourSpsorcUrl"
-		jndi-name="SIRH_ABS_WS_MISE_A_JOUR_SPSORC_URL" expected-type="java.lang.String" />
-
-	<!-- Pour ADS -->
-	<jee:jndi-lookup id="ADS_WS_Base_URL" jndi-name="ADS_WS_URL"
-		expected-type="java.lang.String" />
-	<!-- pour les emails d information des passages de statuts des entités -->
-	<jee:jndi-lookup id="ADS_WS_ListIdAgentEmailInfo"
-		jndi-name="ADS_WS_EMAIL_INFO_URL" expected-type="java.lang.String" />
-	<jee:jndi-lookup id="ADS_WS_SirhAdsGetInfoSiservUrl"
-		jndi-name="ADS_WS_SISERV_INFO_URL" expected-type="java.lang.String" />		
-	<jee:jndi-lookup id="ADS_WS_ListEntityHistoChangementStatutVeille"
-		jndi-name="ADS_WS_LISTE_ENTITY_HISTO_CHANGEMENT_STATUT_VEILLE"
-		expected-type="java.lang.String" />
 	
-	<!-- Pour RADI -->
+	<!-- ADS -->
+	<jee:jndi-lookup id="ADS_WS_Base_URL" jndi-name="ADS_WS_URL"
+		expected-type="java.lang.String" />		
+	
+	<!-- RADI -->
 	<jee:jndi-lookup id="RADI_WS_Base_URL" jndi-name="RADI_WS_URL"
 		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="RADI_WS_SearchUser" jndi-name="RADI_WS_SEARCH_USER_URL"
+		
+	<!-- SIRH-WS -->
+	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL"
+		expected-type="java.lang.String" />
+		
+	<!-- EAE -->
+	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_URL"
 		expected-type="java.lang.String" />
 
 
@@ -276,11 +219,6 @@
 		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
 	</bean>
 
-	<!--Job Calcul Eae -->
-	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL"
-		expected-type="java.lang.String" />
-	<jee:jndi-lookup id="eaeWsBaseUrl" jndi-name="SIRH_EAE_WS_URL"
-		expected-type="java.lang.String" />
 
 	<!-- Adresse du kiosque -->
 	<jee:jndi-lookup id="adresseKiosqueRH" jndi-name="KIOSQUE_URL"

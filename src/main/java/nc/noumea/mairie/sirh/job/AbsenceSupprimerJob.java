@@ -31,9 +31,7 @@ public class AbsenceSupprimerJob extends QuartzJobBean {
 	@Qualifier("SIRH_ABS_WS_Base_URL")
 	private String SIRH_ABS_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_ABS_WS_suppressionAbsenceUrl")
-	private String suppressionAbsenceUrl;
+	private static final String	suppressionAbsenceUrl	= "demandes/supprimerDemandeProvisoire";
 
 	@Autowired
 	private IDownloadDocumentService downloadDocumentService;

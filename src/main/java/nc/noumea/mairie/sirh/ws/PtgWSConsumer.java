@@ -18,9 +18,7 @@ public class PtgWSConsumer extends BaseWsConsumer implements IPtgWSConsumer {
 	@Qualifier("SIRH_PTG_WS_Base_URL")
 	private String SIRH_PTG_WS_Base_URL;
 
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_emailInformationUrl")
-	private String emailInformationUrl;
+	private static final String emailInformationUrl = "email/listDestinatairesEmailInfo";
 
 	@Override
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {

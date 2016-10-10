@@ -22,9 +22,7 @@ public class PointageService extends BaseWsConsumer implements IPointageService 
 	@Qualifier("SIRH_PTG_WS_Base_URL")
 	private String SIRH_PTG_WS_Base_URL;
 	
-	@Autowired
-	@Qualifier("SIRH_PTG_WS_etatPointageUrl")
-	private String etatPointageUrl;
+	private static final String etatPointageUrl = "etatPointage/majEtatPointagesByListId";
 	
 	@Autowired
 	private IPointagesDao pointagesDao;
