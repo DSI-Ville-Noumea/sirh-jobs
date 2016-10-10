@@ -60,7 +60,6 @@ public class PointagesReposCompJobTest {
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dS);
 		ReflectionTestUtils.setField(job, "helper", h);
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "U-");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ReposCompTaskUrlPart", "R?");
 		
 		// When
 		job.executeInternal(null);
@@ -70,7 +69,7 @@ public class PointagesReposCompJobTest {
 		Mockito.verify(pDao, Mockito.times(1)).rollBackTransaction();
 		Mockito.verify(pDao, Mockito.times(1)).commitTransaction();
 		
-		Mockito.verify(dS, Mockito.times(1)).downloadDocumentAs(String.class, "U-R?456", null);
+		Mockito.verify(dS, Mockito.times(1)).downloadDocumentAs(String.class, "U-reposcomp/startReposCompTask?idReposCompTask=456", null);
 		
 		assertEquals(curDate, t.getDateCalcul());
 		assertEquals("OK", t.getTaskStatus());
@@ -90,7 +89,7 @@ public class PointagesReposCompJobTest {
 		Mockito.when(pDao.getNextReposCompTask()).thenReturn(t).thenReturn(null);
 		
 		IDownloadDocumentService dS = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.doThrow(new Exception("message")).when(dS).downloadDocumentAs(String.class, "U-R?456", null);
+		Mockito.doThrow(new Exception("message")).when(dS).downloadDocumentAs(String.class, "U-reposcomp/startReposCompTask?idReposCompTask=456", null);
 		
 		Helper h = Mockito.mock(Helper.class);
 		Mockito.when(h.getCurrentDate()).thenReturn(curDate);
@@ -107,7 +106,6 @@ public class PointagesReposCompJobTest {
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dS);
 		ReflectionTestUtils.setField(job, "helper", h);
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "U-");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ReposCompTaskUrlPart", "R?");
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
 		
 		// When
@@ -118,7 +116,7 @@ public class PointagesReposCompJobTest {
 		Mockito.verify(pDao, Mockito.times(1)).rollBackTransaction();
 		Mockito.verify(pDao, Mockito.times(1)).commitTransaction();
 		
-		Mockito.verify(dS, Mockito.times(1)).downloadDocumentAs(String.class, "U-R?456", null);
+		Mockito.verify(dS, Mockito.times(1)).downloadDocumentAs(String.class, "U-reposcomp/startReposCompTask?idReposCompTask=456", null);
 		
 		assertEquals(curDate, t.getDateCalcul());
 		assertEquals("Erreur: message", t.getTaskStatus());

@@ -49,8 +49,6 @@ public class PointagesExportEtatsPayeurJobTest {
 		
 		PointagesExportEtatsPayeurJob job = new PointagesExportEtatsPayeurJob();
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "base");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurTaskUrl", "URL1");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurDoneUrl", "URL2");
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
 		
@@ -63,8 +61,8 @@ public class PointagesExportEtatsPayeurJobTest {
 		Mockito.verify(pdao, Mockito.times(1)).beginTransaction();
 		Mockito.verify(pdao, Mockito.times(1)).commitTransaction();
 		Mockito.verify(pdao, Mockito.never()).rollBackTransaction();
-		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseURL199", null);
-		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseURL299", null);
+		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseetatsPayeur/startExportTask?idExportEtatsPayeurTask=99", null);
+		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseetatsPayeur/finishExportTask?idExportEtatsPayeurTask=99", null);
 	}
 	
 	@Test
@@ -77,7 +75,7 @@ public class PointagesExportEtatsPayeurJobTest {
 		Mockito.when(pdao.getNextExportEtatsPayeurTask()).thenReturn(t);
 		
 		IDownloadDocumentService dd = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.doThrow(new Exception("MSG")).when(dd).downloadDocumentAs(String.class, "baseURL199", null);
+		Mockito.doThrow(new Exception("MSG")).when(dd).downloadDocumentAs(String.class, "baseetatsPayeur/startExportTask?idExportEtatsPayeurTask=99", null);
 		
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 			Mockito.doAnswer(new Answer<Object>() {
@@ -88,8 +86,6 @@ public class PointagesExportEtatsPayeurJobTest {
 		
 		PointagesExportEtatsPayeurJob job = new PointagesExportEtatsPayeurJob();
 		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_Base_URL", "base");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurTaskUrl", "URL1");
-		ReflectionTestUtils.setField(job, "SIRH_PTG_WS_ExportEtatsPayeurDoneUrl", "URL2");
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
@@ -103,7 +99,7 @@ public class PointagesExportEtatsPayeurJobTest {
 		Mockito.verify(pdao, Mockito.times(1)).beginTransaction();
 		Mockito.verify(pdao, Mockito.times(1)).commitTransaction();
 		Mockito.verify(pdao, Mockito.never()).rollBackTransaction();
-		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseURL199", null);
-		Mockito.verify(dd, Mockito.never()).downloadDocumentAs(String.class, "baseURL299", null);
+		Mockito.verify(dd, Mockito.times(1)).downloadDocumentAs(String.class, "baseetatsPayeur/startExportTask?idExportEtatsPayeurTask=99", null);
+		Mockito.verify(dd, Mockito.never()).downloadDocumentAs(String.class, "baseetatsPayeur/finishExportTask?idExportEtatsPayeurTask=99", null);
 	}
 }
