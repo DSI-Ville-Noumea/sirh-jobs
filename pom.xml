@@ -13,8 +13,8 @@
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4j.version>1.7.7</slf4j.version>
-		<spring.version>4.0.6.RELEASE</spring.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<spring.version>4.3.3.RELEASE</spring.version>
 	</properties>
 
 	<issueManagement>
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
+			<version>1.1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -126,14 +126,14 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.1</version>
+			<version>1.8.9</version>
 		</dependency>
 		
 		<!-- Quartz -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>2.2.1</version>
+			<version>2.2.3</version>
 		</dependency>
 
 		<!-- JDBC Drivers -->
@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.3</version>
+			<version>2.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -236,17 +236,17 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.18.1</version>
+			<version>1.19.2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
+			<version>2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
 			<artifactId>flexjson</artifactId>
-			<version>3.2</version>
+			<version>3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>cups4j</groupId>
@@ -256,7 +256,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.9</version>
+			<version>1.10</version>
 		</dependency>
 		<!-- pour eviter les erreurs sous eclipse -->
 		<dependency>
@@ -270,7 +270,7 @@
 		<dependency>
 		    <groupId>com.github.DSI-Ville-Noumea</groupId>
 		    <artifactId>sirh-alfresco-cmis-common</artifactId>
-		    <version>1.2.2</version>
+		    <version>1.2.3</version>
 		</dependency>
 
 	</dependencies>
