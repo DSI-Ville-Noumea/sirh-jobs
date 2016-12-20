@@ -257,11 +257,6 @@
 			<artifactId>flexjson</artifactId>
 			<version>3.3</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>cups4j</groupId> -->
-<!-- 			<artifactId>cups4j</artifactId> -->
-<!-- 			<version>0.6.10</version> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
