@@ -35,11 +35,11 @@ public class ReportingService extends DownloadDocumentService implements IReport
 	private static final String PARAM_FORMAT = "__format";
 
 	@Override
-	public InputStream getTableauAvancementsReport(int idCap, int idCadreEmploi, boolean avisEAE) throws Exception {
+	public InputStream getTableauAvancementsReport(int idCap, int idCadreEmploi, boolean avisEAE,Integer idAgentConnecte) throws Exception {
 
 		String url = String.format(sirhWsBaseUrl + sirhDownloadTabAvctPDFUrl);
 
-		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
+		String urlWSTableauAvctCAP = url + "?idCap=" + idCap + "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE+ "&idAgent=" + idAgentConnecte;
 
 		Map<String, String> map = new HashMap<String, String>();
 		ClientResponse response = createAndFireRequest(urlWSTableauAvctCAP, map);

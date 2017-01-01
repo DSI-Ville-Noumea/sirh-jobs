@@ -182,7 +182,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		try {
 			// download report and add it to the list of prints
 			String targetReportFilePath = String.format("%s_001_%s", job.getJobId(), "avct_table_report.pdf");
-			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE());
+			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE(),job.getAgentId());
 
 			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
 
