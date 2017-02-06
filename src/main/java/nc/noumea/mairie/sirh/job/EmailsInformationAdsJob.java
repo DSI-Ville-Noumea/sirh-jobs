@@ -8,15 +8,6 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import nc.noumea.mairie.ads.ws.IAdsWSConsumer;
-import nc.noumea.mairie.ads.ws.dto.EntiteDto;
-import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
-import nc.noumea.mairie.sirh.tools.Helper;
-import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
-import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
-import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
-import nc.noumea.mairie.sirh.ws.dto.LightUser;
-
 import org.apache.velocity.app.VelocityEngine;
 import org.joda.time.DateTime;
 import org.quartz.DisallowConcurrentExecution;
@@ -34,41 +25,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.util.CollectionUtils;
 
+import nc.noumea.mairie.ads.ws.IAdsWSConsumer;
+import nc.noumea.mairie.ads.ws.dto.EntiteDto;
+import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
+import nc.noumea.mairie.ads.ws.dto.MailADSDto;
+import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+
 @Service
 @DisallowConcurrentExecution
 public class EmailsInformationAdsJob extends QuartzJobBean {
 
-	private Logger logger = LoggerFactory.getLogger(EmailsInformationAdsJob.class);
+	private Logger							logger			= LoggerFactory.getLogger(EmailsInformationAdsJob.class);
 
 	@Autowired
-	private Helper helper;
+	private Helper							helper;
 
 	@Autowired
-	private IAdsWSConsumer adsWSConsumer;
+	private IAdsWSConsumer					adsWSConsumer;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private JavaMailSender					mailSender;
 
 	@Autowired
-	private VelocityEngine velocityEngine;
+	private VelocityEngine					velocityEngine;
 
 	@Autowired
-	private IRadiWSConsumer radiWSConsumer;
+	private IRadiWSConsumer					radiWSConsumer;
 
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
-	private Integer numberOfTries;
+	private Integer							numberOfTries;
 
 	@Autowired
 	@Qualifier("typeEnvironnement")
-	private String typeEnvironnement;
+	private String							typeEnvironnement;
 
 	@Autowired
-	private IIncidentLoggerService incidentLoggerService;
+	private IIncidentLoggerService			incidentLoggerService;
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
-	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
+	private static final SimpleDateFormat	sdf				= new SimpleDateFormat("dd/MM/yyyy");
+
+	private VoRedmineIncidentLogger			incidentRedmine	= new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
@@ -88,9 +88,9 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 		String todayToString = sdf.format(today.toDate());
 
 		List<EntiteHistoDto> listeEntiteHistoDto = adsWSConsumer.getListeEntiteHistoChangementStatutVeille();
-		List<Integer> listeIdAgentDestinataire = adsWSConsumer.getListeIdAgentEmailInfo();
+		MailADSDto dtoEnvoieMail = adsWSConsumer.getListeEmailInfo();
 
-		if (CollectionUtils.isEmpty(listeEntiteHistoDto) || CollectionUtils.isEmpty(listeIdAgentDestinataire))
+		if (CollectionUtils.isEmpty(listeEntiteHistoDto))
 			return;
 
 		for (EntiteHistoDto histo : listeEntiteHistoDto) {
@@ -99,21 +99,21 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 				histo.setCodeServiAS400(as400.getCodeServi());
 		}
 
-		sendEmailsInformationOneByOne(listeIdAgentDestinataire, listeEntiteHistoDto, today.toDate(), "Organigramme : Compte rendu des changements de statut du " + todayToString);
+		sendEmailsInformationOneByOne(dtoEnvoieMail, listeEntiteHistoDto, today.toDate(),
+				"Organigramme : Compte rendu des changements de statut du " + todayToString);
 
-		if(!incidentRedmine.getListException().isEmpty()) {
+		if (!incidentRedmine.getListException().isEmpty()) {
 			incidentLoggerService.logIncident(incidentRedmine);
 		}
-		
+
 		logger.info("Finished sending today's AdsEmailInformation...");
 	}
 
-	protected void sendEmailsInformationOneByOne(List<Integer> listeIdAgentDestinataire, List<EntiteHistoDto> listeEntiteHistoDto, final Date today, String stringSubject)
-			throws PointagesEmailsInformationException {
+	protected void sendEmailsInformationOneByOne(MailADSDto dtoEnvoieMail, List<EntiteHistoDto> listeEntiteHistoDto, final Date today,
+			String stringSubject) throws PointagesEmailsInformationException {
+		if (dtoEnvoieMail != null) {
 
-		for (Integer idAgent : listeIdAgentDestinataire) {
-
-			logger.info("Sending AdsEmailInformation with idAgent {}", idAgent);
+			logger.info("Sending AdsEmailInformation ");
 
 			int nbErrors = 0;
 			boolean succeeded = false;
@@ -121,35 +121,26 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 			while (nbErrors < numberOfTries && !succeeded) {
 
 				try {
-					sendEmailInformation(idAgent, listeEntiteHistoDto, today, stringSubject);
+					sendEmail(dtoEnvoieMail, listeEntiteHistoDto, today, stringSubject);
 					succeeded = true;
 				} catch (Exception ex) {
 					logger.warn("An error occured while trying to send AdsEmailInformation.");
 					logger.warn("Here follows the exception : ", ex);
 					// #28787 ne pas boucler sur le logger redmine
-					incidentRedmine.addException(ex, idAgent);
+					incidentRedmine.addException(ex, null);
 					nbErrors++;
 				}
 
 				if (nbErrors >= numberOfTries) {
-					logger.error("Stopped sending AdsEmailInformation a {} because exceeded the maximum authorized number of tries: {}.", stringSubject, numberOfTries);
+					logger.error("Stopped sending AdsEmailInformation a {} because exceeded the maximum authorized number of tries: {}.",
+							stringSubject, numberOfTries);
 				}
 			}
 		}
 	}
 
-	protected void sendEmailInformation(final Integer idAgent, final List<EntiteHistoDto> listeEntiteHistoDto, final Date theDate, final String stringSubject) throws Exception {
-
-		logger.debug("Sending AdsEmailInformation with idAgent {}", new Object[] { idAgent });
-
-		// Get the assignee email address for To
-		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
-
-		// Send the email
-		sendEmail(user, listeEntiteHistoDto, theDate, stringSubject);
-	}
-
-	protected void sendEmail(final LightUser user, final List<EntiteHistoDto> listeEntiteHistoDto, final Date theDate, final String stringSubject) throws Exception {
+	protected void sendEmail(final MailADSDto dtoEnvoieMail, final List<EntiteHistoDto> listeEntiteHistoDto, final Date theDate,
+			final String stringSubject) throws Exception {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
@@ -157,21 +148,41 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-				// Set the To
-				message.setTo(user.getMail());
+				String dest = "";
+				String copie = "";
+				String copieCachee = "";
+				for (String d : dtoEnvoieMail.getListeDestinataire()) {
+					dest = d + ";";
+				}
+				for (String d : dtoEnvoieMail.getListeCopie()) {
+					copie = d + ";";
+				}
+				for (String d : dtoEnvoieMail.getListeCopieCachee()) {
+					copieCachee = d + ";";
+				}
+
+				// destinataire
+				message.setTo(dest);
+				// copie
+				message.setCc(copie);
+				// copie cachée
+				message.setBcc(copieCachee);
 
 				// Set the body with velocity
 				Map model = new HashMap();
 				model.put("dateHistorique", sdf.format(theDate));
 				model.put("listeEntiteHistoDto", listeEntiteHistoDto);
-				model.put("typeEnvironnement", typeEnvironnement);
 
 				// Set the body with velocity
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/adsEmailInformationTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject(stringSubject);
+				String sujetMail = stringSubject;
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 

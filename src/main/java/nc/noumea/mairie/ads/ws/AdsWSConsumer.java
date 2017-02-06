@@ -12,6 +12,7 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import nc.noumea.mairie.ads.ws.dto.EntiteDto;
 import nc.noumea.mairie.ads.ws.dto.EntiteHistoDto;
+import nc.noumea.mairie.ads.ws.dto.MailADSDto;
 import nc.noumea.mairie.sirh.ws.BaseWsConsumer;
 
 @Service
@@ -20,7 +21,7 @@ public class AdsWSConsumer extends BaseWsConsumer implements IAdsWSConsumer {
 	@Autowired
 	@Qualifier("ADS_WS_Base_URL")
 	private String				ADS_WS_Base_URL;
-	private static final String	listeIdAgentEmailInfo					= "api/email/listeIdAgentEmailInfo";
+	private static final String	sirhAdsInfoEmailUrl						= "api/email/listeEmailInfo";
 	private static final String	listEntityHistoChangementStatutVeille	= "api/email/histoChangementStatutVeille";
 	private static final String	sirhAdsGetInfoSiservUrl					= "api/entite/infoSiserv/";
 
@@ -37,18 +38,6 @@ public class AdsWSConsumer extends BaseWsConsumer implements IAdsWSConsumer {
 	}
 
 	@Override
-	public List<Integer> getListeIdAgentEmailInfo() {
-
-		String url = String.format(ADS_WS_Base_URL + listeIdAgentEmailInfo);
-
-		Map<String, String> parameters = new HashMap<String, String>();
-
-		ClientResponse res = createAndFireGetRequest(parameters, url);
-
-		return readResponseAsList(Integer.class, res, url);
-	}
-
-	@Override
 	public EntiteDto getInfoSiservByIdEntite(Integer idEntite) {
 
 		if (null == idEntite) {
@@ -62,5 +51,17 @@ public class AdsWSConsumer extends BaseWsConsumer implements IAdsWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(EntiteDto.class, res, url);
+	}
+
+	@Override
+	public MailADSDto getListeEmailInfo() {
+
+		String url = String.format(ADS_WS_Base_URL + sirhAdsInfoEmailUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponse(MailADSDto.class, res, url);
 	}
 }
