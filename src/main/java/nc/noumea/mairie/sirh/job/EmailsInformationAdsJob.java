@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.joda.time.DateTime;
 import org.quartz.DisallowConcurrentExecution;
@@ -144,25 +145,12 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-				String dest = "";
-				String copie = "";
-				String copieCachee = "";
-				for (String d : dtoEnvoieMail.getListeDestinataire()) {
-					dest = d + ";";
-				}
-				for (String d : dtoEnvoieMail.getListeCopie()) {
-					copie = d + ";";
-				}
-				for (String d : dtoEnvoieMail.getListeCopieCachee()) {
-					copieCachee = d + ";";
-				}
-
 				// destinataire
-				message.setTo(dest);
+				message.setTo(StringUtils.join(dtoEnvoieMail.getListeDestinataire(),","));
 				// copie
-				message.setCc(copie);
+				message.setCc(StringUtils.join(dtoEnvoieMail.getListeCopie(),","));
 				// copie cachée
-				message.setBcc(copieCachee);
+				message.setBcc(StringUtils.join(dtoEnvoieMail.getListeCopieCachee(),","));
 
 				// Set the body with velocity
 				Map model = new HashMap();
