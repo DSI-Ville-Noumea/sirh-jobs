@@ -32,7 +32,6 @@ import nc.noumea.mairie.ads.ws.dto.MailADSDto;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
-import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 
 @Service
 @DisallowConcurrentExecution
@@ -51,9 +50,6 @@ public class EmailsInformationAdsJob extends QuartzJobBean {
 
 	@Autowired
 	private VelocityEngine					velocityEngine;
-
-	@Autowired
-	private IRadiWSConsumer					radiWSConsumer;
 
 	@Autowired
 	@Qualifier("numberOfTriesEmailInformation")
