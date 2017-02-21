@@ -78,6 +78,7 @@
 				<value>nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask</value>
 				<value>nc.noumea.mairie.ptg.domain.EtatPointage</value>
 				<value>nc.noumea.mairie.ptg.domain.ReposCompTask</value>
+				<value>nc.noumea.mairie.ptg.domain.TitreRepasExportEtatsPayeurTask</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
