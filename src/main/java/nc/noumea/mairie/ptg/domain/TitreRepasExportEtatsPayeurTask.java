@@ -11,6 +11,7 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "PTG_TR_EXPORT_ETATS_PAYEUR_TASK")
@@ -25,6 +26,11 @@ public class TitreRepasExportEtatsPayeurTask {
 
 	@Column(name = "ID_AGENT")
 	private Integer	idAgent;
+
+	@NotNull
+	@Column(name = "DATE_MONTH", nullable = false)
+	@Temporal(TemporalType.DATE)
+	private Date dateMonth;
 
 	@Column(name = "DATE_CREATION")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -75,5 +81,13 @@ public class TitreRepasExportEtatsPayeurTask {
 
 	public void setTaskStatus(String taskStatus) {
 		this.taskStatus = taskStatus;
+	}
+
+	public Date getDateMonth() {
+		return dateMonth;
+	}
+
+	public void setDateMonth(Date dateMonth) {
+		this.dateMonth = dateMonth;
 	}
 }
