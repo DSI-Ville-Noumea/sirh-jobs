@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 public class TitreRepasExportEtatsPayeurTask {
 
 	@Id
-	@Column(name = "ID_T_EXPORT_ETATS_PAYEUR_TASK")
+	@Column(name = "ID_TR_EXPORT_ETATS_PAYEUR_TASK")
 	private Integer	idTitreRepasExportEtatsPayeurTask;
 
 	@Column(name = "ID_AGENT")
