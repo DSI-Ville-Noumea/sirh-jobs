@@ -6,6 +6,7 @@ import nc.noumea.mairie.ptg.domain.EtatPointageEnum;
 import nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.ReposCompTask;
+import nc.noumea.mairie.ptg.domain.TitreRepasExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
 public interface IPointagesDao {
@@ -25,4 +26,7 @@ public interface IPointagesDao {
 	List<Integer> getListePtgRefusesEtRejetesPlus3Mois(EtatPointageEnum etat);
 
 	ReposCompTask getNextReposCompTask();
+
+	//pour les titres repas
+	TitreRepasExportEtatsPayeurTask getNextTitreRepasExportEtatsPayeurTask();
 }
