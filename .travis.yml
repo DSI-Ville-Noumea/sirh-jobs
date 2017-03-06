@@ -29,10 +29,10 @@ deploy:
   api_key:
     secure: BDTFBgV0xVx+zQU9wyHQcJNXsPUyMLe0Zb8e4Ej+7LgW9lpwUIkdVB76vtkVtehOq439Q4IpZiYEW324DmORD8f/o5dVvHurvCZGmA7ZJIfifpxsu0I53ptbf9zE9Lf38njYRf2byFRPISoTeHWeWbsynJbylFgfqpwbk4KEVUyEknNAaEnmlr1ac3iEumY2ehqnnKXNe1908GmtT69qll5pa4HubGMUDim7Z0IL3fGgvsVtCpi19PnW6oj+XSi2DhGLxWsyiaZNTxerc5mfyhaXpPuLvbSBx5qFLlMngW7ew2Nk2fSZlv0aXXbZIMay4mNHvgrgfZCo0K9mDS2p9GKmvzlenJbfo+k2hLywWHuf/MJgjZIQzdW5lzrucV7l1Er78Ie78EGehwiqny4CACGkoOq9p9u045O4vKyumBn5XUdi8gnkQfkhAHakU2qlOZwZY5TeQqA1wCcqQ/+0Jx5zObElFYddDUZ1WJS0Xl5WK9dAS9uiJXI6FZj/bLBRqUiG05SgaV1XH9q6jQb4Mhu0DSWSyhM6cZQv30eWnXiEiwSWwx/KDgBpUmVB+/fzDVcsALecJFA0QoAVmOeMQN4HRqC93+EljUCi7M1DDytchQAe+uYtRWPNhH3xQ5kN+2NdIO2sR0LE2ukoGjfuWeyJNTT8SXGCfZu/beTNwxw=
   file:
-    - ${RELEASE_PKG_FILE}
-    - ${RELEASE_PKG_MD5_FILE}
-    - ${RELEASE_PKG_SHA_FILE}
-    skip_cleanup: true
-    on:
-      tags: true
-      repo: DSI-Ville-Noumea/sirh-jobs
+  - ${RELEASE_PKG_FILE}
+  - ${RELEASE_PKG_MD5_FILE}
+  - ${RELEASE_PKG_SHA_FILE}
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: DSI-Ville-Noumea/sirh-jobs
