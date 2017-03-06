@@ -19,19 +19,20 @@ before_deploy:
 - export RELEASE_PKG_FILE=$(ls target/*.war)
 - export RELEASE_PKG_MD5_FILE=$(ls target/*.war.md5)
 - export RELEASE_PKG_SHA_FILE=$(ls target/*.war.sha1)
-- echo "deploying $RELEASE_PKG_FILE , $RELEASE_PKG_MD5_FILE , $RELEASE_PKG_SHA_FILE to GitHub releases"
-deploy:
-  provider: releases
-  api_key:
-    secure: TwzQHlKR62mJdc7Jyy7ZE869K/7Rxnc/YRYPO4DnReN8wZvYHS+xWoPDBD3gDTihAO3dYbFOee3zNeAsXcv9ALI/Pm0ff01FsWytjc37Y2+13FQevlhutQ8YQi5+OXF6nYSFmKNtwwvpM18GhtDGtT/HAcB66/+ugKyhYLTSQ4BSKj+RjIIo9/wcO9YsLzYqnUwnrPpehNULBwI+rG7byLUqE2UW00Gy6XPmOFHM89zYVvzsaJlZ4gI8vAx9lDZS7qBWpTp85/9VkutpgsULphPYBgfAqKv+kQ6YiV4j1dEIxJncfG/QN3RGUeEObG9kcw8XItRdtpMoUMdHsnH0MjtCWhnbJNQrgbOTlJuc2nqCFqE9B6wrUCKdwmsnlWhRYHc2llqnxpxU5Mh5XndnE3UskLjnFE4cDEaeJtqlKQuzXxhVfFnxQddjPU78d3iPww3uFjmHm32Y1OGwyh48H+1dJpkEXiBDmIXrBImSC3v4+yOeDp5Mu3HWnFUzX9CNcdr50SXKAOxWqRMABrjZZOVBhbvk/Ap16STfYR1x3Lzz1OTLLHSmnqUo6CXBEjZbfMNka1+QVkWhKVU/d6AovP1slIk55WQLDAji72ZefaUIZPeDaahzsx5HDRnmDoypSN/0YoX8m5z7dHXx75OoLZTRn1S/4k8H7IcNl2plenI=
-  file:
-  - ${RELEASE_PKG_FILE}
-  - ${RELEASE_PKG_MD5_FILE}
-  - ${RELEASE_PKG_SHA_FILE}
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: DSI-Ville-Noumea/sirh-jobs
+- echo "deploying $RELEASE_PKG_FILE , $RELEASE_PKG_MD5_FILE , $RELEASE_PKG_SHA_FILE
+  to GitHub releases"
 notifications:
   slack:
     secure: E5vkBwd+3c9tCnGbhz2XgbOINuJCmGxz2FlLJghPGqmhFQSZHkqaKrvcOCEkQiIIJ6Y2A1PiTE1rccfsZ2oUWHWbtP+Bt1+iviyAcxx/zEudj/N6fwFlqkqKQ46hvAkyVyptaOHn7ZBzEwG41iZxnVOHQ0iCfNwrwdrEIvq2FYFPOw3jemU4UOyHX0tvi1OkcTsilHRP2ndaq20ZZ4fgENNgp2jo8h7lAfPKPgrsy4MZJbUGiXw3F4JJsEOw5Bqa17ldaRJQtw8DEqmkdsGqqsCbM+HKC78Rveq5qO3vAEec8gKZblgyEAJl4U23FufOohlKzGARel6u7ivbIuovFMYJQLy/NqX82oT8q82XW14nAOnhzlvdlxblTT1Bn9S38mNwQCV+Y7q21nZif3/0A77C5B+rYjge2A4xS61I7YrjlvG491zsXy5RGrW/muHCxTVOju93p/fQhk6d8ANTQYt51yZ5Bogo+wARiVKKLR3skBPK+FVC3QCHqlUXv1RdaGb05ORlmPBkhR162zSouox1ZPOsmbiRHYvia4+3dNDGzLKj1+Qne+vvpp0iw/K7kCCTXFLwOTD90Eda+Us9T5x0RHdSODAKDXX8sb6dxDcAMG1Sq6KjecTHpwFcORYlfGORmBBHsMtF6HpdKVmVhMiadrqwY92kCIK4ghXF8bI=
+deploy:
+  provider: releases
+  api_key:
+    secure: BDTFBgV0xVx+zQU9wyHQcJNXsPUyMLe0Zb8e4Ej+7LgW9lpwUIkdVB76vtkVtehOq439Q4IpZiYEW324DmORD8f/o5dVvHurvCZGmA7ZJIfifpxsu0I53ptbf9zE9Lf38njYRf2byFRPISoTeHWeWbsynJbylFgfqpwbk4KEVUyEknNAaEnmlr1ac3iEumY2ehqnnKXNe1908GmtT69qll5pa4HubGMUDim7Z0IL3fGgvsVtCpi19PnW6oj+XSi2DhGLxWsyiaZNTxerc5mfyhaXpPuLvbSBx5qFLlMngW7ew2Nk2fSZlv0aXXbZIMay4mNHvgrgfZCo0K9mDS2p9GKmvzlenJbfo+k2hLywWHuf/MJgjZIQzdW5lzrucV7l1Er78Ie78EGehwiqny4CACGkoOq9p9u045O4vKyumBn5XUdi8gnkQfkhAHakU2qlOZwZY5TeQqA1wCcqQ/+0Jx5zObElFYddDUZ1WJS0Xl5WK9dAS9uiJXI6FZj/bLBRqUiG05SgaV1XH9q6jQb4Mhu0DSWSyhM6cZQv30eWnXiEiwSWwx/KDgBpUmVB+/fzDVcsALecJFA0QoAVmOeMQN4HRqC93+EljUCi7M1DDytchQAe+uYtRWPNhH3xQ5kN+2NdIO2sR0LE2ukoGjfuWeyJNTT8SXGCfZu/beTNwxw=
+  file:
+    - ${RELEASE_PKG_FILE}
+    - ${RELEASE_PKG_MD5_FILE}
+    - ${RELEASE_PKG_SHA_FILE}
+    skip_cleanup: true
+    on:
+      tags: true
+      repo: DSI-Ville-Noumea/sirh-jobs
