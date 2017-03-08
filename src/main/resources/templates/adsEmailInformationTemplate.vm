@@ -14,7 +14,8 @@
 			Bonjour, 
 		</p>
 		<p>
-			Retrouvez ci-dessous le compte rendu des passages de statuts dans l'application organigramme pour la journée du ${dateHistorique} pour l'environnement  ${typeEnvironnement} : <br /> <br />
+			Pour information, la DRH a mis en place de nouveaux codes services liés à la réorganisation municipale en cours.<br /><br />
+			Ci-dessous vous avez la liste des modifications effectuées sur le référentiel des codes services : <br /> <br />
 		</p>
 		
 		<table>
@@ -51,8 +52,17 @@
 		</table>
 		
 		<br /><br />
+		<p>Ces changements pourraient avoir un impact sur le système d’information dont vous avez la charge, exemple :</p>
+		<ul>
+  			<li>Gestion financière</li>
+  			<li>Gestion du courrier</li>
+  			<li>Gestion des véhicules</li>
+  			<li>Gestion des listes de diffusions</li>
+  			<li>Répertoires sur « cristal »</li>
+		</ul>
 		<p>
-			Cordialement,
+			Pour toute remarque relative aux sigles et aux intitulés des services, merci de contacter la DRH.<br /><br />		
+			Pour tout autre problème, merci de contacter la DSI au 6189 ou via EasyVista.
 		</p>
 		<br/>
 		<div>
