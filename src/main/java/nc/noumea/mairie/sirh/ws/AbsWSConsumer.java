@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import nc.noumea.mairie.sirh.ws.dto.ActeursDto;
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
@@ -23,6 +24,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	private String				SIRH_ABS_WS_Base_URL;
 
 	private static final String	emailInformationUrl				= "email/listDestinatairesEmailInfo";
+
 	private static final String	listeCompteurAnneePrecedenteUrl	= "reposcomps/getListeCompteurAnneePrecedente";
 	private static final String	resetCompteurAnneePrecedenteUrl	= "reposcomps/resetCompteurAnneePrecedente";
 	private static final String	listeCompteurAnneeEnCoursUrl	= "reposcomps/getListeCompteurAnneeEnCours";
@@ -30,6 +32,9 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	private static final String	listeCompteurCongeAnnuelUrl		= "congeannuel/getListeCompteurCongeAnnuel";
 	private static final String	resetCompteurCongeAnnuelUrl		= "congeannuel/resetCompteurCongeAnnuel";
 	private static final String	getDemande						= "demandes/demande";
+	private static final String	listDemandeRejetDRHStatutVeille	= "demandes/listDemandeRejetDRHStatutVeille";
+	private static final String	listIdActeursByAgent			= "droits/listeActeurs";
+
 	private static final String	alimentationAutoCongeAnnuelUrl	= "congeannuel/alimentationAutoCongesAnnuels";
 	private static final String	miseAJourSpsoldUrl				= "congeannuel/miseAJourSpsold";
 	private static final String	miseAJourSpsorcUrl				= "reposcomps/miseAJourSpsorc";
@@ -174,5 +179,30 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
 		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getListDemandeAbsenceRejetDRHVeille() {
+
+		String url = String.format(SIRH_ABS_WS_Base_URL + listDemandeRejetDRHStatutVeille);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponseAsList(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public ActeursDto getListIdActeursByAgent(String idAgent) {
+
+		String url = String.format(SIRH_ABS_WS_Base_URL + listIdActeursByAgent);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", idAgent);
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponse(ActeursDto.class, res, url);
 	}
 }

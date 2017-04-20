@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Nous vous informons que vous avez des demandes d'absences qui ont été rejetées par la DRH : <br />
+		</p>
+
+		<table>
+			<tr>
+				<td>Nom</td>
+				<td>Prénom</td>
+				<td>Type demande</td>
+				<td>Date de la demande</td>
+			</tr>
+			#foreach($demandeDto in $listeDemandeDto)
+			    <tr>
+				    <td>$demandeDto.agentWithServiceDto.nom</td>
+				    <td>$demandeDto.agentWithServiceDto.prenom</td>
+				    <td>$demandeDto.libelleTypeDemande</td>
+				    <td>$demandeDto.dateEnString</td>
+			  	</tr>
+			#end
+		</table>
+
+		<p>
+			Cordialement,
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>

@@ -3,12 +3,15 @@ package nc.noumea.mairie.sirh.ws;
 import java.util.Date;
 import java.util.List;
 
+import nc.noumea.mairie.sirh.ws.dto.ActeursDto;
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 
 public interface IAbsWSConsumer {
 
 	public EmailInfoDto getListIdDestinatairesEmailInfo();
+
+	public ActeursDto getListIdActeursByAgent(String idAgent);
 
 	List<Integer> getListeCompteurAnneePrecedente();
 
@@ -29,4 +32,6 @@ public interface IAbsWSConsumer {
 	public ReturnMessageDto miseAJourSpSoldAgent(String idAgent);
 
 	public ReturnMessageDto miseAJourSpSorcAgent(String idAgent);
+
+	public List<DemandeDto> getListDemandeAbsenceRejetDRHVeille();
 }
