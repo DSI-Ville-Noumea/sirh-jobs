@@ -1,7 +1,10 @@
 package nc.noumea.mairie.sirh.job;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,6 +19,7 @@ import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.TitreRepasExportEtatsPayeurTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
 
 @Service
 @DisallowConcurrentExecution
@@ -57,11 +61,26 @@ public class TitreRepasExportEtatsPayeurJob extends QuartzJobBean {
 			// on appele le WS qui fait l'etat du payeur
 			String url = String.format("%s%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_TitreRepasGenerePayeurUrl, eT.getIdAgent());
 			logger.info("Calling url {}...", url);
-			downloadDocumentService.downloadDocumentAs(String.class, url, null);
+			ReturnMessageDto rmDto = downloadDocumentService.downloadDocumentAs(ReturnMessageDto.class, url, null);
 
 			// At this point, everything went allright, the status can be
 			// updated to OK
-			eT.setTaskStatus("OK");
+			if (rmDto != null) {
+				// #38053 : jamais on n'affiche le messag d'erreur si il y a
+				List<String> listErr = new ArrayList<>();
+				if (rmDto.getErrors().size() > 0) {
+					for (String erreur : rmDto.getErrors()) {
+						if (!listErr.contains(erreur)) {
+							listErr.add(erreur);
+						}
+					}
+					eT.setTaskStatus("Erreur : " + StringUtils.join(listErr, "."));
+				} else {
+					eT.setTaskStatus("OK");
+				}
+			} else {
+				eT.setTaskStatus("Erreur : ReturnMessageDto is null.");
+			}
 		} catch (Exception ex) {
 			logger.error("An error occured trying to process TitreRepasExportEtatsPayeurTask :", ex);
 			eT.setTaskStatus(String.format("Erreur: %s", ex.getMessage()));
