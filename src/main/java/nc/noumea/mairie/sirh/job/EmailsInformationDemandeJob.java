@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
@@ -136,10 +137,15 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 		logger.debug("Sending AbsEmailInformation with idAgent {}", new Object[] { idAgent });
 
 		// Get the assignee email address for To
-		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+		// #38736 : on ne gere plus de tickets pour ces cas là
+		try {
+			LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
 
-		// Send the email
-		sendEmail(user, theDate, stringSubject);
+			// Send the email
+			sendEmail(user, theDate, stringSubject);
+		} catch (DaoException e) {
+			// on ne fait rien
+		}
 	}
 
 	protected void sendEmail(final LightUser user, final Date theDate, final String stringSubject) throws Exception {
