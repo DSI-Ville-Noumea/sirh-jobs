@@ -62,6 +62,10 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
+
+	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
 	
 	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
@@ -169,7 +173,11 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject("[KIOSQUE RH] Demande d'absences à " + stringSubject);
+				String sujetMail = "[KIOSQUE RH] Demande d'absences à " + stringSubject;
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 

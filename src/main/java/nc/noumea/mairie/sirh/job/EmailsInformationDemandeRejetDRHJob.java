@@ -62,6 +62,10 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 	private Integer					numberOfTries;
 
 	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
+
+	@Autowired
 	private IIncidentLoggerService	incidentLoggerService;
 
 	private VoRedmineIncidentLogger	incidentRedmine	= new VoRedmineIncidentLogger(this.getClass().getSimpleName());
@@ -202,7 +206,11 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject("[KIOSQUE RH] Demande d'absences qui ont été rejetées par la DRH");
+				String sujetMail = "[KIOSQUE RH] Demande d'absences qui ont été rejetées par la DRH";
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 

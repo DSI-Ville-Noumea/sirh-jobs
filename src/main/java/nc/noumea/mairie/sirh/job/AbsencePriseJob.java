@@ -79,6 +79,10 @@ public class AbsencePriseJob extends QuartzJobBean {
 	private Integer numberOfTries;
 
 	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
+
+	@Autowired
 	private VelocityEngine velocityEngine;
 
 	@Autowired
@@ -272,9 +276,15 @@ public class AbsencePriseJob extends QuartzJobBean {
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
 						"templates/sirhCongeUniqueEmailInformationTemplate.vm", "UTF-8", model);
 				message.setText(text, true);
+				
+
 
 				// Set the subject
-				message.setSubject(stringSubject);
+				String sujetMail = stringSubject;
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 

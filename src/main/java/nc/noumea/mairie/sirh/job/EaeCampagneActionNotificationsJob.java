@@ -74,6 +74,10 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 	private Integer						numberOfTries;
 
 	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
+
+	@Autowired
 	private IIncidentLoggerService		incidentLoggerService;
 
 	private static FileSystemManager	fsManager;
@@ -196,8 +200,11 @@ public class EaeCampagneActionNotificationsJob extends QuartzJobBean implements 
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject(
-						String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(), eaeCampagneAction.getFormattedDateAfaire()));
+				String sujetMail = String.format("%s à faire pour le %s", eaeCampagneAction.getNomAction(), eaeCampagneAction.getFormattedDateAfaire());
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 
 				logger.debug("nb docs {}", eaeCampagneAction.getEaeDocuments().size());
 

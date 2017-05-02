@@ -56,6 +56,10 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 	private Integer numberOfTries;
 
 	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
+
+	@Autowired
 	@Qualifier("adresseKiosqueRH")
 	private String adresseKiosque;
 
@@ -161,7 +165,11 @@ public class EmailsInformationPointagesJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject("[KIOSQUE RH] Pointages à " + stringSubject);
+				String sujetMail = "[KIOSQUE RH] Pointages à " + stringSubject;
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 
