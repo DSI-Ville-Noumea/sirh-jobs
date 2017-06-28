@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
+import com.sun.jersey.api.client.ClientResponse;
+
 import nc.noumea.mairie.ptg.dao.IPointagesDao;
 import nc.noumea.mairie.ptg.domain.TitreRepasExportEtatsPayeurTask;
 import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
@@ -61,7 +63,11 @@ public class TitreRepasExportEtatsPayeurJob extends QuartzJobBean {
 			// on appele le WS qui fait l'etat du payeur
 			String url = String.format("%s%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_TitreRepasGenerePayeurUrl, eT.getIdAgent());
 			logger.info("Calling url {}...", url);
-			ReturnMessageDto rmDto = downloadDocumentService.downloadDocumentAs(ReturnMessageDto.class, url, null);
+			
+			ClientResponse res = downloadDocumentService.createAndFireRequest(url, null);			
+
+			ReturnMessageDto rmDto = downloadDocumentService.readResponse(ReturnMessageDto.class, res, url);
+
 
 			// At this point, everything went allright, the status can be
 			// updated to OK
