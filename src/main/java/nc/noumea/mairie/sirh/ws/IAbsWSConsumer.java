@@ -12,6 +12,8 @@ public interface IAbsWSConsumer {
 	public EmailInfoDto getListIdDestinatairesEmailInfo();
 
 	public ActeursDto getListIdActeursByAgent(String idAgent);
+	
+	EmailInfoDto getListIdApprobateursEmailMaladie();
 
 	List<Integer> getListeCompteurAnneePrecedente();
 

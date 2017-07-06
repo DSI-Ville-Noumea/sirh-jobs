@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Nous vous informons que des absences ont &eacute;t&eacute; saisies dans le journée d'hier pour vos agents.<br />
+			Vous pouvez visonnez ces demandes sur le Kiosque RH, en utilisant les filtres appropriés.
+		</p>
+		<p>
+			<a href="${adresseKiosque}">${adresseKiosque}</a> 
+		</p>
+		<p>
+			Cordialement.
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>

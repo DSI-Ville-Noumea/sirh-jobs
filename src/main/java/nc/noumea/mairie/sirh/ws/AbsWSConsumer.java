@@ -24,6 +24,7 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	private String				SIRH_ABS_WS_Base_URL;
 
 	private static final String	emailInformationUrl				= "email/listDestinatairesEmailInfo";
+	private static final String	emailMaladiesUrl				= "email/listApprobateursEmailMaladie";
 
 	private static final String	listeCompteurAnneePrecedenteUrl	= "reposcomps/getListeCompteurAnneePrecedente";
 	private static final String	resetCompteurAnneePrecedenteUrl	= "reposcomps/resetCompteurAnneePrecedente";
@@ -43,6 +44,18 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	public EmailInfoDto getListIdDestinatairesEmailInfo() {
 
 		String url = String.format(SIRH_ABS_WS_Base_URL + emailInformationUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponse(EmailInfoDto.class, res, url);
+	}
+
+	@Override
+	public EmailInfoDto getListIdApprobateursEmailMaladie() {
+
+		String url = String.format(SIRH_ABS_WS_Base_URL + emailMaladiesUrl);
 
 		Map<String, String> parameters = new HashMap<String, String>();
 
