@@ -37,6 +37,7 @@ public class EmailsInformationDemandeJobTest {
 		helperMock = Mockito.mock(Helper.class);
 		when(helperMock.getCurrentDate()).thenReturn(theDate);
 		when(helperMock.getEmployeeNumber(9)).thenReturn("90");
+		when(helperMock.getEmployeeNumber(10)).thenReturn("100");
 	}
 
 	@Test
@@ -230,6 +231,86 @@ public class EmailsInformationDemandeJobTest {
 		ReflectionTestUtils.setField(service, "mailSender", mailSender);
 
 		service.sendEmailsInformation();
+
+		// Then
+		verify(mailSender, times(2)).send(Mockito.isA(MimeMessagePreparator.class));
+	}
+
+	@Test
+	public void EmailsMaladieJob_OneEmailToSend() throws AbsEmailsInformationException, DaoException {
+
+		List<Integer> listApprobateur = new ArrayList<Integer>();
+		listApprobateur.add(9);
+		
+		LightUser user = new LightUser();
+		user.setMail("test@test.nc");
+
+		EmailInfoDto dto = new EmailInfoDto();
+		dto.setListApprobateurs(listApprobateur);
+
+		// Given
+		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);
+		when(absWSConsumer.getListIdApprobateursEmailMaladie()).thenReturn(dto);
+
+		JavaMailSender mailSender = Mockito.mock(JavaMailSender.class);
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				return true;
+			}
+		}).when(mailSender).send(Mockito.isA(MimeMessagePreparator.class));
+
+		IRadiWSConsumer radiWSConsumer = Mockito.mock(IRadiWSConsumer.class);
+		when(radiWSConsumer.retrieveAgentFromLdapFromMatricule("90")).thenReturn(user);
+
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
+		ReflectionTestUtils.setField(service, "radiWSConsumer", radiWSConsumer);
+		ReflectionTestUtils.setField(service, "numberOfTries", 2);
+		ReflectionTestUtils.setField(service, "mailSender", mailSender);
+
+		service.sendEmailsMaladies();
+
+		// Then
+		verify(mailSender, times(1)).send(Mockito.isA(MimeMessagePreparator.class));
+	}
+
+	@Test
+	public void EmailsMaladieJob_TwoEmailToSend() throws AbsEmailsInformationException, DaoException {
+
+		List<Integer> listApprobateur = new ArrayList<Integer>();
+		listApprobateur.add(9);
+		listApprobateur.add(10);
+		
+		LightUser user = new LightUser();
+		user.setMail("test@test.nc");
+
+		EmailInfoDto dto = new EmailInfoDto();
+		dto.setListApprobateurs(listApprobateur);
+
+		// Given
+		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);
+		when(absWSConsumer.getListIdApprobateursEmailMaladie()).thenReturn(dto);
+
+		JavaMailSender mailSender = Mockito.mock(JavaMailSender.class);
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				return true;
+			}
+		}).when(mailSender).send(Mockito.isA(MimeMessagePreparator.class));
+
+		IRadiWSConsumer radiWSConsumer = Mockito.mock(IRadiWSConsumer.class);
+		when(radiWSConsumer.retrieveAgentFromLdapFromMatricule("90")).thenReturn(user);
+		when(radiWSConsumer.retrieveAgentFromLdapFromMatricule("100")).thenReturn(user);
+
+		EmailsInformationDemandeJob service = new EmailsInformationDemandeJob();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "absWSConsumer", absWSConsumer);
+		ReflectionTestUtils.setField(service, "radiWSConsumer", radiWSConsumer);
+		ReflectionTestUtils.setField(service, "numberOfTries", 2);
+		ReflectionTestUtils.setField(service, "mailSender", mailSender);
+
+		service.sendEmailsMaladies();
 
 		// Then
 		verify(mailSender, times(2)).send(Mockito.isA(MimeMessagePreparator.class));
