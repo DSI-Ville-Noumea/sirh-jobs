@@ -1,12 +1,18 @@
 package nc.noumea.mairie.sirh.ws.dto;
 
+import java.util.Date;
+
 public class DemandeDto {
 
-	private AgentWithServiceDto agentWithServiceDto;
+	private AgentWithServiceDto	agentWithServiceDto;
 
-	private Integer idDemande;
-	private Integer idTypeDemande;
-	private String libelleTypeDemande;
+	private Integer				idDemande;
+	private Integer				idTypeDemande;
+	private String				libelleTypeDemande;
+	private Date				dateDebut;
+
+	// pour l'envoi des mails
+	private String				dateEnString;
 
 	public DemandeDto() {
 	}
@@ -46,6 +52,22 @@ public class DemandeDto {
 
 	public void setLibelleTypeDemande(String libelleTypeDemande) {
 		this.libelleTypeDemande = libelleTypeDemande;
+	}
+
+	public Date getDateDebut() {
+		return dateDebut;
+	}
+
+	public void setDateDebut(Date dateDebut) {
+		this.dateDebut = dateDebut;
+	}
+
+	public String getDateEnString() {
+		return dateEnString;
+	}
+
+	public void setDateEnString(String dateEnString) {
+		this.dateEnString = dateEnString;
 	}
 
 }

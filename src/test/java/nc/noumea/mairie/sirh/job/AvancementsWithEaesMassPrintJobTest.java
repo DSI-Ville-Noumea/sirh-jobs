@@ -103,7 +103,7 @@ public class AvancementsWithEaesMassPrintJobTest {
 		// pj.getFilesToPrint().get(2));
 
 		Mockito.verify(daoMock, Mockito.times(1)).updateAvctCapPrintJob(pj);
-		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReport(11, 87, false);
+		Mockito.verify(reportingServiceMock, Mockito.times(1)).getTableauAvancementsReport(11, 87, false,pj.getAgentId());
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getAvctFirstLastPrintPage("SIRH_AVCT_20130222-090607_9005138_11_87", "login",
 				"CODE CAP", "CADRE EMPLOI", new DateTime(2013, 02, 25, 10, 48, 0).toDate(), true, true);
 		Mockito.verify(reportingServiceMock, Mockito.times(1)).getAvctFirstLastPrintPage("SIRH_AVCT_20130222-090607_9005138_11_87", "login",

@@ -89,6 +89,10 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 
 	private FileSystemManager			vfsManager;
 
+	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
+
 	public FileSystemManager getVfsManager() throws FileSystemException {
 
 		if (vfsManager == null)
@@ -182,7 +186,7 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 		try {
 			// download report and add it to the list of prints
 			String targetReportFilePath = String.format("%s_001_%s", job.getJobId(), "avct_table_report.pdf");
-			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE());
+			inputStream = reportingService.getTableauAvancementsReport(job.getIdCap(), job.getIdCadreEmploi(), job.isAvisEAE(),job.getAgentId());
 
 			pH.printDocument(inputStream, targetReportFilePath, job.getLogin());
 
@@ -287,7 +291,11 @@ public class AvancementsWithEaesMassPrintJob extends QuartzJobBean implements IA
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject(String.format("[SIRH-JOBS] Erreur lors de l'impression des avancements"));
+				String sujetMail = String.format("[SIRH-JOBS] Erreur lors de l'impression des avancements");
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 

@@ -61,14 +61,14 @@
 		description="SIRH-EAE reports path on Birt" value="report/sirh-reports/"
 		override="false" />
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
-		description="BIRT report viewer base URL for EAEs reporting" value="http://***REMOVED***:8085/birt/"
+		description="BIRT report viewer base URL for EAEs reporting" value="http://***REMOVED***:8210/birt/"
 		override="false" />
 
 	<!-- -->
 	<!-- WS PTG -->
 	<!-- -->
 	<Environment name="SIRH_PTG_WS_URL" type="java.lang.String"
-		description="sirh-ptg-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-ptg-ws/"
+		description="sirh-ptg-ws base Url endpoint" value="http://***REMOVED***:8210/sirh-ptg-ws/"
 		override="false" />
 
 
@@ -76,7 +76,7 @@
 	<!-- WS ABS -->
 	<!-- -->
 	<Environment name="SIRH_ABS_WS_URL" type="java.lang.String"
-		description="sirh-abs-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-abs-ws/"
+		description="sirh-abs-ws base Url endpoint" value="http://***REMOVED***:8210/sirh-abs-ws/"
 		override="false" />
 
 
@@ -84,21 +84,21 @@
 	<!-- WS EAE -->
 	<!-- -->
 	<Environment name="SIRH_EAE_WS_URL" type="java.lang.String"
-		description="sirh-eae-ws base Url endpoint" value="http://***REMOVED***:8085/sirh-eae-ws/"
+		description="sirh-eae-ws base Url endpoint" value="http://***REMOVED***:8210/sirh-eae-ws/"
 		override="false" />
 
 	<!-- -->
 	<!-- WS SIRH -->
 	<!-- -->
 	<Environment name="SIRH_WS_URL" type="java.lang.String"
-		description="sirh-ws base Url endpoint" value="http://***REMOVED***:8085/sirhws/"
+		description="sirh-ws base Url endpoint" value="http://***REMOVED***:8210/sirhws/"
 		override="false" />
 
 	<!-- -->
 	<!-- WS ADS -->
 	<!-- -->
 	<Environment name="ADS_WS_URL" type="java.lang.String"
-		description="ADS WS endpoint url" value="http://***REMOVED***:8077/"
+		description="ADS WS endpoint url" value="http://***REMOVED***:8220/"
 		override="false" />
 
 
@@ -106,7 +106,7 @@
 	<!-- WS RADI -->
 	<!-- -->
 	<Environment name="RADI_WS_URL" type="java.lang.String"
-		description="radi-ws base Url endpoint" value="http://***REMOVED***:8085/radi/"
+		description="radi-ws base Url endpoint" value="http://***REMOVED***:8210/radi/"
 		override="false" />
 
 
@@ -138,7 +138,7 @@
 	<!-- -->
 	<Environment name="AVCT_SIRH_WS_AVCT_EAE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs"
-		value="http://***REMOVED***:8085/sirhws/avancements/getEaesGedIdsForSIRHJobs"
+		value="http://***REMOVED***:8210/sirhws/avancements/getEaesGedIdsForSIRHJobs"
 		override="false" />
 	<Environment name="AVCT_CUPS_SERVER_HOSTNAME" type="java.lang.String"
 		description="CUPS printing server hostname" value="172.16.24.19"
@@ -195,7 +195,7 @@
 	<!-- URL Kiosque -->
 	<!-- -->
 	<Environment name="KIOSQUE_URL" type="java.lang.String"
-		description="Url du kiosque pour envoi des mails" value="http://***REMOVED***:8085/"
+		description="Url du kiosque pour envoi des mails" value="http://***REMOVED***:8210/"
 		override="false" />
 
 	<!-- -->

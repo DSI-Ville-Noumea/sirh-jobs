@@ -6,6 +6,7 @@ import nc.noumea.mairie.ptg.domain.EtatPointageEnum;
 import nc.noumea.mairie.ptg.domain.ExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.ExportPaieTask;
 import nc.noumea.mairie.ptg.domain.ReposCompTask;
+import nc.noumea.mairie.ptg.domain.TitreRepasExportEtatsPayeurTask;
 import nc.noumea.mairie.ptg.domain.VentilTask;
 
 import org.hibernate.LockMode;
@@ -101,6 +102,20 @@ public class PointagesDao implements IPointagesDao {
 		if (result.size() == 0)
 			return null;
 		
+		return result.get(0);
+	}
+
+	@Override
+	public TitreRepasExportEtatsPayeurTask getNextTitreRepasExportEtatsPayeurTask() {
+
+		@SuppressWarnings("unchecked")
+		List<TitreRepasExportEtatsPayeurTask> result = ptgSessionFactory.getCurrentSession()
+				.getNamedQuery("TitreRepasExportEtatsPayeurTask.getNextTitreRepasExportEtatsPayeurTask").setLockMode("eT", LockMode.PESSIMISTIC_WRITE)
+				.setMaxResults(1).list();
+
+		if (result.size() == 0)
+			return null;
+
 		return result.get(0);
 	}
 }

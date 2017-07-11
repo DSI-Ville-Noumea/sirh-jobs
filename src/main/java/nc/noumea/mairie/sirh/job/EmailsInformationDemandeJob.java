@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
@@ -61,15 +62,20 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 	@Autowired
 	private IIncidentLoggerService incidentLoggerService;
+
+	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String							typeEnvironnement;
 	
 	private VoRedmineIncidentLogger incidentRedmine = new VoRedmineIncidentLogger(this.getClass().getSimpleName());
 
 	@Override
 	public void executeInternal(JobExecutionContext jobContext) throws JobExecutionException {
 
-		// Run the job
+		// Run the jobs
 		try {
 			sendEmailsInformation();
+			sendEmailsMaladies();
 		} catch (AbsEmailsInformationException e) {
 			throw new JobExecutionException(e);
 		}
@@ -81,8 +87,7 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 		EmailInfoDto emailInfoDto = absWSConsumer.getListIdDestinatairesEmailInfo();
 
-		logger.info("There are {} approbateurs for AbsEmailInformation to send...", emailInfoDto.getListApprobateurs()
-				.size());
+		logger.info("There are {} approbateurs for AbsEmailInformation to send...", emailInfoDto.getListApprobateurs().size());
 		logger.info("There are {} viseurs for AbsEmailInformation to send...", emailInfoDto.getListViseurs().size());
 
 		if (emailInfoDto.getListApprobateurs().isEmpty() && emailInfoDto.getListViseurs().isEmpty())
@@ -136,10 +141,15 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 		logger.debug("Sending AbsEmailInformation with idAgent {}", new Object[] { idAgent });
 
 		// Get the assignee email address for To
-		LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+		// #38736 : on ne gere plus de tickets pour ces cas là
+		try {
+			LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
 
-		// Send the email
-		sendEmail(user, theDate, stringSubject);
+			// Send the email
+			sendEmail(user, theDate, stringSubject);
+		} catch (DaoException e) {
+			// on ne fait rien
+		}
 	}
 
 	protected void sendEmail(final LightUser user, final Date theDate, final String stringSubject) throws Exception {
@@ -163,7 +173,116 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				message.setSubject("[KIOSQUE RH] Demande d'absences à " + stringSubject);
+				String sujetMail = "[KIOSQUE RH] Demande d'absences à " + stringSubject;
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
+	}
+	
+	/* ============== MALADIES ============== */
+
+	public void sendEmailsMaladies() throws AbsEmailsInformationException {
+
+		Date today = helper.getCurrentDate();
+
+		EmailInfoDto emailMaladiesDto = absWSConsumer.getListIdApprobateursEmailMaladie();
+
+		logger.info("There are {} approbateurs for AbsEmailMaladie to send...", emailMaladiesDto.getListApprobateurs().size());
+
+		if (emailMaladiesDto.getListApprobateurs().isEmpty())
+			return;
+
+		sendEmailsMaladiesOneByOne(emailMaladiesDto.getListApprobateurs(), today);
+		
+		if(!incidentRedmine.getListException().isEmpty()) {
+			incidentLoggerService.logIncident(incidentRedmine);
+		}
+
+		logger.info("Finished sending today's AbsEmailMaladies...");
+	}
+
+	protected void sendEmailsMaladiesOneByOne(List<Integer> listAgent, final Date today)
+			throws AbsEmailsInformationException {
+
+		for (Integer idAgent : listAgent) {
+
+			int nbErrors = 0;
+			boolean succeeded = false;
+
+			while (nbErrors < numberOfTries && !succeeded) {
+
+				try {
+					sendEmailInformationMaladie(idAgent, today);
+					succeeded = true;
+				} catch (Exception ex) {
+					logger.warn("An error occured while trying to send AbsEmailMaladies with idAgent {}.",
+							new Object[] { idAgent });
+					logger.warn("Here follows the exception : ", ex);
+					// #28786 ne pas boucler sur le logger redmine
+					incidentRedmine.addException(ex, idAgent);
+					nbErrors++;
+				}
+
+				if (nbErrors >= numberOfTries) {
+					logger.error(
+							"Stopped sending AbsEmailMaladies with idAgent {} because exceeded the maximum authorized number of tries: {}.",
+							idAgent, numberOfTries);
+				}
+			}
+		}
+	}
+
+	protected void sendEmailInformationMaladie(final Integer idAgent, final Date theDate)
+			throws Exception {
+
+		logger.info("Sending AbsEmailMaladies with idAgent {}...", idAgent );
+
+		// Get the assignee email address for To
+		// #38736 : on ne gere plus de tickets pour ces cas là
+		try {
+			LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+
+			// Send the email
+			sendEmailMaladie(user, theDate);
+		} catch (DaoException e) {
+			// on ne fait rien
+		}
+	}
+
+	protected void sendEmailMaladie(final LightUser user, final Date theDate) throws Exception {
+		
+		logger.info("Sending AbsEmailMaladies to {} !", user.getMail() );
+
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				// Set the To
+				message.setTo(user.getMail());
+
+				// Set the body with velocity
+				Map model = new HashMap();
+				model.put("adresseKiosque", adresseKiosque);
+
+				// Set the body with velocity
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+						"templates/sirhEmailMaladiesTemplate.vm", "UTF-8", model);
+				message.setText(text, true);
+
+				// Set the subject
+				String sujetMail = "[KIOSQUE RH] Congés maladie pour vos agents";
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
 			}
 		};
 
