@@ -9,8 +9,8 @@
 			Bonjour, 
 		</p>
 		<p>
-			Nous vous informons que des absences ont &eacute;t&eacute; saisies dans la journée d'hier pour vos agents.<br />
-			Vous pouvez visionner ces demandes sur le Kiosque RH.
+			Des absences maladie ont &eacute;t&eacute; saisies pour certains de vos agents.<br />
+			Vous pouvez aller les consulter sur le kiosque RH dans "Gestion des demandes" - Onglet "Toutes les demandes".
 		</p>
 		<p>
 			<a href="${adresseKiosque}">${adresseKiosque}</a> 
