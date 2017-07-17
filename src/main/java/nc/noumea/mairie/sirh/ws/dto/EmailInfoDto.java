@@ -7,6 +7,8 @@ public class EmailInfoDto {
 	private List<Integer> listViseurs;
 	
 	private List<Integer> listApprobateurs;
+	
+	private List<ApprobateurWithAgentDto> listApprobateursWithAgents;
 
 	public List<Integer> getListViseurs() {
 		return listViseurs;
@@ -22,5 +24,13 @@ public class EmailInfoDto {
 
 	public void setListApprobateurs(List<Integer> listApprobateurs) {
 		this.listApprobateurs = listApprobateurs;
+	}
+
+	public List<ApprobateurWithAgentDto> getListApprobateursWithAgents() {
+		return listApprobateursWithAgents;
+	}
+
+	public void setListApprobateursWithAgents(List<ApprobateurWithAgentDto> listApprobateursWithAgents) {
+		this.listApprobateursWithAgents = listApprobateursWithAgents;
 	}
 }
