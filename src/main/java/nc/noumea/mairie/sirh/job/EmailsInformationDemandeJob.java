@@ -7,12 +7,15 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.dao.DaoException;
 import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.dto.AgentDto;
+import nc.noumea.mairie.sirh.ws.dto.ApprobateurWithAgentDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -193,12 +196,12 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 
 		EmailInfoDto emailMaladiesDto = absWSConsumer.getListIdApprobateursEmailMaladie();
 
-		logger.info("There are {} approbateurs for AbsEmailMaladie to send...", emailMaladiesDto.getListApprobateurs().size());
+		logger.info("There are {} approbateurs for AbsEmailMaladie to send...", emailMaladiesDto.getListApprobateursWithAgents().size());
 
-		if (emailMaladiesDto.getListApprobateurs().isEmpty())
+		if (emailMaladiesDto.getListApprobateursWithAgents().isEmpty())
 			return;
 
-		sendEmailsMaladiesOneByOne(emailMaladiesDto.getListApprobateurs(), today);
+		sendEmailsMaladiesOneByOne(emailMaladiesDto.getListApprobateursWithAgents(), today);
 		
 		if(!incidentRedmine.getListException().isEmpty()) {
 			incidentLoggerService.logIncident(incidentRedmine);
@@ -207,10 +210,10 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 		logger.info("Finished sending today's AbsEmailMaladies...");
 	}
 
-	protected void sendEmailsMaladiesOneByOne(List<Integer> listAgent, final Date today)
+	protected void sendEmailsMaladiesOneByOne(List<ApprobateurWithAgentDto> listApprobateur, final Date today)
 			throws AbsEmailsInformationException {
 
-		for (Integer idAgent : listAgent) {
+		for (ApprobateurWithAgentDto approbateurWithAgents : listApprobateur) {
 
 			int nbErrors = 0;
 			boolean succeeded = false;
@@ -218,44 +221,50 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 			while (nbErrors < numberOfTries && !succeeded) {
 
 				try {
-					sendEmailInformationMaladie(idAgent, today);
+					sendEmailInformationMaladie(approbateurWithAgents, today);
 					succeeded = true;
 				} catch (Exception ex) {
 					logger.warn("An error occured while trying to send AbsEmailMaladies with idAgent {}.",
-							new Object[] { idAgent });
+							new Object[] { approbateurWithAgents.getIdApprobateur() });
 					logger.warn("Here follows the exception : ", ex);
 					// #28786 ne pas boucler sur le logger redmine
-					incidentRedmine.addException(ex, idAgent);
+					incidentRedmine.addException(ex, approbateurWithAgents.getIdApprobateur());
 					nbErrors++;
 				}
 
 				if (nbErrors >= numberOfTries) {
 					logger.error(
 							"Stopped sending AbsEmailMaladies with idAgent {} because exceeded the maximum authorized number of tries: {}.",
-							idAgent, numberOfTries);
+							approbateurWithAgents.getIdApprobateur(), numberOfTries);
 				}
 			}
 		}
 	}
 
-	protected void sendEmailInformationMaladie(final Integer idAgent, final Date theDate)
+	protected void sendEmailInformationMaladie(final ApprobateurWithAgentDto approWithAgents, final Date theDate)
 			throws Exception {
 
-		logger.info("Sending AbsEmailMaladies with idAgent {}...", idAgent );
+		logger.info("Sending AbsEmailMaladies with idAgent {}...", approWithAgents.getIdApprobateur());
 
 		// Get the assignee email address for To
-		// #38736 : on ne gere plus de tickets pour ces cas là
 		try {
-			LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(idAgent));
+			LightUser user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(approWithAgents.getIdApprobateur()));
+			
+			// On construit la liste des agents à renseigner dans le mail.
+			String listeAgents = "";
+			
+			for (AgentDto agent : approWithAgents.getAgents()) {
+				listeAgents += agent.getNom() + " " + agent.getPrenom() + "<br />";
+			}
 
 			// Send the email
-			sendEmailMaladie(user, theDate);
+			sendEmailMaladie(user, theDate, listeAgents);
 		} catch (DaoException e) {
 			// on ne fait rien
 		}
 	}
 
-	protected void sendEmailMaladie(final LightUser user, final Date theDate) throws Exception {
+	protected void sendEmailMaladie(final LightUser user, final Date theDate, final String listeAgents) throws Exception {
 		
 		logger.info("Sending AbsEmailMaladies to {} !", user.getMail() );
 
@@ -271,6 +280,7 @@ public class EmailsInformationDemandeJob extends QuartzJobBean {
 				// Set the body with velocity
 				Map model = new HashMap();
 				model.put("adresseKiosque", adresseKiosque);
+				model.put("listeAgents", listeAgents);
 
 				// Set the body with velocity
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,

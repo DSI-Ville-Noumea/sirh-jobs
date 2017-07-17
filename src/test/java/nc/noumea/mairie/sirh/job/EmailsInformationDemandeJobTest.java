@@ -13,6 +13,8 @@ import nc.noumea.mairie.sirh.tools.Helper;
 import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
 import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
 import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.dto.AgentDto;
+import nc.noumea.mairie.sirh.ws.dto.ApprobateurWithAgentDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
@@ -239,14 +241,27 @@ public class EmailsInformationDemandeJobTest {
 	@Test
 	public void EmailsMaladieJob_OneEmailToSend() throws AbsEmailsInformationException, DaoException {
 
-		List<Integer> listApprobateur = new ArrayList<Integer>();
-		listApprobateur.add(9);
+		List<ApprobateurWithAgentDto> listApprobateursWithAgents = new ArrayList<ApprobateurWithAgentDto>();
+		
+		ApprobateurWithAgentDto ap1 = new ApprobateurWithAgentDto();
+		ap1.setIdApprobateur(9);
+		List<AgentDto> agentList = new ArrayList<AgentDto>();
+		AgentDto ag1 = new AgentDto();
+		ag1.setNom("NOM1");
+		ag1.setNom("PRENOM1");
+		AgentDto ag2 = new AgentDto();
+		ag2.setNom("NOM2");
+		ag2.setNom("PRENOM2");
+		agentList.add(ag2);
+		ap1.setAgents(agentList);
+		
+		listApprobateursWithAgents.add(ap1);
 		
 		LightUser user = new LightUser();
 		user.setMail("test@test.nc");
 
 		EmailInfoDto dto = new EmailInfoDto();
-		dto.setListApprobateurs(listApprobateur);
+		dto.setListApprobateursWithAgents(listApprobateursWithAgents);
 
 		// Given
 		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);
@@ -278,15 +293,39 @@ public class EmailsInformationDemandeJobTest {
 	@Test
 	public void EmailsMaladieJob_TwoEmailToSend() throws AbsEmailsInformationException, DaoException {
 
-		List<Integer> listApprobateur = new ArrayList<Integer>();
-		listApprobateur.add(9);
-		listApprobateur.add(10);
+		List<ApprobateurWithAgentDto> listApprobateursWithAgents = new ArrayList<ApprobateurWithAgentDto>();
 		
+		ApprobateurWithAgentDto ap1 = new ApprobateurWithAgentDto();
+		ap1.setIdApprobateur(9);
+		List<AgentDto> agentList = new ArrayList<AgentDto>();
+		AgentDto ag1 = new AgentDto();
+		ag1.setNom("NOM1");
+		ag1.setNom("PRENOM1");
+		AgentDto ag2 = new AgentDto();
+		ag2.setNom("NOM2");
+		ag2.setNom("PRENOM2");
+		agentList.add(ag2);
+		ap1.setAgents(agentList);
+		
+		
+		ApprobateurWithAgentDto ap2 = new ApprobateurWithAgentDto();
+		ap2.setIdApprobateur(10);
+		List<AgentDto> agentList2 = new ArrayList<AgentDto>();
+		AgentDto ag3 = new AgentDto();
+		ag3.setNom("NOM3");
+		ag3.setNom("PRENOM3");
+		agentList2.add(ag3);
+		ap2.setAgents(agentList2);
+		
+		listApprobateursWithAgents.add(ap1);
+		listApprobateursWithAgents.add(ap2);
+
+
 		LightUser user = new LightUser();
 		user.setMail("test@test.nc");
 
 		EmailInfoDto dto = new EmailInfoDto();
-		dto.setListApprobateurs(listApprobateur);
+		dto.setListApprobateursWithAgents(listApprobateursWithAgents);
 
 		// Given
 		IAbsWSConsumer absWSConsumer = Mockito.mock(IAbsWSConsumer.class);

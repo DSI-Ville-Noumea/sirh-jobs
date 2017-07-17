@@ -9,11 +9,13 @@
 			Bonjour, 
 		</p>
 		<p>
-			Des absences maladie ont &eacute;t&eacute; saisies pour certains de vos agents.<br />
-			Vous pouvez aller les consulter sur le kiosque RH dans "Gestion des demandes" - Onglet "Toutes les demandes".
+			Des absences pour raison médicale ont &eacute;t&eacute; saisies pour certains de vos agents : <br />
+			${listeAgents}
+			<br />
+			Si vous le souhaitez, vous pouvez les consulter sur le Kiosque RH dans "Gestion des demandes" - Onglet "Toutes les demandes" - Filtre "Groupe d'absences: Maladies".
 		</p>
 		<p>
-			<a href="${adresseKiosque}">${adresseKiosque}</a> 
+			<a href="${adresseKiosque}">${adresseKiosque}</a>
 		</p>
 		<p>
 			Cordialement.
