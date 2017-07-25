@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import nc.noumea.mairie.sirh.job.AbsencePriseJob;
 import nc.noumea.mairie.sirh.ws.dto.ActeursDto;
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
@@ -22,6 +25,8 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 	@Autowired
 	@Qualifier("SIRH_ABS_WS_Base_URL")
 	private String				SIRH_ABS_WS_Base_URL;
+
+	private Logger logger = LoggerFactory.getLogger(AbsWSConsumer.class);
 
 	private static final String	emailInformationUrl				= "email/listDestinatairesEmailInfo";
 	private static final String	emailMaladiesUrl				= "email/listApprobateursEmailMaladie";
@@ -147,6 +152,8 @@ public class AbsWSConsumer extends BaseWsConsumer implements IAbsWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", "90");
 		parameters.put("idDemande", String.valueOf(idDemande));
+		
+		logger.debug("Enter getDemandeAbsence for idDemande = " + idDemande);
 
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 

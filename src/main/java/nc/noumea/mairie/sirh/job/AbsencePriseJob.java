@@ -8,21 +8,6 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import nc.noumea.mairie.abs.dao.IAbsencesDao;
-import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
-import nc.noumea.mairie.abs.domain.RefTypeGroupeAbsenceEnum;
-import nc.noumea.mairie.sirh.dao.ISirhDao;
-import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
-import nc.noumea.mairie.sirh.tools.Helper;
-import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
-import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
-import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
-import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
-import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
-import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
-import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
-import nc.noumea.mairie.sirh.ws.dto.LightUser;
-
 import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -37,6 +22,21 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
+
+import nc.noumea.mairie.abs.dao.IAbsencesDao;
+import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
+import nc.noumea.mairie.abs.domain.RefTypeGroupeAbsenceEnum;
+import nc.noumea.mairie.sirh.dao.ISirhDao;
+import nc.noumea.mairie.sirh.service.IDownloadDocumentService;
+import nc.noumea.mairie.sirh.tools.Helper;
+import nc.noumea.mairie.sirh.tools.IIncidentLoggerService;
+import nc.noumea.mairie.sirh.tools.VoRedmineIncidentLogger;
+import nc.noumea.mairie.sirh.ws.IAbsWSConsumer;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
+import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
+import nc.noumea.mairie.sirh.ws.ReturnMessageDto;
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 @Service
 @DisallowConcurrentExecution
@@ -103,21 +103,26 @@ public class AbsencePriseJob extends QuartzJobBean {
 			// pour les RECUP et les REPOS COMP
 			List<Integer> listEpAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(
 					getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
+			logger.debug("Taille de la liste des récup. et repos comp. approuvées : " + listEpAApprouver.size() + " demande(s).");
 			// pour les ASA, CONGES_EXCEP, Maladies
 			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
 					getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
+			logger.debug("Taille de la liste des récup. et repos comp. validées : " + listEpAValider.size() + " demande(s).");
 			// pour les CONGES ANNUELS
 			List<Integer> listTypeGroupeAbs = new ArrayList<>();
 			listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue());
 			List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
 					EtatAbsenceEnum.APPROUVEE);
+			logger.debug("Taille de la liste des congés approuvés : " + listCongeAApprouver.size() + " demande(s).");
 			List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
 					EtatAbsenceEnum.VALIDEE);
+			logger.debug("Taille de la liste des congés validés : " + listCongeAValider.size() + " demande(s).");
 
 			// //////////////////////////////////////////////////////
 			// on traite le cas du CONGE UNIQUE (conges exceptionnels)
 			// //////////////////////////////////////////////////////
 			traiteCongeUnique();
+			logger.debug("Fin du traitement des congés uniques.");
 
 			List<Integer> listEp = new ArrayList<>();
 			listEp.addAll(listEpAApprouver);
@@ -144,7 +149,6 @@ public class AbsencePriseJob extends QuartzJobBean {
 					logger.error("Une erreur technique est survenue lors du traitement de cette demande " + idDemande, ex);
 					// #28791 ne pas boucler sur le logger redmine pour ne pas creer une multitude d incidents 
 					incidentRedmine.addException(ex, idDemande);
-//					incidentLoggerService.logIncident("AbsencePriseJob", ex.getMessage(), ex);
 				}
 
 				if (result != null && result.getErrors().size() != 0) {
@@ -172,15 +176,18 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 	private void traiteCongeUnique() {
 		List<Integer> listeCongeUnique = absencesDao.getListeCongeUnique();
+		logger.debug("Taille de la liste des congés uniques : " + listeCongeUnique.size() + " demande(s)");
 		Integer idAgentGestionnaire = null;
 		for (Integer idDemandeCongeUnique : listeCongeUnique) {
 			// on recupere la demande
 			DemandeDto demande = absWSConsumer.getDemandeAbsence(idDemandeCongeUnique);
 			if (demande != null) {
+				logger.debug("L'absence id " + demande.getIdDemande() + " a bien été récupérée.");
 				if (demande.getAgentWithServiceDto().getIdServiceADS() != null) {
 					// on cherche le gestionnaire de carriere de l'agent
 					List<Integer> listIdAgentGestionnaire = sirhDao.getReferentRHService(demande
 							.getAgentWithServiceDto().getIdServiceADS());
+					logger.debug("Taille de la liste des gestionnaires : " + listIdAgentGestionnaire.size());
 					// si on ne trouve pas de gestionnaire alors on cherche le
 					// gestionnaire global
 					if (listIdAgentGestionnaire.size() == 0) {
@@ -195,6 +202,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 				// on envoi un mail au gestionnaire de carriere
 				if (idAgentGestionnaire != null) {
+					logger.debug("Id agent gestionnaire : " + idAgentGestionnaire);
 					sendEmailInformationCongeUnique(idAgentGestionnaire, helper.getNomatr(Integer.valueOf(helper
 							.getEmployeeNumber(demande.getAgentWithServiceDto().getIdAgent()))), demande
 							.getAgentWithServiceDto().getNom(), demande.getAgentWithServiceDto().getPrenom());
@@ -205,8 +213,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 							.getIdAgent());
 				}
 			} else {
-				logger.error("Une erreur technique est survenue lors du traitement de cette demande.",
-						idDemandeCongeUnique);
+				logger.error("L'identifiant {} ne correspond à aucune absence.", idDemandeCongeUnique);
 			}
 		}
 	}
