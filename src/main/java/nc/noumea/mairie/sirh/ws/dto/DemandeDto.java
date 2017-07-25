@@ -9,6 +9,7 @@ public class DemandeDto {
 	private Integer				idDemande;
 	private Integer				idTypeDemande;
 	private String				libelleTypeDemande;
+	
 	private Date				dateDebut;
 
 	// pour l'envoi des mails
