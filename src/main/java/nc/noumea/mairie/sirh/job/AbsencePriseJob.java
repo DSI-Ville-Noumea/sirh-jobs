@@ -174,7 +174,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 		logger.info("Processed AbsencePriseJob");
 	}
 
-	private void traiteCongeUnique() {
+	protected void traiteCongeUnique() {
 		List<Integer> listeCongeUnique = absencesDao.getListeCongeUnique();
 		logger.debug("Taille de la liste des congés uniques : " + listeCongeUnique.size() + " demande(s)");
 		Integer idAgentGestionnaire = null;
@@ -185,8 +185,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 				logger.debug("L'absence id " + demande.getIdDemande() + " a bien été récupérée.");
 				if (demande.getAgentWithServiceDto().getIdServiceADS() != null) {
 					// on cherche le gestionnaire de carriere de l'agent
-					List<Integer> listIdAgentGestionnaire = sirhDao.getReferentRHService(demande
-							.getAgentWithServiceDto().getIdServiceADS());
+					List<Integer> listIdAgentGestionnaire = sirhDao.getReferentRHService(demande.getAgentWithServiceDto().getIdServiceADS());
 					logger.debug("Taille de la liste des gestionnaires : " + listIdAgentGestionnaire.size());
 					// si on ne trouve pas de gestionnaire alors on cherche le
 					// gestionnaire global
@@ -209,8 +208,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 					logger.info("Finished sending today's CongeUniqueEmailInformation...");
 				} else {
-					logger.error("Aucun gestionnaire trouvé pour l'agent {}", demande.getAgentWithServiceDto()
-							.getIdAgent());
+					logger.error("Aucun gestionnaire trouvé pour l'agent {}", demande.getAgentWithServiceDto().getIdAgent());
 				}
 			} else {
 				logger.error("L'identifiant {} ne correspond à aucune absence.", idDemandeCongeUnique);
