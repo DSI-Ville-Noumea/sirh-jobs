@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -32,6 +34,8 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 	private static final String dupliqueFDPUrl = "fichePostes/dupliqueFichePosteByIdFichePoste";
 	private static final String activeFDPUrl = "fichePostes/activeFichePosteByIdFichePoste";
+
+	private static final String downloadRecapMdf = "edition/downloadRecapMdf";
 
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -119,6 +123,16 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(activeFDPUrl));
 
 		return readResponse(ReturnMessageDto.class, res, getWSUrl(activeFDPUrl));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public FileInputStream getBordereauRecap() throws Exception {
+		Map<String, String> parameters = new HashMap<String, String>();
+		
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(downloadRecapMdf));
+
+		return readResponseAsInputStream(res, getWSUrl(downloadRecapMdf));
 	}
 
 }

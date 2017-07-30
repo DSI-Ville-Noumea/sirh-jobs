@@ -37,8 +37,7 @@
 		</property>
 	</bean>
 
-	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH_JOBS_DS2"
-		resource-ref="true" />
+	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH_JOBS_DS2" resource-ref="true" />
 
 	<bean id="sirhSessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -91,8 +90,7 @@
 		</property>
 	</bean>
 
-	<jee:jndi-lookup id="absPostgreDataSource" jndi-name="jdbc/SIRH_JOBS_DS5"
-		resource-ref="true" />
+	<jee:jndi-lookup id="absPostgreDataSource" jndi-name="jdbc/SIRH_JOBS_DS5" resource-ref="true" />
 
 	<bean id="absSessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -111,6 +109,64 @@
 			</props>
 		</property>
 	</bean>
+	
+	
+	<!-- Chantier MDF -->
+	
+	<jee:jndi-lookup id="sirhDb400DataSourceMdfVdn" jndi-name="jdbc/SIRH_JOBS_MDF_VDN" resource-ref="true" />
+	
+	<bean id="vdnSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="sirhDb400DataSourceMdfVdn" />
+		<property name="annotatedClasses">
+			<list>
+				<value>nc.noumea.mairie.mdf.domain.vdn.FdsMutDet</value>
+				<value>nc.noumea.mairie.mdf.domain.vdn.FdsMutEnt</value>
+				<value>nc.noumea.mairie.mdf.domain.vdn.FdsMutTot</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.DB2400Dialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.FlushMode">manual</prop>
+			</props>
+		</property>
+	</bean>
+	
+
+	<jee:jndi-lookup id="sirhDb400DataSourceMdfCde" jndi-name="jdbc/SIRH_JOBS_MDF_CDE" resource-ref="true" />
+	
+	<bean id="cdeSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="sirhDb400DataSourceMdfCde" />
+		<property name="annotatedClasses">
+			<list>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutDetAdm</value>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutEntAdm</value>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutTotAdm</value>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutDetPers</value>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutEntPers</value>
+				<value>nc.noumea.mairie.mdf.domain.cde.FdsMutTotPers</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.DB2400Dialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.FlushMode">manual</prop>
+			</props>
+		</property>
+	</bean>
+	
 
 	<!-- Spring mail -->
 	<jee:jndi-lookup id="mailSession" jndi-name="mail/MailServer"
