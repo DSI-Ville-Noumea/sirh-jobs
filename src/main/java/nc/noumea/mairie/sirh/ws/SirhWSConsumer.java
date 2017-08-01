@@ -1,22 +1,20 @@
 package nc.noumea.mairie.sirh.ws;
 
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.ws.dto.AgentDto;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
+
+import nc.noumea.mairie.sirh.ws.dto.AgentDto;
 
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
@@ -127,12 +125,12 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public FileInputStream getBordereauRecap() throws Exception {
+	public byte[] getBordereauRecap() throws Exception {
 		Map<String, String> parameters = new HashMap<String, String>();
 		
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(downloadRecapMdf));
 
-		return readResponseAsInputStream(res, getWSUrl(downloadRecapMdf));
+		return readResponseAsByteArray(res, getWSUrl(downloadRecapMdf));
 	}
 
 }

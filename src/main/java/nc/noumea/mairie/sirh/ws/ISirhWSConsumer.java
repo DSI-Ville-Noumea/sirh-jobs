@@ -1,6 +1,5 @@
 package nc.noumea.mairie.sirh.ws;
 
-import java.io.FileInputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -22,5 +21,5 @@ public interface ISirhWSConsumer {
 
 	ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent);
 
-	FileInputStream getBordereauRecap() throws Exception;
+	byte[] getBordereauRecap() throws Exception;
 }

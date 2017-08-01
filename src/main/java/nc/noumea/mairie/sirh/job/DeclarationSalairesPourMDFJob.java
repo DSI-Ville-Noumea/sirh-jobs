@@ -1,20 +1,11 @@
-package nc.noumea.mairie.mdf.job;
+package nc.noumea.mairie.sirh.job;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -22,9 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -33,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import nc.noumea.mairie.sirh.ws.ISirhWSConsumer;
-import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 @Service
 @DisallowConcurrentExecution
@@ -45,6 +33,9 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	private ISirhWSConsumer sirhWsConsumer;
 
 	@Autowired
+	private VelocityEngine velocityEngine;
+
+	@Autowired
 	@Qualifier("typeEnvironnement")
 	private String typeEnvironnement;
 
@@ -54,11 +45,17 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		logger.debug("Enter in DeclarationSalairesPourMDFJob.");
-		FileInputStream result = null;
+		byte[] result = null;
 		try {
 			result = sirhWsConsumer.getBordereauRecap();
 		} catch (Exception e) {
 			logger.error("Une erreur est survenue lors de la récupération du bordereau récapitulatif.");
+			try {
+				sendErrorMail();
+			} catch (Exception e1) {
+				logger.error("Impossible d'envoyer le mail d'erreur.");
+			}
+			return;
 		}
 		
 		try {
@@ -68,9 +65,9 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 		}
 	}
 
-	protected void sendEmail(FileInputStream result) throws Exception {
+	protected void sendEmail(byte[] result) throws Exception {
 
-		final FileInputStream test = result;
+		final byte[] test = result;
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -81,21 +78,51 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				message.setTo("theophile.bodin@ville-noumea.nc");
 
 				// Set the body with velocity
-				String text = "TEST";
+				Map model = new HashMap();
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhEmailBordereauRecap.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject
-				String sujetMail = "[MDF] Bordereau récapitulatif";
+				String sujetMail = "[Mutuelle des Fonctionnaires] Bordereau récapitulatif";
 				if (!typeEnvironnement.equals("PROD")) {
 					sujetMail = "[TEST] " + sujetMail;
 				}
 				message.setSubject(sujetMail);
-				message.addAttachment("test.pdf", new InputStreamResource(test));
+				message.addAttachment("test.pdf", new ByteArrayResource(test));
 			}
 		};
 
 		// Actually send the email
 		mailSender.send(preparator);
 		logger.info("Le bordereau récapitulatif a bien été envoyé par mail.");
+	}
+
+	protected void sendErrorMail() throws Exception {
+
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				// Set the To
+				message.setTo("theophile.bodin@ville-noumea.nc");
+
+				// Set the body with velocity
+				Map model = new HashMap();
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhEmailBordereauRecapError.vm", "UTF-8", model);
+				message.setText(text, true);
+
+				// Set the subject
+				String sujetMail = "[MDF] Erreur de génération du bordereau récapitulatif";
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
 	}
 }

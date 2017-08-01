@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Une erreur s'est produite durant la g&eacute;n&eacute;ration du bordereau r&eacute;capitulatif d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires.
+			<br />Veuillez contacter la DSI afin d'analyser les erreurs, et lancer une g&eacute;n&eacute;ration manuelle.
+		</p>
+		<p>
+			Cordialement.
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>
