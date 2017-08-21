@@ -124,7 +124,6 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public byte[] getBordereauRecap() throws Exception {
 		Map<String, String> parameters = new HashMap<String, String>();
 		

@@ -41,6 +41,13 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	/**
+	 * Adresse mail en destination pour l'envoi du bordereau récapitulatif.
+	 * Renseigner cette adresse en dur n'est pas la solution définitive. 
+	 * C'est la solution adoptée provisoirement, avant de créer un interface de visualisation et modification de cette adresse mail.
+	 */
+	private final static String RECIPIENT = "liste-scr@ville-noumea.nc";
 
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -75,7 +82,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-				message.setTo("theophile.bodin@ville-noumea.nc");
+				message.setTo(RECIPIENT);
 
 				// Set the body with velocity
 				Map model = new HashMap();
