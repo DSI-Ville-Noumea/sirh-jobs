@@ -124,8 +124,9 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	}
 
 	@Override
-	public byte[] getBordereauRecap() throws Exception {
+	public byte[] getBordereauRecap(String entite) throws Exception {
 		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("entite", entite.toString());
 		
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(downloadRecapMdf));
 
