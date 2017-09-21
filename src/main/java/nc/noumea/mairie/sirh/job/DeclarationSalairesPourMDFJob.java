@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.postgresql.translation.messages_bg;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -72,7 +73,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 			try {
 				result = sirhWsConsumer.getBordereauRecap(entite);
 			} catch (Exception e) {
-				logger.error("Une erreur est survenue lors de la récupération du bordereau récapitulatif.");
+				logger.error("Une erreur est survenue lors de la récupération du bordereau récapitulatif de " + entite);
 				try {
 					sendErrorMail(entite);
 				} catch (Exception e1) {
@@ -84,7 +85,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 			try {
 				sendEmail(result, entite);
 			} catch (Exception e) {
-				logger.error("Une erreur est survenue lors de l'envoi du bordereau récapitulatif par mail.");
+				logger.error("Une erreur est survenue lors de l'envoi du bordereau récapitulatif " + entite + " par mail.");
 			}
 		}
 	}
@@ -142,7 +143,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 
 		// Actually send the email
 		mailSender.send(preparator);
-		logger.info("Le bordereau récapitulatif a bien été envoyé par mail.");
+		logger.info("Le bordereau récapitulatif " + entite + " a bien été envoyé par mail.");
 	}
 
 	protected void sendErrorMail(String entite) throws Exception {
