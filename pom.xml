@@ -27,14 +27,17 @@
 		<cup4j.version>cups4j-0.6.10</cup4j.version> 
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
-		<logback.version>1.2.3</logback.version>
+		<!-- Does not work with logback version 1.2.3 -->
+		<logback.version>1.1.2</logback.version>
 		<redmine.version>1.23</redmine.version>
 		<aspectj.version>1.8.10</aspectj.version>
 		<quartz.version>2.3.0</quartz.version>
 		<jt400.version>9.3</jt400.version>
 		<postgresql.version>9.4.1212</postgresql.version>
-		<hibernate.version>5.2.11.Final</hibernate.version>
-		<hibernate-validator.version>6.0.2.Final</hibernate-validator.version>
+		<!-- Does not work with hibernate version 5.2.11.Final -->
+		<hibernate.version>4.3.5.Final</hibernate.version>
+		<!-- Does not work with hibernate validator version 5.2.11.Final -->
+		<hibernate-validator.version>5.1.1.Final</hibernate-validator.version>
 		<validation-api.version>2.0.0.Final</validation-api.version>
 		<velocity.version>1.7</velocity.version>
 		<activation.version>1.1.1</activation.version>
