@@ -159,17 +159,17 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				String title = "";
 				
 				if (fEntite.equals(VDN)) {
-					label = "la ville de Nouméa.";
+					label = "de la ville de Nouméa.";
 					title = "Ville de Nouméa";
 					message.setTo(RECIPIENT_VDN);
 				}
 				else if (fEntite.equals(PERS)) {
-					label = "le personnel de la caisse des écoles.";
+					label = "de la caisse des écoles.";
 					title = "Caisse des écoles (PERS)";
 					message.setTo(RECIPIENT_CDE);
 				}
 				else if (fEntite.equals(ADM)) {
-					label = "le personnel administratif de la caisse des écoles.";
+					label = "administratif de la caisse des écoles.";
 					title = "Caisse des écoles (ADM)";
 					message.setTo(RECIPIENT_CDE);
 				}
