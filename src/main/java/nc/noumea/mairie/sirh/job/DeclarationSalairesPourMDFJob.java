@@ -1,14 +1,12 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
 import org.apache.velocity.app.VelocityEngine;
-import org.postgresql.translation.messages_bg;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -79,7 +77,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				} catch (Exception e1) {
 					logger.error("Impossible d'envoyer le mail d'erreur.");
 				}
-				return;
+				continue;
 			}
 			
 			try {
