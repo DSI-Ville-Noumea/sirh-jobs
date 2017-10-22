@@ -9,8 +9,8 @@
 			Bonjour, 
 		</p>
 		<p>
-			Une erreur s'est produite durant la g&eacute;n&eacute;ration du bordereau r&eacute;capitulatif d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires, concernant le personnel ${labelEntite}.
-			<br />Veuillez contacter la DSI afin d'analyser les erreurs, et lancer une g&eacute;n&eacute;ration manuelle.
+			Une erreur s'est produite durant la g&eacute;n&eacute;ration du bordereau r&eacute;capitulatif de d&eacute;claration des r&eacute;mun&eacute;rations d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires et concernant le personnel ${labelEntite}.
+			<br />Les &eacute;quipes techniques de la DSI sont inform&eacute;es de ce probl&egrave;me et reviendront vers vous d&egrave;s que possible.
 		</p>
 		<p>
 			Cordialement.

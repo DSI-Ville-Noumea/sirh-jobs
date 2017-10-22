@@ -9,8 +9,8 @@
 			Bonjour, 
 		</p>
 		<p>
-			Ci-joint le bordereau r&eacute;capitulatif d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires, concernant le personnel de ${labelEntite}.
-			<br />Merci de v&eacute;rifier la coh&eacute;rence des donn&eacute;es avant de l'imprimer, de le signer puis de l'envoyer &agrave; la Mutuelle des Fonctionnaires.
+			Ci-joint le bordereau r&eacute;capitulatif de d&eacute;claration des r&eacute;mun&eacute;rations d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires et concernant le personnel ${labelEntite}.
+			<br />Apr&egrave;s v&eacute;rification des informations mentionn&eacute;es sur ce document, veuillez l'imprimer, le signer et l'envoyer par mail &agrave; la mutuelle des fonctionnaires.
 		</p>
 		<p>
 			Cordialement.
