@@ -1,14 +1,12 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
 import org.apache.velocity.app.VelocityEngine;
-import org.postgresql.translation.messages_bg;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -62,6 +60,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	 * Renseigner cette adresse en dur n'est pas la solution définitive. 
 	 * C'est la solution adoptée provisoirement, avant de créer un interface de visualisation et modification de cette adresse mail.
 	 */
+	private final static String LISTE_SRH_MAINTENANCE = "liste-sirh-maintenance@ville-noumea.nc";
 	private final static String RECIPIENT_VDN = "liste-scr@ville-noumea.nc";
 	private final static String RECIPIENT_CDE = "jerome.kartodiwirjo@ville-noumea.nc";
 
@@ -79,7 +78,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				} catch (Exception e1) {
 					logger.error("Impossible d'envoyer le mail d'erreur.");
 				}
-				return;
+				continue;
 			}
 			
 			try {
@@ -115,13 +114,13 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				else if (fEntite.equals(PERS)) {
 					label = "de la caisse des écoles";
 					fileName = "bordereau-recap-CDE-PERS-" + lastMonth + ".pdf";
-					title = "Caisse des écoles (PERS)";
+					title = "CDE Pers. Ecoles";
 					message.setTo(RECIPIENT_CDE);
 				}
 				else if (fEntite.equals(ADM)) {
 					label = "administratif de la caisse des écoles";
 					fileName = "bordereau-recap-CDE-ADM-" + lastMonth + ".pdf";
-					title = "Caisse des écoles (ADM)";
+					title = "CDE Pers. Admin";
 					message.setTo(RECIPIENT_CDE);
 				}
 
@@ -132,7 +131,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				String sujetMail = "[Mutuelle des Fonctionnaires] Bordereau récapitulatif - " + title;
+				String sujetMail = "[MDF Déclaration rémunérations] Bordereau récapitulatif - " + title;
 				if (!typeEnvironnement.equals("PROD")) {
 					sujetMail = "[TEST] " + sujetMail;
 				}
@@ -159,20 +158,23 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				String title = "";
 				
 				if (fEntite.equals(VDN)) {
-					label = "la ville de Nouméa.";
+					label = "de la ville de Nouméa.";
 					title = "Ville de Nouméa";
 					message.setTo(RECIPIENT_VDN);
 				}
 				else if (fEntite.equals(PERS)) {
-					label = "le personnel de la caisse des écoles.";
-					title = "Caisse des écoles (PERS)";
+					label = "de la caisse des écoles.";
+					title = "CDE Pers. Ecoles";
 					message.setTo(RECIPIENT_CDE);
 				}
 				else if (fEntite.equals(ADM)) {
-					label = "le personnel administratif de la caisse des écoles.";
-					title = "Caisse des écoles (ADM)";
+					label = "administratif de la caisse des écoles.";
+					title = "CDE Pers. Admin";
 					message.setTo(RECIPIENT_CDE);
 				}
+				
+				// On ajoute la maintenance SIRH en copie cachée
+				message.setBcc(LISTE_SRH_MAINTENANCE);
 
 				// Set the body with velocity
 				Map model = new HashMap();
@@ -181,7 +183,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 				message.setText(text, true);
 
 				// Set the subject
-				String sujetMail = "[MDF] Erreur de génération du bordereau récapitulatif - " + title;
+				String sujetMail = "[MDF Déclaration rémunérations] Erreur de génération du bordereau récapitulatif - " + title;
 				if (!typeEnvironnement.equals("PROD")) {
 					sujetMail = "[TEST] " + sujetMail;
 				}
