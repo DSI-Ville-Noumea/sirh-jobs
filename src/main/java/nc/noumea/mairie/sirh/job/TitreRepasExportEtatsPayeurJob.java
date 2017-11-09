@@ -1,8 +1,11 @@
 package nc.noumea.mairie.sirh.job;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -42,7 +45,7 @@ public class TitreRepasExportEtatsPayeurJob extends QuartzJobBean {
 	@Autowired
 	private IIncidentLoggerService		incidentLoggerService;
 
-	private static final String			SIRH_PTG_WS_TitreRepasGenerePayeurUrl	= "titreRepas/genereEtatPayeur?idAgentConnecte=";
+	private static final String			SIRH_PTG_WS_TitreRepasGenerePayeurUrl	= "titreRepas/genereEtatPayeur";
 
 	@Override
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -61,16 +64,20 @@ public class TitreRepasExportEtatsPayeurJob extends QuartzJobBean {
 
 		try {
 			// on appele le WS qui fait l'etat du payeur
-			String url = String.format("%s%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_TitreRepasGenerePayeurUrl, eT.getIdAgent());
-			logger.info("Calling url {}...", url);
+			String url = String.format("%s%s", SIRH_PTG_WS_Base_URL, SIRH_PTG_WS_TitreRepasGenerePayeurUrl);
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgentConnecte", String.valueOf(eT.getIdAgent()));
+			parameters.put("dateGeneration", sdf.format(eT.getDateMonth()));
 			
-			ClientResponse res = downloadDocumentService.createAndFireRequest(url, null);			
+			ClientResponse res = downloadDocumentService.createAndFireRequest(url, parameters);
 
 			ReturnMessageDto rmDto = downloadDocumentService.readResponse(ReturnMessageDto.class, res, url);
 
 
-			// At this point, everything went allright, the status can be
-			// updated to OK
+			// At this point, everything went allright, the status can be updated to OK
 			if (rmDto != null) {
 				// #38053 : jamais on n'affiche le messag d'erreur si il y a
 				List<String> listErr = new ArrayList<>();

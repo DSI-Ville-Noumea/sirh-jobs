@@ -6,6 +6,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -45,20 +49,17 @@ public class TitreRepasExportEtatsPayeurJobTest {
 
 	@Test
 	public void exportTitreRepasEtatsPayeurTask_EverythingOK() throws Exception {
-		ClientResponse res = null;
+		ClientResponse res = new ClientResponse(0, null, null, null);
 
 		// Given
 		TitreRepasExportEtatsPayeurTask t = new TitreRepasExportEtatsPayeurTask();
 		t.setIdTitreRepasExportEtatsPayeurTask(99);
 		t.setIdAgent(9005138);
+		t.setDateMonth(new DateTime(2017, 01, 01, 0, 0).toDate());
 		IPointagesDao pdao = Mockito.mock(IPointagesDao.class);
 		Mockito.when(pdao.getNextTitreRepasExportEtatsPayeurTask()).thenReturn(t);
 
 		IDownloadDocumentService dd = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.doReturn(res).when(dd).createAndFireRequest("basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.doReturn(new ReturnMessageDto()).when(dd).readResponse(ReturnMessageDto.class, res,
-				"basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
-
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 
 		TitreRepasExportEtatsPayeurJob job = new TitreRepasExportEtatsPayeurJob();
@@ -66,6 +67,14 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
+		
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgentConnecte", "9005138");
+		parameters.put("dateGeneration", "20170101");
+
+		Mockito.when(dd.createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters)).thenReturn(res);
+		Mockito.when(dd.readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur")).thenReturn(new ReturnMessageDto());
 
 		// When
 		job.executeInternal(null);
@@ -76,8 +85,8 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		Mockito.verify(pdao, Mockito.times(1)).beginTransaction();
 		Mockito.verify(pdao, Mockito.times(1)).commitTransaction();
 		Mockito.verify(pdao, Mockito.never()).rollBackTransaction();
-		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest("basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
+		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters);
+		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur");
 		verify(incidentLoggerService, never()).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
 	}
@@ -93,12 +102,11 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		TitreRepasExportEtatsPayeurTask t = new TitreRepasExportEtatsPayeurTask();
 		t.setIdTitreRepasExportEtatsPayeurTask(99);
 		t.setIdAgent(9005138);
+		t.setDateMonth(new DateTime(2017, 01, 01, 0, 0).toDate());
 		IPointagesDao pdao = Mockito.mock(IPointagesDao.class);
 		Mockito.when(pdao.getNextTitreRepasExportEtatsPayeurTask()).thenReturn(t);
 
 		IDownloadDocumentService dd = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.doReturn(res).when(dd).createAndFireRequest("basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.doReturn(rmd).when(dd).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
 
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 
@@ -107,6 +115,14 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
+		
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgentConnecte", "9005138");
+		parameters.put("dateGeneration", "20170101");
+
+		Mockito.when(dd.createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters)).thenReturn(res);
+		Mockito.when(dd.readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur")).thenReturn(rmd);
 
 		// When
 		job.executeInternal(null);
@@ -117,8 +133,8 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		Mockito.verify(pdao, Mockito.times(1)).beginTransaction();
 		Mockito.verify(pdao, Mockito.times(1)).commitTransaction();
 		Mockito.verify(pdao, Mockito.never()).rollBackTransaction();
-		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest("basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
+		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters);
+		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur");
 		verify(incidentLoggerService, never()).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
 	}
@@ -130,13 +146,11 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		TitreRepasExportEtatsPayeurTask t = new TitreRepasExportEtatsPayeurTask();
 		t.setIdTitreRepasExportEtatsPayeurTask(99);
 		t.setIdAgent(9005138);
+		t.setDateMonth(new DateTime(2017, 01, 01, 0, 0).toDate());
 		IPointagesDao pdao = Mockito.mock(IPointagesDao.class);
 		Mockito.when(pdao.getNextTitreRepasExportEtatsPayeurTask()).thenReturn(t);
 
 		IDownloadDocumentService dd = Mockito.mock(IDownloadDocumentService.class);
-		Mockito.doReturn(res).when(dd).createAndFireRequest("basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.doThrow(new Exception("MSG")).when(dd).readResponse(ReturnMessageDto.class, res,
-				"basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
 
 		IIncidentLoggerService incidentLoggerService = Mockito.mock(IIncidentLoggerService.class);
 		Mockito.doAnswer(new Answer<Object>() {
@@ -150,6 +164,14 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		ReflectionTestUtils.setField(job, "pointagesDao", pdao);
 		ReflectionTestUtils.setField(job, "downloadDocumentService", dd);
 		ReflectionTestUtils.setField(job, "incidentLoggerService", incidentLoggerService);
+		
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgentConnecte", "9005138");
+		parameters.put("dateGeneration", "20170101");
+
+		Mockito.when(dd.createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters)).thenReturn(res);
+		Mockito.when(dd.readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur")).thenThrow(new Exception("MSG"));
 
 		// When
 		job.executeInternal(null);
@@ -162,8 +184,8 @@ public class TitreRepasExportEtatsPayeurJobTest {
 		Mockito.verify(pdao, Mockito.never()).rollBackTransaction();
 		verify(incidentLoggerService, times(1)).logIncident(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(Exception.class));
-		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest( "basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138", null);
-		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class,res, "basetitreRepas/genereEtatPayeur?idAgentConnecte=9005138");
+		Mockito.verify(dd, Mockito.times(1)).createAndFireRequest("basetitreRepas/genereEtatPayeur", parameters);
+		Mockito.verify(dd, Mockito.times(1)).readResponse(ReturnMessageDto.class, res, "basetitreRepas/genereEtatPayeur");
 
 	}
 }
