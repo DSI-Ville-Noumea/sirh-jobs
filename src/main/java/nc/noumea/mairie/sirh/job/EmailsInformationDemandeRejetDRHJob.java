@@ -206,8 +206,7 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-//				 message.setTo(user.getMail());
-				 message.setTo("theophile.bodin@ville-noumea.nc");
+				 message.setTo(user.getMail());
 
 				// Set the body with velocity
 				Map model = new HashMap();
