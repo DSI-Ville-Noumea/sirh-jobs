@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.ws.dto.AgentDto;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.ClientResponse;
+
+import nc.noumea.mairie.sirh.ws.dto.AgentDto;
 
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
@@ -32,6 +32,8 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 	private static final String dupliqueFDPUrl = "fichePostes/dupliqueFichePosteByIdFichePoste";
 	private static final String activeFDPUrl = "fichePostes/activeFichePosteByIdFichePoste";
+
+	private static final String downloadRecapMdf = "edition/downloadRecapMdf";
 
 	private String getWSUrl(String pUrl) {
 		return sirhWsBaseUrl + pUrl;
@@ -119,6 +121,16 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(activeFDPUrl));
 
 		return readResponse(ReturnMessageDto.class, res, getWSUrl(activeFDPUrl));
+	}
+
+	@Override
+	public byte[] getBordereauRecap(String entite) throws Exception {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("entite", entite.toString());
+		
+		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(downloadRecapMdf));
+
+		return readResponseAsByteArray(res, getWSUrl(downloadRecapMdf));
 	}
 
 }

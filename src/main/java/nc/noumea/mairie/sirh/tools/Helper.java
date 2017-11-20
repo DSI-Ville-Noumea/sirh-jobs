@@ -15,6 +15,12 @@ public class Helper {
 		return c.getTime();
 	}
 
+	public Date getLastMonthDate() {
+		Calendar c = new GregorianCalendar();
+		c.add(Calendar.MONTH, -1);
+		return c.getTime();
+	}
+
 	/**
 	 * Converts a 90xxxx employeeNumber into an Nomatr readable one: xxxx
 	 * 

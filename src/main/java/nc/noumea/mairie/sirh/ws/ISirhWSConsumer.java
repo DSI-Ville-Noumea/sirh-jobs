@@ -20,4 +20,6 @@ public interface ISirhWSConsumer {
 	ReturnMessageDto dupliqueFDP(Integer idFichePoste, Integer idNewServiceAds, Integer idAgent);
 
 	ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent);
+
+	byte[] getBordereauRecap(String entite) throws Exception;
 }

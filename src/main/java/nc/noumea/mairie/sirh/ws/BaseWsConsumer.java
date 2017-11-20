@@ -1,10 +1,15 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -16,6 +21,8 @@ import com.sun.jersey.api.client.WebResource;
 import flexjson.JSONDeserializer;
 
 public abstract class BaseWsConsumer {
+
+	private Logger logger = LoggerFactory.getLogger(BaseWsConsumer.class);
 
 	public ClientResponse createAndFireGetRequest(Map<String, String> parameters, String url) {
 		return createAndFireRequest(parameters, url, false, null);
@@ -103,5 +110,53 @@ public abstract class BaseWsConsumer {
 		result = new JSONDeserializer<List<T>>().use(null, ArrayList.class).use("values", targetClass).use(Date.class, new MSDateTransformer()).deserialize(output);
 
 		return result;
+	}
+
+	protected byte[] readResponseAsByteArray(ClientResponse response, String url) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			logger.error(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new RuntimeException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			logger.error("Erreur dans readResponseAsByteArray" + e.getMessage());
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
+	protected FileInputStream readResponseAsInputStream(ClientResponse response, String url) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			logger.error(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new RuntimeException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		FileInputStream reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = new FileInputStream(reportFile);
+		} catch (Exception e) {
+			logger.error("Erreur dans readResponseAsByteArray" + e.getMessage());
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
 	}
 }

@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body style="font-family:Calibri">
+		<p>
+			Bonjour, 
+		</p>
+		<p>
+			Ci-joint le bordereau r&eacute;capitulatif de d&eacute;claration des r&eacute;mun&eacute;rations d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires et concernant le personnel ${labelEntite}.
+			<br />Apr&egrave;s v&eacute;rification des informations mentionn&eacute;es sur ce document, veuillez l'imprimer, le signer et l'envoyer par mail &agrave; la mutuelle des fonctionnaires.
+		</p>
+		<p>
+			Cordialement.
+		</p>
+		<br/>
+		<div>
+			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+		</div>
+	</body>
+</html>

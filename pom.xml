@@ -6,42 +6,45 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-jobs</artifactId>
 	<packaging>war</packaging>
-	<version>9.09</version>
+	<version>9.11</version>
 	<name>sirh-jobs</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4j.version>1.7.24</slf4j.version>
-		<spring.version>4.3.4.RELEASE</spring.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<spring.version>4.3.11.RELEASE</spring.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <coveralls-maven-plugin.repoToken>${env.COVERALLS_REPOTOKEN}</coveralls-maven-plugin.repoToken>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <versioneye-maven-plugin.version>3.11.0</versioneye-maven-plugin.version>
+        <versioneye-maven-plugin.version>3.11.4</versioneye-maven-plugin.version>
         <versioneye-maven-plugin.apiKey>${env.VERSIONEYE_APIKEY}</versioneye-maven-plugin.apiKey>
         <versioneye-maven-plugin.projectId>${env.VERSIONEYE_PROJECTID}</versioneye-maven-plugin.projectId>
-		<jacoco.version>0.7.7.201606060606</jacoco.version>
+		<jacoco.version>0.7.9</jacoco.version>
 		<checksum-maven-plugin.version>1.4</checksum-maven-plugin.version>
-		<mail.version>1.5.6</mail.version>		
+		<mail.version>1.6.0</mail.version>		
 		<cup4j.version>cups4j-0.6.10</cup4j.version> 
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
+		<!-- Does not work with logback version 1.2.3 -->
 		<logback.version>1.1.2</logback.version>
 		<redmine.version>1.23</redmine.version>
 		<aspectj.version>1.8.10</aspectj.version>
-		<quartz.version>2.2.3</quartz.version>
-		<jt400.version>9.2</jt400.version>
+		<quartz.version>2.3.0</quartz.version>
+		<jt400.version>9.3</jt400.version>
 		<postgresql.version>9.4.1212</postgresql.version>
+		<!-- Does not work with hibernate version 5.2.11.Final -->
 		<hibernate.version>4.3.5.Final</hibernate.version>
+		<!-- Does not work with hibernate validator version 5.2.11.Final -->
 		<hibernate-validator.version>5.1.1.Final</hibernate-validator.version>
-		<validation-api.version>1.1.0.Final</validation-api.version>
+		<validation-api.version>2.0.0.Final</validation-api.version>
 		<velocity.version>1.7</velocity.version>
 		<activation.version>1.1.1</activation.version>
-		<joda-time.version>2.9.7</joda-time.version>
+		<joda-time.version>2.9.9</joda-time.version>
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<commons-vfs2.version>2.1</commons-vfs2.version>
-		<jersey.version>1.19.3</jersey.version>
+		<jersey.version>1.19.4</jersey.version>
 		<commons-io.version>2.5</commons-io.version>
 		<flexjson.version>3.3</flexjson.version>
 		<commons-codec.version>1.10</commons-codec.version>
@@ -388,7 +391,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.7.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -398,7 +401,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.1.0</version>
 				<configuration>
 					<packagingExcludes>META-INF/context.xml</packagingExcludes>
 					<webResources>
@@ -417,7 +420,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>2.20.1</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
@@ -470,7 +473,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.20.1</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -512,7 +515,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
             </plugin>
         </plugins>
     </reporting>

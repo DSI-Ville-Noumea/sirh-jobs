@@ -9,7 +9,7 @@
 			Bonjour, 
 		</p>
 		<p>
-			Des absences pour raison médicale ont &eacute;t&eacute; saisies pour certains de vos agents : <br />
+			Des absences pour raison m&eacute;dicale ont &eacute;t&eacute; saisies pour certains de vos agents : <br />
 			${listeAgents}
 			<br />
 			Si vous le souhaitez, vous pouvez les consulter sur le Kiosque RH dans "Gestion des demandes" - Onglet "Toutes les demandes" - Filtre "Groupe d'absences: Maladies".
