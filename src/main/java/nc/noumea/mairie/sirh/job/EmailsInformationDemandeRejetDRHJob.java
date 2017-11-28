@@ -1,10 +1,14 @@
 package nc.noumea.mairie.sirh.job;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.MimeMessage;
 
@@ -33,7 +37,6 @@ import nc.noumea.mairie.sirh.ws.dto.ActeursDto;
 import nc.noumea.mairie.sirh.ws.dto.AgentDto;
 import nc.noumea.mairie.sirh.ws.dto.ApprobateurDto;
 import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
-import nc.noumea.mairie.sirh.ws.dto.EmailInfoDto;
 import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 @Service
@@ -106,72 +109,81 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 	}
 
 	protected void sendEmailsInformationOneByOne(final Date today, List<DemandeDto> listeDemandeDto) throws AbsEmailsInformationException {
+		
+		HashMap<Integer, Set<DemandeDto>> demandesBySupervisor = new HashMap<>();
 
 		for (DemandeDto demande : listeDemandeDto) {
 
 			// pour chaque demande, on recupere les approbateurs/operateurs
 			ActeursDto acteurDto = absWSConsumer.getListIdActeursByAgent(demande.getAgentWithServiceDto().getIdAgent().toString());
 
-			logger.info("There are {} approbateurs for AbsEmailInformationRejetDRH to send...", acteurDto.getListApprobateurs().size());
-			logger.info("There are {} operateurs for AbsEmailInformationRejetDRH to send...", acteurDto.getListOperateurs().size());
+			logger.info("There are {} approbateurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListApprobateurs().size(), demande.getIdDemande());
+			logger.info("There are {} operateurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListOperateurs().size(), demande.getIdDemande());
+			logger.info("There are {} viseurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListViseurs().size(), demande.getIdDemande());
 
 			if (acteurDto.getListApprobateurs().isEmpty() && acteurDto.getListOperateurs().isEmpty())
 				continue;
 
 			logger.info("Sending AbsEmailInformationRejetDRH  for demande {}...", demande.getIdDemande());
 
+			// Alimentation de la Map, avec une liste des demandes pour chaque agent superviseur.
 			for (ApprobateurDto approbateur : acteurDto.getListApprobateurs()) {
-				int nbErrors = 0;
-				boolean succeeded = false;
-
-				while (nbErrors < numberOfTries && !succeeded) {
-
-					try {
-						sendEmailInformation(approbateur.getApprobateur().getIdAgent(), today, listeDemandeDto);
-						succeeded = true;
-					} catch (Exception ex) {
-						logger.warn("An error occured while trying to send AbsEmailInformationRejetDRH for demande {}.",
-								new Object[] { demande.getIdDemande() });
-						logger.warn("Here follows the exception : ", ex);
-						// #28786 ne pas boucler sur le logger redmine
-						incidentRedmine.addException(ex, demande.getIdDemande());
-						nbErrors++;
-					}
-
-					if (nbErrors >= numberOfTries) {
-						logger.error(
-								"Stopped sending AbsEmailInformationRejetDRH  for demande {} because exceeded the maximum authorized number of tries: {}.",
-								demande.getIdDemande(), numberOfTries);
-					}
+				AgentDto appro = approbateur.getApprobateur();
+				if (demandesBySupervisor.containsKey(appro.getIdAgent())) {
+					demandesBySupervisor.get(appro.getIdAgent()).add(demande);
+				} else {
+					Set<DemandeDto> set = new HashSet();
+					set.add(demande);
+					demandesBySupervisor.put(appro.getIdAgent(), set);
 				}
 			}
-			for (AgentDto operateur : acteurDto.getListOperateurs()) {
-				int nbErrors = 0;
-				boolean succeeded = false;
-
-				while (nbErrors < numberOfTries && !succeeded) {
-
-					try {
-						sendEmailInformation(operateur.getIdAgent(), today, listeDemandeDto);
-						succeeded = true;
-					} catch (Exception ex) {
-						logger.warn("An error occured while trying to send AbsEmailInformationRejetDRH for demande {}.",
-								new Object[] { demande.getIdDemande() });
-						logger.warn("Here follows the exception : ", ex);
-						// #28786 ne pas boucler sur le logger redmine
-						incidentRedmine.addException(ex, demande.getIdDemande());
-						nbErrors++;
-					}
-
-					if (nbErrors >= numberOfTries) {
-						logger.error(
-								"Stopped sending AbsEmailInformationRejetDRH  for demande {} because exceeded the maximum authorized number of tries: {}.",
-								demande.getIdDemande(), numberOfTries);
-					}
+			for (AgentDto ope : acteurDto.getListOperateurs()) {
+				if (demandesBySupervisor.containsKey(ope.getIdAgent())) {
+					demandesBySupervisor.get(ope.getIdAgent()).add(demande);
+				} else {
+					Set<DemandeDto> set = new HashSet();
+					set.add(demande);
+					demandesBySupervisor.put(ope.getIdAgent(), set);
 				}
 			}
-
+			for (AgentDto viseur : acteurDto.getListViseurs()) {
+				if (demandesBySupervisor.containsKey(viseur.getIdAgent())) {
+					demandesBySupervisor.get(viseur.getIdAgent()).add(demande);
+				} else {
+					Set<DemandeDto> set = new HashSet();
+					set.add(demande);
+					demandesBySupervisor.put(viseur.getIdAgent(), set);
+				}
+			}
 		}
+		
+		// On envoie le mail avec la liste des demandes pour chaque superviseur
+	    Iterator it = demandesBySupervisor.entrySet().iterator();
+	    while (it.hasNext()) {
+			int nbErrors = 0;
+			boolean succeeded = false;
+	        Map.Entry<Integer, Set<DemandeDto>> pair = (Map.Entry) it.next();
+			while (nbErrors < numberOfTries && !succeeded) {
+		        try {
+		        	List<DemandeDto> listDemandes = new ArrayList<>();
+		        	listDemandes.addAll(pair.getValue());
+					sendEmailInformation(pair.getKey(), today, listDemandes);
+					succeeded = true;
+				} catch (Exception ex) {
+					logger.warn("An error occured while trying to send AbsEmailInformationRejetDRH to agent id {}.", pair.getKey());
+					logger.warn("Here follows the exception : ", ex);
+					// #28786 ne pas boucler sur le logger redmine
+					incidentRedmine.addException(ex, pair.getKey());
+					nbErrors++;
+				} finally {
+			        it.remove(); // avoids a ConcurrentModificationException
+				}
+				if (nbErrors >= numberOfTries) {
+					logger.error("Stopped sending AbsEmailInformationRejetDRH for agent id {} because exceeded the maximum authorized number of tries: {}.",
+						 pair.getKey(), numberOfTries);
+				}
+			}
+	    }
 	}
 
 	protected void sendEmailInformation(final Integer idAgent, final Date theDate, List<DemandeDto> listeDemandeDto) throws Exception {
