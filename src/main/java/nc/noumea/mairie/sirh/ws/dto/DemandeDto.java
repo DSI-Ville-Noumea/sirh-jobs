@@ -14,6 +14,8 @@ public class DemandeDto {
 
 	// pour l'envoi des mails
 	private String				dateEnString;
+	// pour le mail de rejet
+	private Integer 			idAgentSaisie;
 
 	public DemandeDto() {
 	}
@@ -69,6 +71,14 @@ public class DemandeDto {
 
 	public void setDateEnString(String dateEnString) {
 		this.dateEnString = dateEnString;
+	}
+
+	public Integer getIdAgentSaisie() {
+		return idAgentSaisie;
+	}
+
+	public void setIdAgentSaisie(Integer idAgentSaisie) {
+		this.idAgentSaisie = idAgentSaisie;
 	}
 
 }

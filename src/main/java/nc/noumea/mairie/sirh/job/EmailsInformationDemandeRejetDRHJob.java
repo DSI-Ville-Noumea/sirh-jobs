@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.job;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,14 +119,12 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 			// pour chaque demande, on recupere les approbateurs/operateurs
 			ActeursDto acteurDto = absWSConsumer.getListIdActeursByAgent(demande.getAgentWithServiceDto().getIdAgent().toString());
 
-			logger.info("There are {} approbateurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListApprobateurs().size(), demande.getIdDemande());
-			logger.info("There are {} operateurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListOperateurs().size(), demande.getIdDemande());
-			logger.info("There are {} viseurs for AbsEmailInformationRejetDRH to send for demande id {}...", acteurDto.getListViseurs().size(), demande.getIdDemande());
+			logger.info("There are {} approbateurs for AbsEmailInformationRejetDRH to send for demande id {}.", acteurDto.getListApprobateurs().size(), demande.getIdDemande());
 
-			if (acteurDto.getListApprobateurs().isEmpty() && acteurDto.getListOperateurs().isEmpty())
+			if (acteurDto.getListApprobateurs().isEmpty() && demande.getIdAgentSaisie() == null)
 				continue;
 
-			logger.info("Sending AbsEmailInformationRejetDRH  for demande {}...", demande.getIdDemande());
+			logger.info("Preparing AbsEmailInformationRejetDRH  for demande id {}.", demande.getIdDemande());
 
 			// Alimentation de la Map, avec une liste des demandes pour chaque agent superviseur.
 			for (ApprobateurDto approbateur : acteurDto.getListApprobateurs()) {
@@ -137,23 +137,16 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 					demandesBySupervisor.put(appro.getIdAgent(), set);
 				}
 			}
-			for (AgentDto ope : acteurDto.getListOperateurs()) {
-				if (demandesBySupervisor.containsKey(ope.getIdAgent())) {
-					demandesBySupervisor.get(ope.getIdAgent()).add(demande);
+			if (demande.getIdAgentSaisie() != null) {
+				if (demandesBySupervisor.containsKey(demande.getIdAgentSaisie())) {
+					demandesBySupervisor.get(demande.getIdAgentSaisie()).add(demande);
 				} else {
 					Set<DemandeDto> set = new HashSet();
 					set.add(demande);
-					demandesBySupervisor.put(ope.getIdAgent(), set);
+					demandesBySupervisor.put(demande.getIdAgentSaisie(), set);
 				}
-			}
-			for (AgentDto viseur : acteurDto.getListViseurs()) {
-				if (demandesBySupervisor.containsKey(viseur.getIdAgent())) {
-					demandesBySupervisor.get(viseur.getIdAgent()).add(demande);
-				} else {
-					Set<DemandeDto> set = new HashSet();
-					set.add(demande);
-					demandesBySupervisor.put(viseur.getIdAgent(), set);
-				}
+			} else {
+				logger.warn("Aucun agent de saisie n'est renseigné pour la demande id {}. Le mail n'est envoyé qu'aux approbateurs de l'agent.", demande.getIdDemande());
 			}
 		}
 		
@@ -165,6 +158,7 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 	        Map.Entry<Integer, Set<DemandeDto>> pair = (Map.Entry) it.next();
 			while (nbErrors < numberOfTries && !succeeded) {
 		        try {
+		        	logger.debug("{} demandes pour l'agent {}", pair.getValue().size(), pair.getKey());
 		        	List<DemandeDto> listDemandes = new ArrayList<>();
 		        	listDemandes.addAll(pair.getValue());
 					sendEmailInformation(pair.getKey(), today, listDemandes);
@@ -206,7 +200,8 @@ public class EmailsInformationDemandeRejetDRHJob extends QuartzJobBean {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-				 message.setTo(user.getMail());
+				message.setTo(user.getMail());
+				logger.debug("Sending mail to {}, containing {} demandes.", user.getMail(), listeDemandeDto.size());
 
 				// Set the body with velocity
 				Map model = new HashMap();

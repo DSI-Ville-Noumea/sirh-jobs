@@ -107,15 +107,13 @@ public class AbsencePriseJob extends QuartzJobBean {
 			// pour les ASA, CONGES_EXCEP, Maladies
 			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
 					getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
-			logger.debug("Taille de la liste des récup. et repos comp. validées : " + listEpAValider.size() + " demande(s).");
+			logger.debug("Taille de la liste des ASA, congés exc. et maladies validées : " + listEpAValider.size() + " demande(s).");
 			// pour les CONGES ANNUELS
 			List<Integer> listTypeGroupeAbs = new ArrayList<>();
 			listTypeGroupeAbs.add(RefTypeGroupeAbsenceEnum.CONGES_ANNUELS.getValue());
-			List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
-					EtatAbsenceEnum.APPROUVEE);
+			List<Integer> listCongeAApprouver = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs, EtatAbsenceEnum.APPROUVEE);
 			logger.debug("Taille de la liste des congés approuvés : " + listCongeAApprouver.size() + " demande(s).");
-			List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs,
-					EtatAbsenceEnum.VALIDEE);
+			List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs, EtatAbsenceEnum.VALIDEE);
 			logger.debug("Taille de la liste des congés validés : " + listCongeAValider.size() + " demande(s).");
 
 			// //////////////////////////////////////////////////////
