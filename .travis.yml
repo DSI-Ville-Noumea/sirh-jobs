@@ -1,4 +1,5 @@
 language: java
+sudo: required
 jdk:
 - oraclejdk8
 cache:
@@ -6,6 +7,7 @@ cache:
   - "$HOME/.m2"
 before_install:
 - export TZ=Pacific/Noumea
+install: mvn install -DSkipTests=true -Dmaven.javadoc.skip=true -DcreateChecksum=true
 env:
   global:
   - secure: fJWGcCUyeHD62QrUTmT5qCPwF+qVH4DpBLkWmJx/BNBqtB5LTRH+7/VTip93jIdKfmtvxytIcEfEYYCPBx5K67uPN29seLEM65+WWNJajOPWiRHQwm4PxbBf2pLiz3HbkGA0ZoI9wcG46HIfD0AJq5agR8JDZkorseiPC66PA6nIqw0ERM723zERbdDB2IW4eVYuFIKGTTsUmycEpUKxKJ7LXq548ibKLeG3BUgdHBad00kqmx5NrU5s/g2NjxMDjKrWtATMU7flVBQ52H+hbLuCe9hgBPiCFLfP8cHm5QTHO2NVuW3eSszr4uKPnhSOyaxw3IndhTbGJ8qfFMKPH3a5Kq7fkClqU+3qf1dzi+c3QvpEDetvm+RurKuJKSVhw/lYWvNGc5i48Y4u05Vy1mSkIIEGqMtdJ6AvWqahZWheVZLI7Yswip4qatjqTGOX/a+af8haanIc/mJn+5JWdCg3oIJ2u/9BcRGPZmZaMTDEfYUfgKopdcPTdd0pYfJsH8cZ58mSbGlhn4i4v86DcbN6x5coQ7cfIMzBBNPS/MmoTM8J2DeQ61+CgPkBpsOkZKJgHHWnw/n7SzViH/Y8/vyIXbcF1oqiVsIuypDA82hdqPKL9Rr6LEDMKjVc2fC0e+lYsh4mRKCT1Aji8Wu9s+g18m0NKdM/jRsr1/A0fsQ=
@@ -23,13 +25,13 @@ before_deploy:
   to GitHub releases"
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: xElF7dCNsHP6ObhHOTcjScrFrBtvkcuYR4xDIF8OflELMBgtxeK7hi1j9TJMJm2VHQZJVBFjaqLSn8D2Odrs+mL9vjIgCsDdOLLBJEaEe78kfgLfsmhNY0eNj2RZqlfXe3k4T86ALOynskBzQP98yfE1lcGZaj+tXlyVAJ8GVSZIhpQKtHBg2a3Kz1RXkUhnhpl37LErVl4idwPEAvo2M3hZ0XBPEiZ0Y9IHXU9T0XYjZFF6ZviSs1sJlLC/Elo4fQBqBDjQKHWIpnf/668bNNe00y6lWRKkADZFnVAVZxImbThst5L7HIqoRsrpgF6isshWlphxb8JTCoaATxTYVsA6ASZqN0t/OLaVFDYhrQK14kNj2KIoLOKB08YyuUhASnl465c+OJy/xOytv+LHYne7h4WJjb9Bx/40QvrrlxIZcPe/FiCKUN0x+bv+LTjgvHiohHG8xjJ0CNEMUG44+SFPSmCGmJ1Uu48jCeSDPa7NOMQhwKqe4zV4f6AWTdAqCoXwGLnofkER/BgZ7f9BKnHgrQT5pbSj1PkG20usqLsUmF+rs1ekV5q/TGlE9xWJKFv39D+x3Kn7k6Z2O+xDY5wBShfNXB598ydo+fqXTpVAmWkpAQv/sCuNejGZveXXtSZlGSuoA3apIfaYKoYwMYTP6VlbfdR81j0hKRvcrPs=
   file:
   - ${RELEASE_PKG_FILE}
   - ${RELEASE_PKG_MD5_FILE}
   - ${RELEASE_PKG_SHA_FILE}
-  skip_cleanup: true
   on:
     tags: true
     repo: DSI-Ville-Noumea/sirh-jobs
