@@ -1,7 +1,5 @@
 package nc.noumea.mairie.sirh.job;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
