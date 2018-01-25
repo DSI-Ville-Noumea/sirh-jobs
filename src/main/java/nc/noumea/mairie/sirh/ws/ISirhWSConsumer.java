@@ -21,5 +21,5 @@ public interface ISirhWSConsumer {
 
 	ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent);
 
-	byte[] getBordereauRecap(String entite) throws Exception;
+	byte[] getBordereauRecap() throws Exception;
 }

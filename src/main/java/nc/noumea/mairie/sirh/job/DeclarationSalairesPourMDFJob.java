@@ -47,12 +47,6 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	@Autowired
 	private JavaMailSender mailSender;
 	
-	// Liste des entités pour la génération du bordereau récapitulatif.
-	private static final String VDN = "VDN";
-	private static final String PERS = "PERS";
-	private static final String ADM = "ADM";
-	private static final String[] ENTITES = {VDN, PERS, ADM};
-	
 	private SimpleDateFormat sdf = new SimpleDateFormat("MM-YYYY");
 	
 	/**
@@ -62,37 +56,33 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	 */
 	private final static String LISTE_SRH_MAINTENANCE = "liste-sirh-maintenance@ville-noumea.nc";
 	private final static String RECIPIENT_VDN = "liste-scr@ville-noumea.nc";
-	private final static String RECIPIENT_CDE = "jerome.kartodiwirjo@ville-noumea.nc";
 
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		logger.debug("Enter in DeclarationSalairesPourMDFJob.");
 		byte[] result = null;
-		for (String entite : ENTITES) {
+
+		try {
+			result = sirhWsConsumer.getBordereauRecap();
+		} catch (Exception e) {
+			logger.error("Une erreur est survenue lors de la récupération du bordereau récapitulatif de la ville de Nouméa");
 			try {
-				result = sirhWsConsumer.getBordereauRecap(entite);
-			} catch (Exception e) {
-				logger.error("Une erreur est survenue lors de la récupération du bordereau récapitulatif de " + entite);
-				try {
-					sendErrorMail(entite);
-				} catch (Exception e1) {
-					logger.error("Impossible d'envoyer le mail d'erreur.");
-				}
-				continue;
+				sendErrorMail();
+			} catch (Exception e1) {
+				logger.error("Impossible d'envoyer le mail d'erreur.");
 			}
-			
-			try {
-				sendEmail(result, entite);
-			} catch (Exception e) {
-				logger.error("Une erreur est survenue lors de l'envoi du bordereau récapitulatif " + entite + " par mail.");
-			}
+		}
+		
+		try {
+			sendEmail(result);
+		} catch (Exception e) {
+			logger.error("Une erreur est survenue lors de l'envoi du bordereau récapitulatif de la ville de Nouméa par mail.");
 		}
 	}
 
-	protected void sendEmail(byte[] result, String entite) throws Exception {
+	protected void sendEmail(byte[] result) throws Exception {
 
 		final byte[] test = result;
-		final String fEntite = entite;
 		final String lastMonth = sdf.format(helper.getLastMonthDate());
 		
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
@@ -101,37 +91,16 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 				
-				String label = "";
-				String fileName = "";
-				String title = "";
-				
-				if (fEntite.equals(VDN)) {
-					label = "de la ville de Nouméa";
-					fileName = "bordereau-recap-VDN-" + lastMonth + ".pdf";
-					title = "Ville de Nouméa";
-					message.setTo(RECIPIENT_VDN);
-				}
-				else if (fEntite.equals(PERS)) {
-					label = "de la caisse des écoles";
-					fileName = "bordereau-recap-CDE-PERS-" + lastMonth + ".pdf";
-					title = "CDE Pers. Ecoles";
-					message.setTo(RECIPIENT_CDE);
-				}
-				else if (fEntite.equals(ADM)) {
-					label = "administratif de la caisse des écoles";
-					fileName = "bordereau-recap-CDE-ADM-" + lastMonth + ".pdf";
-					title = "CDE Pers. Admin";
-					message.setTo(RECIPIENT_CDE);
-				}
+				String fileName = "bordereau-recap-VDN-" + lastMonth + ".pdf";
+				message.setTo(RECIPIENT_VDN);
 
 				// Set the body with velocity
 				Map model = new HashMap();
-				model.put("labelEntite", label);
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhEmailBordereauRecap.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject
-				String sujetMail = "[MDF Déclaration rémunérations] Bordereau récapitulatif - " + title;
+				String sujetMail = "[MDF Déclaration rémunérations] Bordereau récapitulatif - Ville de Nouméa";
 				if (!typeEnvironnement.equals("PROD")) {
 					sujetMail = "[TEST] " + sujetMail;
 				}
@@ -142,48 +111,29 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 
 		// Actually send the email
 		mailSender.send(preparator);
-		logger.info("Le bordereau récapitulatif " + entite + " a bien été envoyé par mail.");
+		logger.info("Le bordereau récapitulatif de la ville de Nouméa a bien été envoyé par mail.");
 	}
 
-	protected void sendErrorMail(String entite) throws Exception {
+	protected void sendErrorMail() throws Exception {
 
-		final String fEntite = entite;
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 				
-				String label = "";
-				String title = "";
-				
-				if (fEntite.equals(VDN)) {
-					label = "de la ville de Nouméa.";
-					title = "Ville de Nouméa";
-					message.setTo(RECIPIENT_VDN);
-				}
-				else if (fEntite.equals(PERS)) {
-					label = "de la caisse des écoles.";
-					title = "CDE Pers. Ecoles";
-					message.setTo(RECIPIENT_CDE);
-				}
-				else if (fEntite.equals(ADM)) {
-					label = "administratif de la caisse des écoles.";
-					title = "CDE Pers. Admin";
-					message.setTo(RECIPIENT_CDE);
-				}
+				message.setTo(RECIPIENT_VDN);
 				
 				// On ajoute la maintenance SIRH en copie cachée
 				message.setBcc(LISTE_SRH_MAINTENANCE);
 
 				// Set the body with velocity
 				Map model = new HashMap();
-				model.put("labelEntite", label);
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhEmailBordereauRecapError.vm", "UTF-8", model);
 				message.setText(text, true);
 
 				// Set the subject
-				String sujetMail = "[MDF Déclaration rémunérations] Erreur de génération du bordereau récapitulatif - " + title;
+				String sujetMail = "[MDF Déclaration rémunérations] Erreur de génération du bordereau récapitulatif - Ville de Nouméa";
 				if (!typeEnvironnement.equals("PROD")) {
 					sujetMail = "[TEST] " + sujetMail;
 				}

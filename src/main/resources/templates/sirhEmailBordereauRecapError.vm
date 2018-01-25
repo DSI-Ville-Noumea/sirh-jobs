@@ -9,7 +9,7 @@
 			Bonjour, 
 		</p>
 		<p>
-			Une erreur s'est produite durant la g&eacute;n&eacute;ration du bordereau r&eacute;capitulatif de d&eacute;claration des r&eacute;mun&eacute;rations d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires et concernant le personnel ${labelEntite}.
+			Une erreur s'est produite durant la g&eacute;n&eacute;ration du bordereau r&eacute;capitulatif de d&eacute;claration des r&eacute;mun&eacute;rations d&eacute;stin&eacute; &agrave; la Mutuelle des Fonctionnaires et concernant le personnel de la ville de Nouméa.
 			<br />Les &eacute;quipes techniques de la DSI sont inform&eacute;es de ce probl&egrave;me et reviendront vers vous d&egrave;s que possible.
 		</p>
 		<p>
@@ -18,6 +18,7 @@
 		<br/>
 		<div>
 			<p><span style="font-size: 12px"><i>PS: Ne pas r&eacute;pondre &agrave; cet email. Ce message de notification est envoy&eacute; automatiquement par l'application SIRH.</i></span></p>
+			<span style="font-size: 9px"><i><a href="https://redmine.ville-noumea.nc/projects/flux-employeurs-mdf/wiki/G%C3%A9n%C3%A9ration_du_'Bordereau_r%C3%A9capitulatif'">Documentation technique interne DSI</a></i></span>
 		</div>
 	</body>
 </html>
