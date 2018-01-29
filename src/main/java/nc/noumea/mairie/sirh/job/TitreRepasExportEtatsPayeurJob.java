@@ -87,7 +87,10 @@ public class TitreRepasExportEtatsPayeurJob extends QuartzJobBean {
 							listErr.add(erreur);
 						}
 					}
-					eT.setTaskStatus("Erreur : " + StringUtils.join(listErr, "."));
+					// #44482 : Erreur si le champ fait plus de 255 caractères.
+					String formattedMessage = "Erreur : " + StringUtils.join(listErr, ".");
+					formattedMessage = formattedMessage.length() > 255 ? formattedMessage.substring(0, 255) : formattedMessage;
+					eT.setTaskStatus(formattedMessage);
 				} else {
 					eT.setTaskStatus("OK");
 				}
