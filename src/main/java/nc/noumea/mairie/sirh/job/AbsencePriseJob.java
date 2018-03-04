@@ -1,5 +1,8 @@
 package nc.noumea.mairie.sirh.job;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import nc.noumea.mairie.abs.dao.IAbsencesDao;
+import nc.noumea.mairie.abs.domain.Demande;
 import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
 import nc.noumea.mairie.abs.domain.RefTypeGroupeAbsenceEnum;
 import nc.noumea.mairie.sirh.dao.ISirhDao;
@@ -105,8 +109,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 					getTypeGroupeAbsenceFromApprouveToPrise(), EtatAbsenceEnum.APPROUVEE);
 			logger.debug("Taille de la liste des récup. et repos comp. approuvées : " + listEpAApprouver.size() + " demande(s).");
 			// pour les ASA, CONGES_EXCEP, Maladies
-			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(
-					getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
+			List<Integer> listEpAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeAbsenceFromValideToPrise(), EtatAbsenceEnum.VALIDEE);
 			logger.debug("Taille de la liste des ASA, congés exc. et maladies validées : " + listEpAValider.size() + " demande(s).");
 			// pour les CONGES ANNUELS
 			List<Integer> listTypeGroupeAbs = new ArrayList<>();
@@ -115,7 +118,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 			logger.debug("Taille de la liste des congés approuvés : " + listCongeAApprouver.size() + " demande(s).");
 			List<Integer> listCongeAValider = absencesDao.getListeAbsWithEtatAndTypeAbsence(listTypeGroupeAbs, EtatAbsenceEnum.VALIDEE);
 			logger.debug("Taille de la liste des congés validés : " + listCongeAValider.size() + " demande(s).");
-
+		
 			// //////////////////////////////////////////////////////
 			// on traite le cas du CONGE UNIQUE (conges exceptionnels)
 			// //////////////////////////////////////////////////////
@@ -129,10 +132,20 @@ public class AbsencePriseJob extends QuartzJobBean {
 			listEp.addAll(listCongeAValider);
 			logger.info("Found {} demandes to update...", listEp.size());
 
+			// #44774 : On envoi un mail pour les maladies qui passent à l'état 'Prise'
+			List<Integer> listMaladiesAnticipees = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeMaladies(), EtatAbsenceEnum.VALIDEE);
+			logger.debug("Taille de la liste des maladies saisies par anticipation prennant effet aujourd'hui : " + listMaladiesAnticipees.size() + " demande(s).");
+			try {
+				sendMailForMaladies(listMaladiesAnticipees);
+			} catch (Exception e) {
+				logger.warn("An error occured while trying to send MaladiesEnCoursEmailInformation.");
+				logger.warn("Here follows the exception : ", e);
+				incidentRedmine.addException(e, null);
+			}
+
 			absencesDao.rollBackTransaction();
 
 			for (Integer idDemande : listEp) {
-
 				logger.debug("Processing demande id {}...", idDemande);
 
 				Map<String, String> map = new HashMap<String, String>();
@@ -154,6 +167,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 						logger.info(err);
 					}
 				}
+				
 			}
 			
 			if(!incidentRedmine.getListException().isEmpty()) {
@@ -213,6 +227,26 @@ public class AbsencePriseJob extends QuartzJobBean {
 			}
 		}
 	}
+	
+	protected void sendMailForMaladies(List<Integer> ids) throws Exception {
+		List<Demande> list = absencesDao.getAllInfoForAbs(ids);
+		
+		if (list.isEmpty()) {
+			logger.debug("Aucune maladie ne passe à l'état 'Prise' aujourd'hui.");
+			return;
+		}
+		logger.debug("Envoi d'un mail de notification contenant {} maladie(s) passant à l'état 'Prise'.", list.size());
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
+		String datas = "Matricule - date de début - date de fin<br /><br />";
+		
+		for (Demande d : list) {
+			datas += d.getIdAgent() + "   -   " + sdf.format(d.getDateDebut()) + "   -   " + sdf.format(d.getDateFin()) + "<br />";
+			logger.debug("Ajout de la maladie id {} pour l'agent matricule {}, du {} au {}.", d.getIdDemande(), d.getIdAgent(), d.getDateDebut(), d.getDateFin());
+		}
+
+		sendMaladieEmail(datas);
+	}
 
 	protected void sendEmailInformationCongeUnique(Integer idAgentGestionnaire, String nomatrAgentCongeUnique,
 			String nomAgentCongeUnique, String prenomAgentCongeUnique) {
@@ -267,7 +301,8 @@ public class AbsencePriseJob extends QuartzJobBean {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-				message.setTo(user.getMail());
+//				message.setTo(user.getMail());
+				message.setTo("theophile.bodin@ville-noumea.nc");
 
 				// Set the body with velocity
 				Map model = new HashMap();
@@ -292,13 +327,12 @@ public class AbsencePriseJob extends QuartzJobBean {
 		};
 
 		// Actually send the email
-		mailSender.send(preparator);
+//		mailSender.send(preparator);
 	}
 
 	/**
 	 * 
-	 * @return la liste des groupes qui sont a valider par SIRH pour passer a l
-	 *         etat PRIS
+	 * @return la liste des groupes qui sont a valider par SIRH pour passer a l'etat PRIS
 	 */
 	private List<Integer> getTypeGroupeAbsenceFromValideToPrise() {
 		List<Integer> listTypeAbsASA = new ArrayList<>();
@@ -307,16 +341,53 @@ public class AbsencePriseJob extends QuartzJobBean {
 		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.MALADIES.getValue());
 		return listTypeAbsASA;
 	}
+	
+
+	private List<Integer> getTypeGroupeMaladies() {
+		List<Integer> listTypeAbsASA = new ArrayList<>();
+		listTypeAbsASA.add(RefTypeGroupeAbsenceEnum.MALADIES.getValue());
+		return listTypeAbsASA;
+	}
 
 	/**
 	 * 
-	 * @return la liste des groupes qui sont a approuver par SIRH pour passer a
-	 *         l etat PRIS
+	 * @return la liste des groupes qui sont a approuver par SIRH pour passer a l etat PRIS
 	 */
 	private List<Integer> getTypeGroupeAbsenceFromApprouveToPrise() {
 		List<Integer> listTypeAbsRetRC = new ArrayList<>();
 		listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.RECUP.getValue());
 		listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.REPOS_COMP.getValue());
 		return listTypeAbsRetRC;
+	}
+
+	protected void sendMaladieEmail(String datas) throws Exception {
+		final String stringValue = datas;
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+				
+				// TODO
+				message.setTo("theophile.bodin@ville-noumea.nc");
+				
+				// Set the body with velocity
+				Map model = new HashMap();
+				model.put("datas", stringValue);
+
+				// Set the body with velocity
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "templates/sirhEmailMaladieEnCoursTemplate.vm", "UTF-8", model);
+				message.setText(text, true);
+
+				// Set the subject (specified in #44774)
+				String sujetMail = "Saisie par anticipation - Date début Maladie";
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+				message.setSubject(sujetMail);
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
 	}
 }

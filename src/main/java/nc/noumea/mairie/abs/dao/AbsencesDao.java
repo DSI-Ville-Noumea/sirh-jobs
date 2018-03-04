@@ -3,13 +3,19 @@ package nc.noumea.mairie.abs.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
-
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+
+import com.github.fluent.hibernate.transformer.FluentHibernateResultTransformer;
+
+import nc.noumea.mairie.abs.domain.Demande;
+import nc.noumea.mairie.abs.domain.EtatAbsenceEnum;
+import nc.noumea.mairie.sirh.ws.dto.DemandeDto;
 
 @Repository
 public class AbsencesDao implements IAbsencesDao {
@@ -93,6 +99,22 @@ public class AbsencesDao implements IAbsencesDao {
 				.addScalar("idEtatDemande", StandardBasicTypes.INTEGER)
 				.setParameter("etat", EtatAbsenceEnum.VALIDEE.getCodeEtat())
 				.setParameterList("listeTypeAbs", listTypeAbsCongeUnique).list();
+
+		return result;
+	}
+
+	@Override
+	public List<Demande> getAllInfoForAbs(List<Integer> ids) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT id_demande as idDemande, id_agent as idAgent, date_debut as dateDebut, date_fin as dateFin, commentaire FROM ABS_DEMANDE abs ");
+		sb.append("WHERE id_demande in (:list) ORDER BY id_agent");
+
+		@SuppressWarnings("unchecked")
+		List<Demande> result = absSessionFactory.getCurrentSession().createSQLQuery(sb.toString())
+				.setParameterList("list", ids)
+				.setResultTransformer(new FluentHibernateResultTransformer(Demande.class))
+				.list();
 
 		return result;
 	}
