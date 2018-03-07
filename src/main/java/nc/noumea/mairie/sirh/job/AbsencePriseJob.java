@@ -1,7 +1,5 @@
 package nc.noumea.mairie.sirh.job;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,7 +138,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 			} catch (Exception e) {
 				logger.warn("An error occured while trying to send MaladiesEnCoursEmailInformation.");
 				logger.warn("Here follows the exception : ", e);
-				incidentRedmine.addException(e, null);
+				incidentRedmine.addException(e, 999999); // fake id
 			}
 
 			absencesDao.rollBackTransaction();
@@ -167,7 +165,6 @@ public class AbsencePriseJob extends QuartzJobBean {
 						logger.info(err);
 					}
 				}
-				
 			}
 			
 			if(!incidentRedmine.getListException().isEmpty()) {
@@ -238,10 +235,16 @@ public class AbsencePriseJob extends QuartzJobBean {
 		logger.debug("Envoi d'un mail de notification contenant {} maladie(s) passant à l'état 'Prise'.", list.size());
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
-		String datas = "Matricule - date de début - date de fin<br /><br />";
+		String datas = "Service - Prénom de l'agent - Nom de l'agent - date de début - date de fin<br /><br />";
 		
 		for (Demande d : list) {
-			datas += d.getIdAgent() + "   -   " + sdf.format(d.getDateDebut()) + "   -   " + sdf.format(d.getDateFin()) + "<br />";
+			DemandeDto demande = absWSConsumer.getDemandeAbsence(d.getIdDemande());
+			
+			datas += demande.getAgentWithServiceDto().getService() + "   -   " + 
+					demande.getAgentWithServiceDto().getPrenom() + " " +  demande.getAgentWithServiceDto().getNom() + " ("+demande.getAgentWithServiceDto().getIdAgent()+")  -   " + 
+					sdf.format(d.getDateDebut()) + "   -   " + 
+					sdf.format(d.getDateFin()) + "<br />";
+			
 			logger.debug("Ajout de la maladie id {} pour l'agent matricule {}, du {} au {}.", d.getIdDemande(), d.getIdAgent(), d.getDateDebut(), d.getDateFin());
 		}
 
@@ -301,8 +304,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
 				// Set the To
-//				message.setTo(user.getMail());
-				message.setTo("theophile.bodin@ville-noumea.nc");
+				message.setTo(user.getMail());
 
 				// Set the body with velocity
 				Map model = new HashMap();
@@ -327,7 +329,7 @@ public class AbsencePriseJob extends QuartzJobBean {
 		};
 
 		// Actually send the email
-//		mailSender.send(preparator);
+		mailSender.send(preparator);
 	}
 
 	/**
@@ -359,17 +361,32 @@ public class AbsencePriseJob extends QuartzJobBean {
 		listTypeAbsRetRC.add(RefTypeGroupeAbsenceEnum.REPOS_COMP.getValue());
 		return listTypeAbsRetRC;
 	}
+	
+	private List<String> getMailRecipients() {
+		List<LightUser> listeEmailDestinataireDto = sirhWSConsumer.getEmailDestinataire();
+		final List<String> listeEmailDestinataire = new ArrayList<>();
+		for (LightUser user : listeEmailDestinataireDto) {
+			if (!listeEmailDestinataire.contains(user.getMail())) {
+				listeEmailDestinataire.add(user.getMail());
+			}
+		}
+		return listeEmailDestinataire;
+	}
 
 	protected void sendMaladieEmail(String datas) throws Exception {
+
+		// On récupère la liste des destinataires
+		final List<String> listeEmailDestinataire = getMailRecipients();
 		final String stringValue = datas;
+		
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 				
-				// TODO
-				message.setTo("theophile.bodin@ville-noumea.nc");
-				
+				for (String mail : listeEmailDestinataire) {
+					message.addTo(mail);
+				}
 				// Set the body with velocity
 				Map model = new HashMap();
 				model.put("datas", stringValue);

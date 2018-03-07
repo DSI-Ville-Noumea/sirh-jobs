@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.ws.dto.AgentDto;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 public interface ISirhWSConsumer {
 
@@ -22,4 +23,6 @@ public interface ISirhWSConsumer {
 	ReturnMessageDto activeFDP(Integer idFichePoste, Integer idAgent);
 
 	byte[] getBordereauRecap() throws Exception;
+	
+	public List<LightUser> getEmailDestinataire();
 }

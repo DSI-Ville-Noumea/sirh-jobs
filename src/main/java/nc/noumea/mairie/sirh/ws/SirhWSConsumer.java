@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.sun.jersey.api.client.ClientResponse;
 
 import nc.noumea.mairie.sirh.ws.dto.AgentDto;
+import nc.noumea.mairie.sirh.ws.dto.LightUser;
 
 @Service
 public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
@@ -32,6 +33,7 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 	private static final String deleteFDPUrl = "fichePostes/deleteFichePosteByIdFichePoste";
 	private static final String dupliqueFDPUrl = "fichePostes/dupliqueFichePosteByIdFichePoste";
 	private static final String activeFDPUrl = "fichePostes/activeFichePosteByIdFichePoste";
+	private static final String	sirhListEmailDestinataireUrl = "utilisateur/getEmailDestinataire";
 
 	private static final String downloadRecapMdf = "edition/downloadRecapMdf";
 
@@ -130,6 +132,18 @@ public class SirhWSConsumer extends BaseWsConsumer implements ISirhWSConsumer {
 		ClientResponse res = createAndFireGetRequest(parameters, getWSUrl(downloadRecapMdf));
 
 		return readResponseAsByteArray(res, getWSUrl(downloadRecapMdf));
+	}
+
+	@Override
+	public List<LightUser> getEmailDestinataire() {
+		String url = String.format(sirhWsBaseUrl + sirhListEmailDestinataireUrl);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("isForJob", "true");
+
+		ClientResponse res = createAndFireGetRequest(parameters, url);
+
+		return readResponseAsList(LightUser.class, res, url);
 	}
 
 }
