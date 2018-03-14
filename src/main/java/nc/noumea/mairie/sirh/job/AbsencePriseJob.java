@@ -377,6 +377,10 @@ public class AbsencePriseJob extends QuartzJobBean {
 
 		// On récupère la liste des destinataires
 		final List<String> listeEmailDestinataire = getMailRecipients();
+		if (listeEmailDestinataire.isEmpty()) {
+			logger.info("La liste des destinataires est vide. Le mail ne peut donc pas être envoyé.");
+			return;
+		}
 		final String stringValue = datas;
 		
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
