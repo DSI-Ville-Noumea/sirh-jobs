@@ -55,7 +55,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	 * C'est la solution adoptée provisoirement, avant de créer un interface de visualisation et modification de cette adresse mail.
 	 * (Ou d'abandonner SIRH fin 2018 ...)
 	 */
-	private final static String RECIPIENT_VDN = "liste-src@ville-noumea.nc";
+	private final static String RECIPIENT_VDN = "liste-scr@ville-noumea.nc";
 	private final static String[] LISTE_SRH_MAINTENANCE = {"liste-sirh-maintenance@ville-noumea.nc","support.easyvista@ville-noumea.nc"};
 
 	@Override
