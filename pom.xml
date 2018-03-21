@@ -6,7 +6,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-jobs</artifactId>
 	<packaging>war</packaging>
-	<version>9.14</version>
+	<version>9.15</version>
 	<name>sirh-jobs</name>
 	<url>http://maven.apache.org</url>
 
@@ -231,6 +231,13 @@
 			<artifactId>validation-api</artifactId>
 			<version>${validation-api.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.v-ladynev</groupId>
+			<artifactId>fluent-hibernate-core</artifactId>
+			<version>0.3.1</version>
+		</dependency>
+		
 
 		<!-- Mail -->
 		<dependency>

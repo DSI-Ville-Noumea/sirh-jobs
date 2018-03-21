@@ -53,9 +53,10 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 	 * Adresse mail en destination pour l'envoi du bordereau récapitulatif.
 	 * Renseigner cette adresse en dur n'est pas la solution définitive. 
 	 * C'est la solution adoptée provisoirement, avant de créer un interface de visualisation et modification de cette adresse mail.
+	 * (Ou d'abandonner SIRH fin 2018 ...)
 	 */
-	private final static String LISTE_SRH_MAINTENANCE = "liste-sirh-maintenance@ville-noumea.nc";
 	private final static String RECIPIENT_VDN = "liste-scr@ville-noumea.nc";
+	private final static String[] LISTE_SRH_MAINTENANCE = {"liste-sirh-maintenance@ville-noumea.nc","support.easyvista@ville-noumea.nc"};
 
 	@Override
 	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
@@ -82,7 +83,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 
 	protected void sendEmail(byte[] result) throws Exception {
 
-		final byte[] test = result;
+		final byte[] fResult = result;
 		final String lastMonth = sdf.format(helper.getLastMonthDate());
 		
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
@@ -105,7 +106,7 @@ public class DeclarationSalairesPourMDFJob extends QuartzJobBean {
 					sujetMail = "[TEST] " + sujetMail;
 				}
 				message.setSubject(sujetMail);
-				message.addAttachment(fileName, new ByteArrayResource(test));
+				message.addAttachment(fileName, new ByteArrayResource(fResult));
 			}
 		};
 
