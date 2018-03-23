@@ -133,12 +133,17 @@ public class AbsencePriseJob extends QuartzJobBean {
 			// #44774 : On envoi un mail pour les maladies qui passent à l'état 'Prise'
 			List<Integer> listMaladiesAnticipees = absencesDao.getListeAbsWithEtatAndTypeAbsence(getTypeGroupeMaladies(), EtatAbsenceEnum.VALIDEE);
 			logger.debug("Taille de la liste des maladies saisies par anticipation prennant effet aujourd'hui : " + listMaladiesAnticipees.size() + " demande(s).");
-			try {
-				sendMailForMaladies(listMaladiesAnticipees);
-			} catch (Exception e) {
-				logger.warn("An error occured while trying to send MaladiesEnCoursEmailInformation.");
-				logger.warn("Here follows the exception : ", e);
-				incidentRedmine.addException(e, 999999); // fake id
+			
+			if (!listMaladiesAnticipees.isEmpty()) {
+				try {
+					sendMailForMaladies(listMaladiesAnticipees);
+				} catch (Exception e) {
+					logger.warn("An error occured while trying to send MaladiesEnCoursEmailInformation.");
+					logger.warn("Here follows the exception : ", e);
+					incidentRedmine.addException(e, 999999); // fake id
+				}
+			} else {
+				logger.debug("Il n'y a pas de maladie passant à l'état 'Prise' à ce jour.");
 			}
 
 			absencesDao.rollBackTransaction();
@@ -228,10 +233,6 @@ public class AbsencePriseJob extends QuartzJobBean {
 	protected void sendMailForMaladies(List<Integer> ids) throws Exception {
 		List<Demande> list = absencesDao.getAllInfoForAbs(ids);
 		
-		if (list.isEmpty()) {
-			logger.debug("Aucune maladie ne passe à l'état 'Prise' aujourd'hui.");
-			return;
-		}
 		logger.debug("Envoi d'un mail de notification contenant {} maladie(s) passant à l'état 'Prise'.", list.size());
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
